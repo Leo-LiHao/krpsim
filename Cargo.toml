@@ -1,0 +1,6 @@
+[package]
+name = "krpsim"
+version = "0.1.0"
+authors = ["francois LE CORRE <lecorre.f@gmail.com>"]
+
+[dependencies]
