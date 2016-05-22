@@ -12,12 +12,12 @@ fn get_process() -> Vec<Process> {
     ]
 }
 
-fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut std::collections::HashMap<String, usize>) -> () {
+fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut Vec<Ressource>) -> () {
     for process in process_list {
         let mut add_ressource = |ressources_list: &Vec<Ressource>| -> () {
             for res in ressources_list {
-                if ressources.get(&res.0).is_none() {
-                    ressources.insert(res.0.clone(), 0);
+                if ressources.iter().find(|tmp| tmp.0 == res.0).is_none() {
+                    ressources.push((res.0.clone(), 0));
                 }
             }
         };
@@ -28,7 +28,7 @@ fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut std
 
 fn main() {
     let process_list: Vec<Process> = get_process();
-    let mut ressources: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
+    let mut ressources: Vec<Ressource> = Vec::new();
 
     get_ressources_from_process(&process_list, &mut ressources);
 
