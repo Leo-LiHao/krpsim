@@ -3,34 +3,42 @@ extern crate std;
 use super::livep::Livep;
 
 pub struct Queue<'a> {
-    lst: std::collections::BinaryHeap<Livep>
+    lst: std::collections::BinaryHeap<&'a Livep<'a>>
 }
 
 impl <'a> Queue <'a> {
     pub fn new() -> Self {
         Queue {
-            lst: Vec::new()
+            lst: std::collections::BinaryHeap::new()
         }
     }
 
     fn add(
-        &self,
-        process: &Livep,
+        &mut self,
+        process: &Livep<'a>,
     ) -> () {
         self.lst.push(process);
     }
 
     fn getEndedProcess(
-        &self,
+        &mut self,
         cycle: u64
-    ) -> Option<&Vec<Livep>> {
-        if let Some(v) = self.lst.peek() && v.cycle == cycle {
-            let mut ret = Vec::new();
-            ret.push(self.pop().unwrap());
-            while let Some(tmp) = self.lst.peek() && tmp.cycle == cycle {
-                ret.push(self.pop().unwrap());
+    ) -> Option<Vec<&Livep>> {
+        if let Some(v) = self.lst.peek() {
+            if v.cycle_end == cycle {
+                let mut ret = Vec::new();
+                ret.push(self.lst.pop().unwrap());
+                while let Some(tmp) = self.lst.peek() {
+                    if tmp.cycle_end == cycle {
+                        ret.push(self.lst.pop().unwrap());
+                    } else {
+                        break;
+                    }
+                }
+                Some(ret)
+            } else {
+                None
             }
-            Some(ret)
         } else {
             None
         }
