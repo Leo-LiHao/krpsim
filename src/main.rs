@@ -1,7 +1,9 @@
 extern crate krpsim;
 
-use krpsim::krpsim::ressource::Ressource;
+use krpsim::krpsim::ressource::{Ressource, add, sub, check_ressource};
 use krpsim::krpsim::process::Process;
+use krpsim::krpsim::queue::Queue;
+use krpsim::krpsim::livep::Livep;
 
 
 fn get_process() -> Vec<Process> {
@@ -26,10 +28,39 @@ fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut std
     }
 }
 
+fn get_available_process<'a>(process_list: &Vec<Process>, ressources: &mut Vec<Ressource>, cycle: u64)
+                         -> Vec<Livep<'a>> {
+    let mut vec = Vec::new();
+
+    for process in process_list {
+        if check_ressource(&process.input, ressources) {
+            ressources = sub(ressources, &process.input);
+            vec.push(Livep::new(&process, cycle));
+        }
+    }
+    vec
+}
+
 fn main() {
     let process_list: Vec<Process> = get_process();
-    let mut ressources: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
+   /* let mut ressources: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
+    get_ressources(&mut ressources);
 
     get_ressources_from_process(&process_list, &mut ressources);
-
+     */
+    let mut ressources: Vec<Ressource> = vec![("euro".to_string(), 50),
+                                            ("materiel".to_string(), 0),
+                                            ("produit".to_string(), 0),
+                                            ("client_content".to_string(), 0)];
+    let mut cycle: u64 = 0;
+    let mut done = false;
+    let mut process_queue = Queue::new();
+    while !done {
+        let procs = get_available_process(&process_list, &mut ressources, cycle);
+        println!("{:?}", ressources);
+        cycle += 1;
+        if cycle == 90 {
+            done = true;
+        }
+    }
 }

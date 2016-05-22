@@ -1,5 +1,4 @@
 use super::process::Process;
-use super::ressource::Ressource;
 use std::cmp::Ordering;
 
 pub struct Livep<'a> {
