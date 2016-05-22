@@ -14,12 +14,14 @@ impl <'a> Queue <'a> {
     }
 
     fn add(
+        &self,
         process: &Livep,
     ) -> () {
         self.lst.push(process);
     }
 
     fn getEndedProcess(
+        &self,
         cycle: u64
     ) -> Option<&Vec<Livep>> {
         if let Some(v) = self.lst.peek() && v.cycle == cycle {
