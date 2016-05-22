@@ -15,30 +15,24 @@ impl <'a> Queue <'a> {
 
     fn add(
         &mut self,
-        process: &Livep<'a>,
+        process: &'a Livep<'a>,
     ) -> () {
         self.lst.push(process);
     }
 
-    fn getEndedProcess(
+    fn get_ended_process(
         &mut self,
         cycle: u64
     ) -> Option<Vec<&Livep>> {
-        if let Some(v) = self.lst.peek() {
-            if v.cycle_end == cycle {
-                let mut ret = Vec::new();
+        if self.lst.peek().is_some() &&
+           self.lst.peek().unwrap().cycle_end == cycle {
+            let mut ret = Vec::new();
+            ret.push(self.lst.pop().unwrap());
+            while self.lst.peek().is_some() &&
+                  self.lst.peek().unwrap().cycle_end == cycle {
                 ret.push(self.lst.pop().unwrap());
-                while let Some(tmp) = self.lst.peek() {
-                    if tmp.cycle_end == cycle {
-                        ret.push(self.lst.pop().unwrap());
-                    } else {
-                        break;
-                    }
-                }
-                Some(ret)
-            } else {
-                None
             }
+            Some(ret)
         } else {
             None
         }
