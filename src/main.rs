@@ -34,7 +34,7 @@ fn get_available_process<'a>(process_list: &Vec<Process>, ressources: &mut Vec<R
 
     for process in process_list {
         if check_ressource(&process.input, ressources) {
-            ressources = sub(ressources, &process.input);
+            sub(ressources, &process.input);
             vec.push(Livep::new(&process, cycle));
         }
     }

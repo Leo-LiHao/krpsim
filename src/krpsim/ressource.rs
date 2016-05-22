@@ -6,22 +6,18 @@ pub fn check_ressource(need: &Vec<Ressource>, owned: &Vec<Ressource>) -> bool  {
             |(ref s, x)| *s == *a && x >= b))
 }
 
-fn update_ressource<F>(ori: &Vec<Ressource>, update: &Vec<Ressource>, closure: F)
-                       -> Vec<Ressource>
+fn update_ressource<F>(ori: &mut Vec<Ressource>, update: &Vec<Ressource>, closure: F) -> ()
     where F: Fn(u32, u32) -> u32 {
-    ori.iter().map(
-        |&(ref a, b)| {
-            match update.clone().into_iter().find(|&(ref s, _)| *s == *a) {
-                Some(tup) => (tup.0, closure(tup.1, b)),
-                None => (a.clone(), b),
-            }
+    for item in update {
+        if let Some(needle) = ori.iter_mut().find(|needle| needle.0 == item.0) {
+            needle.1 = closure(needle.1, item.1);
         }
-    ).collect::<Vec<Ressource>>()
+    }
 }
 
-pub fn add(ori: &Vec<Ressource>, update: &Vec<Ressource>) -> Vec<Ressource> {
+pub fn add(ori: &mut Vec<Ressource>, update: &Vec<Ressource>) -> () {
     update_ressource(ori, update, |a, b| a + b)
 }
-pub fn sub(ori: &Vec<Ressource>, update: &Vec<Ressource>) -> Vec<Ressource> {
+pub fn sub(ori: &mut Vec<Ressource>, update: &Vec<Ressource>) -> () {
     update_ressource(ori, update, |a, b| a - b)
 }
