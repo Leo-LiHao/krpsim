@@ -4,7 +4,7 @@ use krpsim::krpsim::ressource::Ressource;
 use krpsim::krpsim::process::Process;
 
 
-fn getProcess() -> Vec<Process> {
+fn get_process() -> Vec<Process> {
     vec![
         Process::new("achat_materiel", 10, vec![("euro".to_string(), 8)], vec![("materiel".to_string(), 1)]),
         Process::new("realisation_produit", 30, vec![("materiel".to_string(), 1)], vec![("produit".to_string(), 1)]),
@@ -12,7 +12,7 @@ fn getProcess() -> Vec<Process> {
     ]
 }
 
-fn getRessourcesFromProcess(process_list: &Vec<Process>, ressources: &mut std::collections::HashMap<String, usize>) -> () {
+fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut std::collections::HashMap<String, usize>) -> () {
     for process in process_list {
         let mut add_ressource = |ressources_list: &Vec<Ressource>| -> () {
             for res in ressources_list {
@@ -27,9 +27,9 @@ fn getRessourcesFromProcess(process_list: &Vec<Process>, ressources: &mut std::c
 }
 
 fn main() {
-    let process_list: Vec<Process> = getProcess();
+    let process_list: Vec<Process> = get_process();
     let mut ressources: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
 
-    getRessourcesFromProcess(&process_list, &mut ressources);
+    get_ressources_from_process(&process_list, &mut ressources);
 
 }
