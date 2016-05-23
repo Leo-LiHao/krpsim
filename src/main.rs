@@ -33,8 +33,9 @@ fn get_available_process<'a>(process_list: &'a Vec<Process>, ressources: &mut Ve
     let mut vec = Vec::new();
 
     for process in process_list {
-        if check_ressource(&process.input, ressources) {
-            sub(ressources, &process.input);
+        let nb = check_ressource(&process.input, ressources);
+        sub(ressources, &process.input, nb);
+        for _ in 0..nb {
             vec.push(Livep::new(&process, cycle));
         }
     }
@@ -42,7 +43,6 @@ fn get_available_process<'a>(process_list: &'a Vec<Process>, ressources: &mut Ve
 }
 
 fn main() {
-    
     let process_list: Vec<Process> = get_process();
     let mut ressources: Vec<Ressource> = vec![("euro".to_string(), 50),
                                               ("client_content".to_string(), 0)];

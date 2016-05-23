@@ -1,9 +1,14 @@
 pub type Ressource = (String, u32);
 
-pub fn check_ressource(need: &Vec<Ressource>, owned: &Vec<Ressource>) -> bool  {
-    need.iter().all(
-        |&(ref a, b)| owned.clone().into_iter().any(
-            |(ref s, x)| *s == *a && x >= b))
+pub fn check_ressource(need: &Vec<Ressource>, owned: &Vec<Ressource>) -> u32  {
+    let ret = need.iter().map(
+        |&(ref a, b)|
+        match owned.into_iter().find(|&&(ref s, _)| *s == *a) {
+            None => 0,
+            Some(own) => own.1 as u32 / b as u32
+        }
+    ).collect::<Vec<_>>();
+    *ret.iter().min().unwrap()
 }
 
 fn update_ressource<F>(ori: &mut Vec<Ressource>, update: &Vec<Ressource>, closure: F) -> ()
@@ -15,9 +20,9 @@ fn update_ressource<F>(ori: &mut Vec<Ressource>, update: &Vec<Ressource>, closur
     }
 }
 
-pub fn add(ori: &mut Vec<Ressource>, update: &Vec<Ressource>) -> () {
-    update_ressource(ori, update, |a, b| a + b)
+pub fn add(ori: &mut Vec<Ressource>, update: &Vec<Ressource>, operations: u32) -> () {
+    update_ressource(ori, update, |a, b| a + b * operations)
 }
-pub fn sub(ori: &mut Vec<Ressource>, update: &Vec<Ressource>) -> () {
-    update_ressource(ori, update, |a, b| a - b)
+pub fn sub(ori: &mut Vec<Ressource>, update: &Vec<Ressource>, operations: u32) -> () {
+    update_ressource(ori, update, |a, b| a - b * operations)
 }
