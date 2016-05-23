@@ -28,7 +28,7 @@ fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut std
     }
 }
 
-fn get_available_process<'a>(process_list: &Vec<Process>, ressources: &mut Vec<Ressource>, cycle: u64)
+fn get_available_process<'a>(process_list: &'a Vec<Process>, ressources: &mut Vec<Ressource>, cycle: u64)
                          -> Vec<Livep<'a>> {
     let mut vec = Vec::new();
 
@@ -59,7 +59,7 @@ fn main() {
         let procs = get_available_process(&process_list, &mut ressources, cycle);
         println!("{:?}", ressources);
         cycle += 1;
-        if cycle == 90 {
+        if cycle == 10 {
             done = true;
         }
     }
