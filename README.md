@@ -14,5 +14,5 @@
 #### How to use
 Example:
 ```shell
-cargo run -- --delay 1 --file resources/pomme
+cargo run -- --delay 1 --file resources/simple
 ```
