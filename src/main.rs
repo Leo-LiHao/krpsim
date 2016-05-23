@@ -27,6 +27,7 @@ fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut Vec
 }
 
 fn main() {
+    
     let process_list: Vec<Process> = get_process();
     let mut ressources: Vec<Ressource> = Vec::new();
 
