@@ -1,6 +1,17 @@
 [package]
 name = "krpsim"
-version = "0.1.0"
-authors = ["francois LE CORRE <lecorre.f@gmail.com>"]
+version = "0.0.1"
+authors = ["adjivas <adjivas@users.noreply.github.com>"]
+description = "krpsim"
+documentation = "http://adjivas.github.io/krpsim/krpsim"
+repository = "https://github.com/adjivas/krpsim.git"
+readme = "README.md"
+keywords = ["krpsim"]
+license = "GPL-3.0"
 
-[dependencies]
+[[bin]]
+name = "krpsim"
+doc = false
+
+[features]
+unstable = [] # for travis-cargo
