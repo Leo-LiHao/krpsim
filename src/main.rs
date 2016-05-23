@@ -51,8 +51,12 @@ fn main() {
     let mut done = false;
     let mut process_queue = Queue::new();
     while !done {
-        let procs = get_available_process(&process_list, &mut ressources, cycle);
-        println!("{:?}", ressources);
+        let processes = get_available_process(&process_list, &mut ressources, cycle);
+        if processes.len() > 0 {
+            for process in processes {
+                process_queue.add(process);
+            }
+        }
         cycle += 1;
         if cycle == 10 {
             done = true;
