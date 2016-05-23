@@ -57,9 +57,17 @@ fn main() {
                 process_queue.add(process);
             }
         }
-        cycle += 1;
-        if cycle == 10 {
+        if process_queue.is_empty() {
+            println!("Finished at cycle: {}", cycle);
             done = true;
+        }
+        match process_queue.get_ended_process(cycle) {
+            None => cycle += 1,
+            Some(livep_vec) => {
+                for ended_process in livep_vec {
+                   ended_process.destruct(&mut ressources);
+                }
+            }
         }
     }
 }

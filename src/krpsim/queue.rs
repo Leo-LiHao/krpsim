@@ -37,4 +37,8 @@ impl <'a> Queue <'a> {
             None
         }
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.lst.is_empty()
+    }
 }
