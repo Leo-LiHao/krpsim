@@ -22,8 +22,8 @@ impl <'a> std::fmt::Display for Optimize <'a> {
     &self,
     f: &mut std::fmt::Formatter,
   ) -> Result<(), std::fmt::Error> {
-      Ok(())
-//    write!(f, "(optimize: {})", self.stock.iter().map(|a| format!("{}", a))
-  //                                               .collect::<Vec<String>>())
+     write!(f, "(optimize: {})", self.stock.iter().map(|a| format!("{}", a))
+                                                  .collect::<Vec<String>>()
+                                                  .concat())
   }
 }
