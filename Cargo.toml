@@ -1,7 +1,7 @@
 [package]
 name = "krpsim"
-version = "0.0.1"
-authors = ["adjivas <adjivas@users.noreply.github.com>"]
+version = "0.1.0"
+authors = ["francois LE CORRE <lecorre.f@gmail.com>", "geam <geam@users.noreply.github.com>", "adjivas <adjivas@users.noreply.github.com>"]
 description = "krpsim"
 documentation = "http://adjivas.github.io/krpsim/krpsim"
 repository = "https://github.com/adjivas/krpsim.git"
