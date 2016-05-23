@@ -1,0 +1,50 @@
+pub struct Ressource(String, usize);
+
+impl Ressource {
+
+  /// The `new` constructor function returns the Stock.
+
+  pub fn new(stock_name: String, quantity: usize) -> Self {
+    Ressource(stock_name, quantity)
+  }
+}
+
+  fn update_ressource<F>(ori: &mut Vec<Ressource>,
+                         update: &Vec<Ressource>,
+                         closure: F)
+                         -> ()
+    where F: Fn(usize, usize) -> usize
+  {
+    for item in update {
+      if let Some(needle) = ori.iter_mut().find(|needle| needle.0 == item.0) {
+        needle.1 = closure(needle.1, item.1);
+      }
+    }
+  }
+
+  pub fn add(ori: &mut Vec<Ressource>, update: &Vec<Ressource>) -> () {
+    update_ressource(ori, update, |a, b| a + b)
+  }
+  pub fn sub(ori: &mut Vec<Ressource>, update: &Vec<Ressource>) -> () {
+    update_ressource(ori, update, |a, b| a - b)
+  }
+
+  pub fn check_ressource(need: &Vec<Ressource>,
+                         owned: &Vec<Ressource>)
+                         -> bool {
+    need.iter().all(|&n| {
+      owned.clone().into_iter().any(|o| *o.0 == *n.0 && o.1 >= n.1)
+    })
+  }
+
+pub fn check_ressource(need: &Vec<Ressource>, owned: &Vec<Ressource>) -> u32  {
+    let ret = need.iter().map(
+        |&(ref a, b)|
+        match owned.into_iter().find(|&&(ref s, _)| *s == *a) {
+            None => 0,
+            Some(own) => own.1 as u32 / b as u32
+        }
+    ).collect::<Vec<_>>();
+    *ret.iter().min().unwrap()
+}
+
