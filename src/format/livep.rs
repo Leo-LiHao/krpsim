@@ -1,3 +1,4 @@
+use super::ressource::{Ressource, add};
 use super::process::Process;
 use std::cmp::Ordering;
 
@@ -29,10 +30,17 @@ impl <'a> PartialOrd for Livep <'a>{
 
 impl <'a> Livep <'a> {
     pub fn new(process: &'a Process, cycle: u64) -> Self {
+        println!("process created: {} at cyle: {}",
+                 process.name, cycle);
         Livep {
             process: process,
             cycle_end: cycle + process.cycle
         }
+    }
+    pub fn destruct(&self, ressources: &mut Vec<Ressource>) ->() {
+        println!("process finished: {} at cyle: {}",
+                 &self.process.name, &self.cycle_end);
+        add(ressources, &self.process.output, 1);
     }
 
 }

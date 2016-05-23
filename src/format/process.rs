@@ -1,7 +1,7 @@
 use super::ressource::Ressource;
 
 pub struct Process {
-    name: String,
+    pub name: String,
     pub cycle: u64,
     pub input: Vec<Ressource>,
     pub output: Vec<Ressource>

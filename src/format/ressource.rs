@@ -31,19 +31,19 @@ fn update_ressource<F>(ori: &mut Vec<Ressource>,
   }
 }
 
-pub fn add(ori: &mut Vec<Ressource>, update: &Vec<Ressource>) -> () {
-  update_ressource(ori, update, |a, b| a + b)
+pub fn add(ori: &mut Vec<Ressource>, update: &Vec<Ressource>, operations: usize) -> () {
+  update_ressource(ori, update, |a, b| a + b * operations)
 }
-pub fn sub(ori: &mut Vec<Ressource>, update: &Vec<Ressource>) -> () {
-  update_ressource(ori, update, |a, b| a - b)
+pub fn sub(ori: &mut Vec<Ressource>, update: &Vec<Ressource>, operations: usize) -> () {
+  update_ressource(ori, update, |a, b| a - b * operations)
 }
 
-pub fn check_ressource(need: &Vec<Ressource>, owned: &Vec<Ressource>) -> u32 {
+pub fn check_ressource(need: &Vec<Ressource>, owned: &Vec<Ressource>) -> usize {
   let ret = need.into_iter()
                 .map(|&ref n| {
                   match owned.into_iter().find(|&s| *s.0 == *n.0) {
                     None => 0,
-                    Some(own) => own.1 as u32 / n.1 as u32,
+                    Some(own) => own.1 as usize / n.1 as usize,
                   }
                 })
                 .collect::<Vec<_>>();
