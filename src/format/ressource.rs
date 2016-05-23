@@ -13,7 +13,7 @@ impl Ressource {
 
 impl std::fmt::Display for Ressource {
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "({}, {})", self.0, self.1)
+    write!(f, "(ressource: {}, {})", self.0, self.1)
   }
 }
 

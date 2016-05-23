@@ -1,6 +1,7 @@
 extern crate std;
 
 use super::format::ressource::Ressource;
+use super::format::optimize::Optimize;
 use std::io::prelude::*;
 
 pub struct Parser {
@@ -19,14 +20,14 @@ impl Parser {
           [comment, ..] if comment.starts_with('#') => {},
           [name, thing] => {
             print!("{}: ", name);
-            match &thing.split("):").collect::<Vec<&str>>()[..] {
+            match &thing.split("):").flat_map(|s| s.split("::")).collect::<Vec<&str>>()[..] {
               [optimize] if optimize.starts_with('(') &&
                             optimize.ends_with(')') => {
-                println!("{{optimize: {}}}", optimize)
+                println!("{{{}}}", Optimize::new(optimize.split(&['(', ';', ')'][..]).filter(|&a| !a.is_empty()).collect::<Vec<&str>>()))
               }
               [quantity] if quantity.parse::<usize>()
                                     .is_ok() => {
-                println!("{}", Ressource::new(name.to_string(), quantity.parse::<usize>().unwrap()))
+                println!("{{{}}}", Ressource::new(name.to_string(), quantity.parse::<usize>().unwrap()))
               }
               [processus.., nb_cycle] if nb_cycle.parse::<usize>()
                                                  .is_ok() => {
