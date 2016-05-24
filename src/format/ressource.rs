@@ -24,13 +24,14 @@ impl Ressource {
     /// of Stock for a need or result argument from `Process`.
 
     pub fn from_line (ressources: &str) -> std::io::Result<Vec<Self>> {
+        //! Warning, this constructor currently can panic.
         Ok(
             ressources.split(&['(', ':', ';', ')'][..]).filter(|&a|
                 !a.is_empty()
             ).collect::<Vec<&str>>().chunks(2).map(|ressource|
                 match &ressource[..] {
-                    [n, q] => Ressource::new(n.to_string(), q.parse::<usize>().unwrap()),
-                    _ => unimplemented!(),
+                 [n, q] => Ressource::new(n.to_string(), q.parse::<usize>().unwrap()),
+                 _ => unimplemented!(),
               }
            ).collect::<Vec<Ressource>>()
         )
