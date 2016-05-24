@@ -5,9 +5,9 @@ use self::krpsim::format::process::Process;
 
 fn get_process() -> Vec<Process> {
     vec![
-        Process::new("achat_materiel", 10, vec![Ressource::new("euro".to_string(), 8)], vec![Ressource::new("materiel".to_string(), 1)]),
-        Process::new("realisation_produit", 30, vec![Ressource::new("materiel".to_string(), 1)], vec![Ressource::new("produit".to_string(), 1)]),
-        Process::new("livraison", 20, vec![Ressource::new("produit".to_string(), 1)], vec![Ressource::new("client_content".to_string(), 1)])
+        Process::new("achat_materiel".to_string(), 10, vec![Ressource::new("euro".to_string(), 8)], vec![Ressource::new("materiel".to_string(), 1)]),
+        Process::new("realisation_produit".to_string(), 30, vec![Ressource::new("materiel".to_string(), 1)], vec![Ressource::new("produit".to_string(), 1)]),
+        Process::new("livraison".to_string(), 20, vec![Ressource::new("produit".to_string(), 1)], vec![Ressource::new("client_content".to_string(), 1)])
     ]
 }
 

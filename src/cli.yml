@@ -12,7 +12,7 @@ args:
         takes_value: true
         required: true
     - file:
-        help: Defines the input file who contain the stock, process and optimization.
+        help: Defines the input's files who contain the stock, process and optimization.
         short: f
         long: file
         takes_value: true
