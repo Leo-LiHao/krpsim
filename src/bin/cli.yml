@@ -10,10 +10,14 @@ args:
         short: d
         long: delay
         takes_value: true
-        required: true
     - file:
         help: Defines the input's files who contain the stock, process and optimization.
         short: f
         long: file
         takes_value: true
         required: true
+    - result_to_test:
+        help: Defines the log result's of output
+        short: r
+        long: result
+        takes_value: true

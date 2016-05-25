@@ -12,6 +12,7 @@
 .lock
 
 # Swap
+*.rs#
 *.rs.swp
 *.swp
 

@@ -13,6 +13,10 @@ license = "GPL-3.0"
 name = "krpsim"
 doc = false
 
+[[bin]]
+name = "krpsim_verif"
+doc = false
+
 [features]
 unstable = [] # for travis-cargo
 

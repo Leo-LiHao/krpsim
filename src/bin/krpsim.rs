@@ -10,6 +10,8 @@
 extern crate clap;
 extern crate krpsim;
 
+const DEFAULT_DELAY: &'static str = "1";
+
 use krpsim::format::ressource::{Ressource, add, sub, check_ressource};
 use krpsim::format::process::Process;
 use krpsim::format::queue::Queue;
@@ -34,7 +36,7 @@ fn main() {
   let yaml = load_yaml!("cli.yml");
   let options = clap::App::from_yaml(yaml).get_matches();
 
-  let delay: u64 = options.value_of("delay").unwrap().parse::<u64>().unwrap();
+  let delay: u64 = options.value_of("delay").unwrap_or(DEFAULT_DELAY).parse::<u64>().unwrap();
   let mut cycle: u64 = 0;
 
   let mut parser = Parser::new(options.value_of("file").unwrap()).unwrap();
