@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::ressource::{Ressource, add};
+use super::ressource::Ressource;
 use super::process::Process;
 use std::cmp::Ordering;
 
@@ -45,10 +45,10 @@ impl <'a> Livep <'a> {
             cycle_end: cycle + process.cycle
         }
     }
-    pub fn destruct(&self, ressources: &mut Vec<Ressource>) ->() {
+    pub fn destruct(&self) -> &Vec<Ressource> {
         println!("process finished: {} at cyle: {}",
                  &self.process.name, &self.cycle_end);
-        add(ressources, &self.process.output, 1);
+        &self.process.output
     }
 
 }
