@@ -58,7 +58,7 @@ fn main() {
       None => cycle += 1,
       Some(livep_vec) => {
         for ended_process in livep_vec {
-          ended_process.destruct(&mut parser.ressources);
+          add(&mut parser.ressources, ended_process.destruct(), 1);
         }
       }
     }
