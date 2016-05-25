@@ -16,7 +16,7 @@ use std::io::prelude::*;
 pub struct Parser {
   pub ressources: Vec<Ressource>,
   pub process_list: Vec<Process>,
-  pub optimize: Vec<Optimize>,
+  pub optimize: Optimize,
 }
 
 impl Parser {
@@ -37,8 +37,7 @@ impl Parser {
             match &thing.splitn(2, "):").collect::<Vec<&str>>()[..] {
               [optimize] if optimize.starts_with('(') &&
                             optimize.ends_with(')') => {
-                result.optimize
-                      .push(Optimize::from_line(optimize.to_string()))
+                result.optimize  = Optimize::from_line(optimize.to_string())
               }
               [quantity] if quantity.parse::<usize>().is_ok() => {
                 result.ressources
@@ -105,7 +104,7 @@ impl std::default::Default for Parser {
     Parser {
       ressources: Vec::new(),
       process_list: Vec::new(),
-      optimize: Vec::new(),
+      optimize: Optimize::new(Vec::new()),
     }
   }
 }

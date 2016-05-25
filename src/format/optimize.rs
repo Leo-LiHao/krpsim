@@ -12,7 +12,7 @@ extern crate std;
 /// have the priority queue.
 
 pub struct Optimize {
-  stock: Vec<String>,
+  pub stock: Vec<String>,
 }
 
 impl Optimize {
