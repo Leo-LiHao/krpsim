@@ -86,6 +86,10 @@ fn main() {
                 for ended_process in livep_vec {
                     add(&mut parser.ressources, ended_process.destruct(), 1);
                 }
+                if cycle > delay {
+                    println!("Finished at cycle: {}", cycle);
+                    done = true;
+                }
             }
         }
     }
