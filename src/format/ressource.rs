@@ -8,7 +8,7 @@
 
 extern crate std;
 
-/// The `Ressource` structure is the Stock implementation.
+/// The `Ressource` structure is the Item implementation.
 
 pub struct Ressource(pub String, usize);
 
@@ -21,7 +21,7 @@ impl Ressource {
   }
   
     /// The `from_line` multi constructor function returns a list
-    /// of Stock for a need or result argument from `Process`.
+    /// of Item for a need or result argument from `Process`.
 
     pub fn from_line (ressources: &str) -> std::io::Result<Vec<Self>> {
         //! Warning, this constructor currently can panic.
@@ -35,6 +35,24 @@ impl Ressource {
               }
            ).collect::<Vec<Ressource>>()
         )
+    }
+
+    /// The `get_name` accessor function returns the name
+    /// of ressource.
+
+    pub fn get_name (&self) -> &str {
+        &self.0
+    }
+
+    /// The `get_quantity` accessor function returns the
+    /// quantity of ressource.
+
+    pub fn get_quantity (&self) -> &usize {
+        &self.1
+    }
+
+    pub fn sub_quantity (&mut self, sub: usize) {
+        self.1 -= sub;
     }
 }
 
@@ -55,6 +73,14 @@ impl std::fmt::Debug for Ressource {
 
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
     write!(f, "{}", self)
+  }
+}
+
+impl std::ops::Sub for Ressource {
+  type Output = Ressource;
+
+  fn sub (self, rhs: Ressource) -> Ressource {
+    Ressource(self.0, self.1 - rhs.1)
   }
 }
 

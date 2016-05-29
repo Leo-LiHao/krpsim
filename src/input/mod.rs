@@ -6,9 +6,5 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#![feature(slice_patterns)]
-
-#[macro_use]
-mod macros;
-pub mod format;
-pub mod input;
+pub mod config;
+pub mod verif;

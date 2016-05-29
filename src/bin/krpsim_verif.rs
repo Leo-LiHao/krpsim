@@ -10,7 +10,16 @@
 extern crate clap;
 extern crate krpsim;
 
-const DEFAULT_DELAY: &'static str = "1";
+use krpsim::input::verif::ProcessVerif;
 
 fn main () {
+  let yaml = load_yaml!("cli.yml");
+  let options = clap::App::from_yaml(yaml).get_matches();
+
+  let verif = ProcessVerif::new(
+    options.value_of("file").unwrap(),
+    options.value_of("result_to_test").unwrap(),
+  ).unwrap();
+
+  verif.buy();
 }
