@@ -10,7 +10,8 @@ extern crate std;
 
 /// The `Ressource` structure is the Item implementation.
 
-pub struct Ressource(pub String, usize);
+#[derive(Clone)]
+pub struct Ressource(pub String, pub usize);
 
 impl Ressource {
 
@@ -19,7 +20,7 @@ impl Ressource {
   pub fn new(stock_name: String, quantity: usize) -> Self {
     Ressource(stock_name, quantity)
   }
-  
+
     /// The `from_line` multi constructor function returns a list
     /// of Item for a need or result argument from `Process`.
 
