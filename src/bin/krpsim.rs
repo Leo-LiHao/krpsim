@@ -60,6 +60,7 @@ fn main() {
 
     let delay: u64 = options.value_of("delay").unwrap_or(DEFAULT_DELAY).parse::<u64>().unwrap();
     let mut cycle: u64 = 0;
+
     let mut config = Configuration::new(options.value_of("file").unwrap()).unwrap();
 
     let mut done = false;
@@ -83,7 +84,7 @@ fn main() {
             None => cycle += 1,
             Some(livep_vec) => {
                 for ended_process in livep_vec {
-                    add(&mut parser.ressources, ended_process.destruct(), 1);
+                    add(&mut config.ressources, ended_process.destruct(), 1);
                 }
             }
         }

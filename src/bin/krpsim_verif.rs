@@ -12,6 +12,7 @@ extern crate krpsim;
 
 use krpsim::input::verif::ProcessVerif;
 
+#[allow(unused_must_use)]
 fn main () {
   let yaml = load_yaml!("cli.yml");
   let options = clap::App::from_yaml(yaml).get_matches();

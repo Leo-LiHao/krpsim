@@ -55,10 +55,12 @@ impl Process {
 
     /// The `can_buy` checks if the ressource can be bought.
 
+    #[allow(unused_variables)]
     pub fn buy_it (
         &self,
         inventory: &mut Vec<Ressource>,
     ) -> Option<&u64> {
+        //! Work in progress.
         /*
         let mut trunk = inventory.iter_mut();
         let mut ss = self.input.into_iter().map(|required|
@@ -107,18 +109,6 @@ impl Process {
     }
 }
 
-
-impl std::fmt::Debug for Process {
-
-    /// The `fmt` function prints the Process formated like `<name> :
-    /// (<need> :<qty>[ ;<need> :<qty>[...]]) :
-    /// (<result> :<qty>[ ;<result> :<qty>[...]]) :
-    /// <nb_cycle>`.
-
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "(process: {}, {:?}, {:?}, {})", self.name, self.input, self.output, self.cycle)
-    }
-}
 impl std::fmt::Display for Process {
 
    /// The `fmt` function prints the Process formated like `<name> :
