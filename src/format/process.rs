@@ -9,13 +9,14 @@
 extern crate std;
 use std::collections::HashMap;
 
-use super::ressource::Ressource;
+use format::stock::ressource::Ressource;
+use format::stock::inventory::Inventory;
 
 pub struct Process {
     pub name: String,
     pub cycle: u64,
-    pub input: Vec<Ressource>,
-    pub output: Vec<Ressource>,
+    pub input: Inventory,
+    pub output: Inventory,
     pub heuristic: HashMap<String, f64>
 }
 
@@ -26,14 +27,14 @@ impl Process {
     pub fn new(
         name: String,
         cycle: u64,
-        input: Vec<Ressource>,
-        output: Vec<Ressource>
+        input: Inventory,
+        output: Inventory,
     ) -> Self {
         let mut hash = HashMap::new();
-        for ressource in input.clone() {
+        for ressource in (*input).clone() {
             hash.insert(ressource.0, (0.0 - ressource.1 as f64) / cycle as f64);
         }
-        for ressource in output.clone() {
+        for ressource in (*output).clone() {
             let rec = hash.entry(ressource.0).or_insert(ressource.1 as f64 / cycle as f64);
             *rec += ressource.1 as f64 / cycle as f64;
         }
@@ -58,7 +59,7 @@ impl Process {
     #[allow(unused_variables)]
     pub fn buy_it (
         &self,
-        inventory: &mut Vec<Ressource>,
+        inventory: &mut Inventory,
     ) -> Option<&u64> {
         //! Work in progress.
         /*
@@ -117,19 +118,21 @@ impl std::fmt::Display for Process {
    /// <nb_cycle>`.
 
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "(process: {}, {:?}, {:?}, {})", self.name, self.input, self.output, self.cycle)
+    write!(f, "(process: {}, {}, {}, {})", self.name, self.input, self.output, self.cycle)
   }
 }
 
-impl std::fmt::Debug for Process {
+impl std::default::Default for Process {
 
-   /// The `fmt` function prints the Process formated like `<name> :
-   /// (<need> :<qty>[ ;<need> :<qty>[...]]) :
-   /// (<result> :<qty>[ ;<result> :<qty>[...]]) :
-   /// <nb_cycle>`.
- 
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "(process: {}, {})", self.name, self.cycle)
+  /// The `default` constructor function returns a empty Proces.
+
+  fn default() -> Self {
+    Process {
+      name: String::new(),
+      cycle: 0u64,
+      input: Inventory::default(),
+      output: Inventory::default(),
+      heuristic: HashMap::new()
+    }
   }
 }
-

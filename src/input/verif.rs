@@ -9,6 +9,7 @@
 extern crate std;
 
 use format::process::Process;
+use format::stock::inventory::Inventory;
 use super::config::Configuration;
 
 use std::io::prelude::*;
@@ -36,9 +37,9 @@ impl ProcessVerif {
         for readed in reader.lines() {
             if let Ok(line) = readed {
                 match &line.splitn(2, ':').collect::<Vec<&str>>()[..] {
-                    [cycle, name] if cycle.parse::<u64>().is_ok() => {
-                        result.process_list.push(Process::new(name.to_string(), cycle.parse::<u64>().unwrap(), Vec::new(), Vec::new()))
-                    },
+                    [cycle, name] if cycle.parse::<u64>().is_ok() => result.process_list.push(
+                        Process::new(name.to_string(), cycle.parse::<u64>().unwrap(), Inventory::default(), Inventory::default())
+                    ),
                     [_..] => continue ,
                 }
             }

@@ -12,7 +12,7 @@ extern crate krpsim;
 
 const DEFAULT_DELAY: &'static str = "100";
 
-use krpsim::format::ressource::{Ressource, add, sub, check_ressource};
+use krpsim::format::stock::ressource::{Ressource, add, sub, check_ressource};
 use krpsim::format::optimize::Optimize;
 use krpsim::format::process::Process;
 use krpsim::format::queue::Queue;
