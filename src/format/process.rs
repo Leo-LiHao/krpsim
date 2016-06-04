@@ -11,6 +11,7 @@ use std::collections::HashMap;
 
 use super::ressource::Ressource;
 
+#[derive(Clone)]
 pub struct Process {
     pub name: String,
     pub cycle: u64,
@@ -51,6 +52,17 @@ impl Process {
             Some(&number) => number,
             None => 0.0
         }
+    }
+
+    pub fn get_distance(need: &Ressource, owned: &Vec<Ressource>) -> u64 {
+        match owned.iter().find(|&x| x.0 == need.0) {
+            Some(a) => std::cmp::max(0, a.1 as u64 - need.1 as u64),
+            None => need.1 as u64
+        }
+    }
+
+    pub fn distance_overall(&self, owned: &Vec<Ressource>) -> u64 {
+        self.input.iter().fold(0, |acc, b| acc + Process::get_distance(b, owned)) //Maybe use a closure here?
     }
 }
 

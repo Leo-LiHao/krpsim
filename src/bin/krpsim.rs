@@ -48,10 +48,55 @@ fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut Vec
 
 }
 
-fn optimization(proc_list: &mut Vec<Process>, optimize: &mut Optimize ) -> (){
-    let s = optimize.stock.pop().unwrap();
-    //println!("optimize: {}", s);
-    proc_list.sort_by(|a, b| b.get_h_value(&s).partial_cmp(&a.get_h_value(&s)).unwrap())
+fn optimization(proc_list: &mut Vec<Process>, optimize: &String ) -> (){
+    proc_list.sort_by(|a, b| b.get_h_value(optimize).partial_cmp(&a.get_h_value(&optimize)).unwrap())
+}
+
+fn get_optimized_product(opti: &Vec<String>, ressources: &mut Vec<Ressource>) -> Option<String> {
+    for s in opti {
+        if ressources.iter().any(|ref x| x.0 == *s) {
+            return Some(s.clone())
+        }
+    }
+    None
+}
+
+fn get_producing_process(optimized: &String, proc_list: &Vec<Process>) -> Vec<Process> {
+    let mut ret = Vec::new();
+    for procs in proc_list {
+        if procs.get_h_value(optimized) > 0.0 {
+            ret.push(procs.clone());
+        }
+    }
+    ret
+}
+
+fn get_needed_ressources(input_list: &Vec<Ressource>, owned: &Vec<Ressource>) -> Vec<Ressource> {
+    let mut ret = Vec::new();
+    for resrc in input_list {
+        let tmp = Process::get_distance(resrc, owned);
+        if tmp > 0 {
+            ret.push(Ressource::new(resrc.0.clone(), tmp as usize));
+        }
+    }
+    ret
+}
+
+fn get_needed_process(input_list: Vec<Ressource>, proc_list: &Vec<Process>, ressource_list: &Vec<Ressource>)-> Vec<Process>{
+    let mut ret = Vec::new();
+    for ressource in input_list {
+        let prc = get_producing_process(&ressource.0, proc_list);
+        if prc.len() > 0 {
+            let tmp = prc.iter().min_by_key(|x| x.distance_overall(ressource_list)).unwrap().clone();
+            if tmp.distance_overall(ressource_list) > 0 {
+                ret.extend(get_needed_process(get_needed_ressources(&tmp.input, ressource_list), proc_list, ressource_list));
+            }
+            else {
+                ret.push(tmp);
+            }
+        }
+    }
+    ret
 }
 
 fn main() {
@@ -66,8 +111,15 @@ fn main() {
     let mut done = false;
     let mut process_queue = Queue::new();
     get_ressources_from_process(&parser.process_list, &mut parser.ressources);
-    optimization(&mut parser.process_list, &mut parser.optimize);
+    let production: String = match get_optimized_product(&parser.optimize.stock, &mut parser.ressources) {
+        Some(a) => a,
+        None => panic!("You should optimize the production of at least one ressources!")
+    };
+    let mut final_process: Vec<Process> = get_producing_process(&production, &parser.process_list);
+
+    optimization(&mut parser.process_list, &production);
     while !done {
+
         let processes = get_available_process(&parser.process_list,
                                               &mut parser.ressources,
                                               cycle);
