@@ -19,5 +19,5 @@ args:
     - result_to_test:
         help: Defines the log result's of output
         short: r
-        long: result
+        long: result_to_test
         takes_value: true

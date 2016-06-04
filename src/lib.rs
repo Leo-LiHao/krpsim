@@ -8,5 +8,7 @@
 
 #![feature(slice_patterns)]
 
+#[macro_use]
+mod macros;
 pub mod format;
-pub mod parser;
+pub mod input;

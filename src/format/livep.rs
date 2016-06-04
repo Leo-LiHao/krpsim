@@ -6,7 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::ressource::Ressource;
+use super::stock::ressource::Ressource;
 use super::process::Process;
 use std::cmp::Ordering;
 

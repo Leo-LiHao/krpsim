@@ -6,8 +6,5 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-pub mod stock;
-pub mod process;
-pub mod optimize;
-pub mod livep;
-pub mod queue;
+pub mod config;
+pub mod verif;

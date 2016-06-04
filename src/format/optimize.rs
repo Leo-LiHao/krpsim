@@ -42,6 +42,17 @@ impl Optimize {
   }
 }
 
+impl std::default::Default for Optimize {
+
+  /// The `default` constructor function returns a empty optimize.
+
+  fn default() -> Self {
+    Optimize {
+      stock: Vec::new(),
+    }
+  }
+}
+
 impl std::fmt::Display for Optimize {
 
   /// The `fmt` function prints the Optimization's items.
