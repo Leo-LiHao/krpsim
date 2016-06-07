@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! The module `Ressource` describes a stock.
+
 extern crate std;
 
 /// The `Ressource` structure is the Item implementation.
@@ -33,8 +35,44 @@ impl Ressource {
     &self.1
   }
 
-  pub fn sub_quantity(&mut self, sub: usize) {
-    self.1 -= sub;
+  /// The `add_from_ressource` function additiones a item
+  /// with a value.
+
+  pub fn add_quantity (
+    &mut self,
+    val: usize,
+  ) -> Option<usize> {
+    self.1.checked_add(val)
+  }
+
+  /// The `add_from_ressource` function additiones a item
+  /// with another item.
+
+  pub fn add_from_ressource (
+    &mut self,
+    val: &Ressource,
+  ) -> Option<usize> {
+    self.add_quantity(*val.get_quantity())
+  }
+
+  /// The `sub_from_ressource` function substrates a item
+  /// with a value.
+
+  pub fn sub_quantity (
+    &mut self,
+    val: usize,
+  ) -> Option<usize> {
+    self.1.checked_sub(val)
+  }
+
+  /// The `sub_from_ressource` function substrates a item
+  /// with another item.
+
+  pub fn sub_from_ressource (
+    &mut self,
+    val: &Ressource,
+  ) -> Option<usize> {
+    self.sub_quantity(*val.get_quantity())
   }
 }
 
@@ -62,44 +100,4 @@ impl std::ops::Sub for Ressource {
   fn sub(self, rhs: Ressource) -> Ressource {
     Ressource(self.0, self.1 - rhs.1)
   }
-}
-
-fn update_ressource<F>(ori: &mut Vec<Ressource>,
-                       update: &Vec<Ressource>,
-                       closure: F)
-                       -> ()
-  where F: Fn(usize, usize) -> usize
-{
-  for item in update {
-    if let Some(needle) = ori.iter_mut().find(|needle| needle.0 == item.0) {
-      needle.1 = closure(needle.1, item.1);
-    }
-  }
-}
-
-pub fn add(ori: &mut Vec<Ressource>,
-           update: &Vec<Ressource>,
-           operations: usize)
-           -> () {
-  update_ressource(ori, update, |a, b| a + b * operations)
-}
-pub fn sub(ori: &mut Vec<Ressource>,
-           update: &Vec<Ressource>,
-           operations: usize)
-           -> () {
-  update_ressource(ori, update, |a, b| a - b * operations)
-}
-
-pub fn check_ressource(need: &Vec<Ressource>,
-                       owned: &Vec<Ressource>)
-                       -> usize {
-  let ret = need.into_iter()
-    .map(|&ref n| {
-      match owned.into_iter().find(|&s| *s.0 == *n.0) {
-        None => 0,
-        Some(own) => own.1 as usize / n.1 as usize,
-      }
-    })
-    .collect::<Vec<_>>();
-  *ret.iter().min().unwrap()
 }
