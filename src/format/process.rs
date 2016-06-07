@@ -18,11 +18,16 @@ pub struct Process {
     pub cycle: u64,
     pub input: Inventory,
     pub output: Inventory,
+    neutral: Option<Ressource>,
     pub heuristic: HashMap<String, f64>
 }
 
-impl Process {
+///if exist, return a neutral component
+pub fn get_neutral(input: &Inventory, output: &Inventory) -> Option<Ressource> {
+    input.into_iter().find(|&x| output.iter().any(|&y| y == x))
+}
 
+impl Process {
     /// The `new` constructor function returns the Process.
 
     pub fn new(
@@ -39,11 +44,13 @@ impl Process {
             let rec = hash.entry(ressource.0).or_insert(ressource.1 as f64 / cycle as f64);
             *rec += ressource.1 as f64 / cycle as f64;
         }
+        let neutral = get_neutral(&input, &output);
         Process {
             name: name,
             cycle: cycle,
             input: input,
             output: output,
+            neutral: neutral,
             heuristic: hash
         }
     }
@@ -66,6 +73,18 @@ impl Process {
         self.input.iter().fold(0, |acc, b| acc + Process::get_distance(b, owned)) //Maybe use a closure here?
     }
 
+    pub fn needed_process(&self, process: &Vec<Process>, ressources: &Vec<Ressource>) -> Option<Vec<Process>> {
+        let mut input = self.input.clone();
+        if let Some(x) = self.neutral {
+            // Check if the neutral ressource exist
+           input.sub(&x);
+        }
+        input.sub(&ressources);
+        let mut ret: Vec<Process> = Vec::new();
+
+        None
+    }
+
     /// The `can_buy` checks if the ressource can be bought.
 
     #[allow(unused_variables)]
@@ -77,61 +96,61 @@ impl Process {
         /*
         let mut trunk = inventory.iter_mut();
         let mut ss = self.input.into_iter().map(|required|
-            match trunk.skip_while(|has|
-              required.get_name() == has.get_name() &&
-              required.get_quantity() <= has.get_quantity()
-            ).nth(0) {
-                Some(ref has) => None,
-                None => None,
-            }
-        ).collect::<Vec<Option<(&Ressource, &mut Ressource)>>>();*/
+        match trunk.skip_while(|has|
+        required.get_name() == has.get_name() &&
+        required.get_quantity() <= has.get_quantity()
+    ).nth(0) {
+        Some(ref has) => None,
+        None => None,
+    }
+    ).collect::<Vec<Option<(&Ressource, &mut Ressource)>>>();*/
         None
-/*
-        self.input.iter().all(|&required|
-          trunk.skip_while(|has|
+        /*
+            self.input.iter().all(|&required|
+            trunk.skip_while(|has|
             required.get_name() == has.get_name() &&
             required.get_quantity() <= has.get_quantity()
-          )
-          match trunk.nth(0) {
+    )
+            match trunk.nth(0) {
             Some(ref has) if required.get_name() == has.get_name() &&
-                             required.get_quantity() <= has.get_quantity() &&
-                             trunk.next() => {
-                Some((has))
-            },
+            required.get_quantity() <= has.get_quantity() &&
+            trunk.next() => {
+            Some((has))
+    },
             Some(_) | None => false,
-          }
-        ).collect::<Vec<&Ressource>>().len() == inventory.len();
-        if trunk.next().is_none() {
+    }
+    ).collect::<Vec<&Ressource>>().len() == inventory.len();
+            if trunk.next().is_none() {
             Some(&self.cycle)
-        }
+    }
         else {
             None
-        }*/
+    }*/
         /*
-        match self.input.iter().zip(self.output.iter())
-                               .find(|&(&ref i, &_)|
-                                 i.get_name() == inventory.get_name()
-                               ) {
+            match self.input.iter().zip(self.output.iter())
+            .find(|&(&ref i, &_)|
+            i.get_name() == inventory.get_name()
+    ) {
             Some((i, o)) if i.get_quantity() <= inventory.get_quantity() => {
-                inventory.sub_quantity(*i.get_quantity());
-                Some(o)
-            },
+            inventory.sub_quantity(*i.get_quantity());
+            Some(o)
+    },
             Some((_, _)) | None => None,
-        }
-        */
+    }
+         */
     }
 }
 
 impl std::fmt::Display for Process {
 
-   /// The `fmt` function prints the Process formated like `<name> :
-   /// (<need> :<qty>[ ;<need> :<qty>[...]]) :
-   /// (<result> :<qty>[ ;<result> :<qty>[...]]) :
-   /// <nb_cycle>`.
+    /// The `fmt` function prints the Process formated like `<name> :
+    /// (<need> :<qty>[ ;<need> :<qty>[...]]) :
+    /// (<result> :<qty>[ ;<result> :<qty>[...]]) :
+    /// <nb_cycle>`.
 
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
     write!(f, "(process: {}, {}, {}, {})", self.name, self.input, self.output, self.cycle)
-  }
+}
 }
 
 impl std::default::Default for Process {

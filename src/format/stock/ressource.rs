@@ -9,7 +9,7 @@
 extern crate std;
 
 /// The `Ressource` structure is the Item implementation.
-#[derive(Clone)]
+#[derive(Clone, PartialEq, PartialOrd, Eq, Ord)]
 pub struct Ressource(pub String, pub usize);
 
 impl Ressource {
