@@ -15,19 +15,18 @@ fn test_can_order() {
   assert_eq!(
     Ressource::new("apple".to_string(), 5).can_order(
       &Ressource::new("apple".to_string(), 5) // with
-    ),
-    Some(0)
+    ).unwrap_or(!0usize),
+    0usize
   );
   assert_eq!(
     Ressource::new("apple".to_string(), 4).can_order(
       &Ressource::new("apple".to_string(), 5) // with
-    ),
-    Some(1)
+    ).unwrap_or(!0usize),
+    1usize
   );
-  assert_eq!(
+  assert!(
     Ressource::new("apple".to_string(), 5).can_order(
       &Ressource::new("apple".to_string(), 0) // with
-    ),
-    None
+    ).is_err()
   );
 }
