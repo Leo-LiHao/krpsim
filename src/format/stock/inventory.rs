@@ -26,10 +26,10 @@ impl Inventory {
         );
         Inventory(map)
     }
-    
+
     /// The `from_result` multi constructor function returns a list
     /// of Item for a list of Result.
-    
+
     fn from_result(ressources: Vec<std::io::Result<Ressource>>)
                  -> Option<Self> {
         if ressources.iter().any(|x| x.is_err()) {
@@ -47,10 +47,10 @@ impl Inventory {
             )
         }
     }
-    
+
     /// The `from_line` multi constructor function returns a list
     /// of Item for a need or result argument from `Process`.
-    
+
     pub fn from_line(ressources: &str) -> Option<Self> {
         Inventory::from_result(ressources.split(&['(', ':', ';', ')'][..])
           .filter(|&a| !a.is_empty())
@@ -74,9 +74,9 @@ impl Inventory {
       &self,
     ) -> std::collections::hash_map::Iter<std::string::String, Ressource> {
       self.0.iter()
-    }    
+    }
 
-    /// The `push` interface function inserts a new item to 
+    /// The `push` interface function inserts a new item to
     /// the inventory.
 
     pub fn push (
@@ -96,14 +96,14 @@ impl Inventory {
         self.0.is_empty()
     }
 
-    /// The `any` interface function checks if the map contains 
+    /// The `any` interface function checks if the map contains
     /// the key.
 
     pub fn any (
         &self,
         key: &str,
     ) -> bool {
-        self.0.contains_key(key) 
+        self.0.contains_key(key)
     }
 
     /// The `any` interface function checks if the map contains
@@ -212,7 +212,7 @@ impl Inventory {
         vals: &Inventory,
     ) -> bool {
         !vals.iter().map(|(_, val)|
-                           self.add(&val)).collect::<Vec<Option<usize>>>(
+                           self.sub(&val)).collect::<Vec<Option<usize>>>(
                    )
              .iter().any(|item|
                            item.is_none()
