@@ -86,6 +86,13 @@ impl Process {
     }
 
 
+    /// The `get_cycle` accessor function returns the number
+    /// of cycle required by the process.
+
+    pub fn get_cycle(&self) -> &usize {
+        &self.cycle
+    }
+
     pub fn get_h_value(&self, s: &String) -> usize {
         match self.heuristic.get(s) {
             Some(&number) => number,
@@ -162,6 +169,13 @@ impl std::fmt::Display for Process {
 
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
     write!(f, "{}:{}:{}:{}", self.name, self.input, self.output, self.cycle)
+  }
+}
+
+
+impl PartialEq for Process {
+  fn eq(&self, with: &Process) -> bool {
+    self.get_name() == with.get_name()
   }
 }
 

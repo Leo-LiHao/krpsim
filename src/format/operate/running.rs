@@ -54,6 +54,38 @@ impl Running {
     ) -> Option<Process> {
         self.0.insert(key, val)
     }
+
+    /// The `can_cycle` checks if the number and name of cycle is right
+    /// between two process.
+
+    pub fn can_cycle (
+        &self,
+        with: &Running,
+    ) -> Option<usize> {
+        match self.iter()
+                  .zip(with.iter())
+                  .fold(vec!(Some(0)), |mut cycles: Vec<Option<usize>>,
+                                        ((&_, ref must_have),
+                                         (&_, ref have))|
+                       if let Some(&Some(cycle)) = cycles.last() {
+                           if cycle == *have.get_cycle()
+                           && must_have.get_name() == have.get_name() {
+                             cycles.push(Some(cycle + *must_have.get_cycle()));
+                           }
+                           else {
+                             cycles.push(None);
+                           }
+                           cycles
+                       }
+                       else {
+                         cycles.push(None);
+                         cycles
+                       }
+                   ).last() {
+                Some(&Some(cycle)) => Some(cycle),
+                _ => None,
+            }
+    }
 }
 
 impl std::fmt::Display for Running {
