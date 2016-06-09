@@ -11,7 +11,7 @@ extern crate std;
 use super::ressource::Ressource;
 
 #[derive(Clone)]
-pub struct Inventory (pub std::collections::HashMap<String, Ressource>);
+pub struct Inventory (std::collections::HashMap<String, Ressource>);
 
 impl Inventory {
     /// The `new` constructor function returns the list of ressources.

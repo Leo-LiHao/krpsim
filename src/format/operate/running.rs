@@ -10,7 +10,7 @@ extern crate std;
 
 use super::process::Process;
 
-pub struct Running(pub std::collections::HashMap<String, Process>);
+pub struct Running(std::collections::HashMap<String, Process>);
 
 impl Running {
     /// The `new` constructor function returns the list of process.
