@@ -87,6 +87,15 @@ impl Inventory {
         self.0.insert(key, val)
     }
 
+    /// The `is_empty` interface function returns true if
+    /// the map contains not elements.
+
+    pub fn is_empty (
+        &self,
+    ) -> bool {
+        self.0.is_empty()
+    }
+
     /// The `any` interface function checks if the map contains 
     /// the key.
 
@@ -96,6 +105,7 @@ impl Inventory {
     ) -> bool {
         self.0.contains_key(key) 
     }
+
     /// The `any` interface function checks if the map contains
     /// the key from a ressource.
     pub fn any_from_ressource (
