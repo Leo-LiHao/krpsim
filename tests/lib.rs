@@ -7,3 +7,4 @@
 // except according to those terms.
 
 mod ressource;
+mod inventory;
