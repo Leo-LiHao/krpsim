@@ -22,7 +22,7 @@ impl Inventory {
         let mut map: std::collections::HashMap<String, Ressource> = std::collections::HashMap::with_capacity(ressources.len());
 
         ressources.into_iter().all(|ressource|
-            map.insert(ressource.get_name().to_string(), ressource).is_some()
+            map.insert(ressource.get_name().to_string(), ressource).is_none()
         );
         Inventory(map)
     }

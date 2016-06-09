@@ -105,7 +105,7 @@ impl Ressource {
     &self,
     with: &mut Ressource,
   ) -> std::io::Result<usize> {
-    match with.can_order(self) {
+    match self.can_order(with) {
       Ok(v) => Ok(*with.set_quantity(v)),
       w => w,
     }

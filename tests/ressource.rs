@@ -19,6 +19,12 @@ fn test_can_order() {
     0usize
   );
   assert_eq!(
+    Ressource::new("apple".to_string(), 0).can_order(
+      &Ressource::new("apple".to_string(), 0) // with
+    ).unwrap_or(!0usize),
+    0usize
+  );
+  assert_eq!(
     Ressource::new("apple".to_string(), 4).can_order(
       &Ressource::new("apple".to_string(), 5) // with
     ).unwrap_or(!0usize),
