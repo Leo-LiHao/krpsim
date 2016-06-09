@@ -35,6 +35,16 @@ impl Ressource {
     &self.1
   }
 
+  /// The `set_quantity` updates and returns the qte value.
+
+  fn set_quantity (
+      &mut self,
+      val: usize,
+  ) -> &usize {
+    self.1 = val;
+    &self.1
+  }
+
   /// The `add_from_ressource` function additiones a item
   /// with a value.
 
@@ -42,7 +52,10 @@ impl Ressource {
     &mut self,
     val: usize,
   ) -> Option<usize> {
-    self.1.checked_add(val)
+    match self.1.checked_add(val) {
+        Some(v) => Some(*self.set_quantity(v)),
+        None => None,
+    }
   }
 
   /// The `add_from_ressource` function additiones a item
@@ -62,23 +75,10 @@ impl Ressource {
     &mut self,
     val: usize,
   ) -> Option<usize> {
-    match self.can_sub_quantity(val) {
-      Some(v) => {
-        self.1 = v;
-        Some(v)
-      },
+    match self.1.checked_sub(val) {
+      Some(v) => Some(*self.set_quantity(v)),
       None => None,
     }
-  }
-
-  /// The `sub_from_ressource` function checks if we can 
-  /// substrate a item with a value.
-
-  pub fn can_sub_quantity (
-    &self,
-    val: usize,
-  ) -> Option<usize> {
-    self.1.checked_sub(val)
   }
 
   /// The `sub_from_ressource` function substrates a item
