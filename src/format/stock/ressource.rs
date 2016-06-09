@@ -12,7 +12,7 @@ extern crate std;
 
 /// The `Ressource` structure is the Item implementation.
 #[derive(Clone)]
-pub struct Ressource(pub String, pub usize);
+pub struct Ressource (pub String, pub usize);
 
 impl Ressource {
   /// The `new` constructor function returns the Stock.
@@ -62,6 +62,22 @@ impl Ressource {
     &mut self,
     val: usize,
   ) -> Option<usize> {
+    match self.can_sub_quantity(val) {
+      Some(v) => {
+        self.1 = v;
+        Some(v)
+      },
+      None => None,
+    }
+  }
+
+  /// The `sub_from_ressource` function checks if we can 
+  /// substrate a item with a value.
+
+  pub fn can_sub_quantity (
+    &self,
+    val: usize,
+  ) -> Option<usize> {
     self.1.checked_sub(val)
   }
 
@@ -74,6 +90,13 @@ impl Ressource {
   ) -> Option<usize> {
     self.sub_quantity(*val.get_quantity())
   }
+
+  /*pub fn can_order (
+    &self,
+    with: Ressource,
+  ) -> std::io::Result<(), usize> {
+    match 
+  }*/
 }
 
 impl std::fmt::Display for Ressource {
