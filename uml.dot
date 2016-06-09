@@ -1,0 +1,111 @@
+digraph KrpSim {
+
+  //! `dot -Tpng > uml.png uml.dot`
+
+  fontsize = 8;
+
+  nodeRessource [
+    label = "{
+      Ressource
+      |
++ 0 : String\l
++ 1 : usize\l
+      |
++ fn new(stock_name: String, quantity: usize) -&#062; Ressource\l
++ fn get_name(&self) -&#062; &str\l
++ fn get_quantity(&self) -&#062; &usize\l
++ fn add_quantity(&mut self, val: usize) -&#062; Option&#060;usize&#062;\l
++ fn add_from_ressource(&mut self, val: &Ressource) -&#062; Option&#060;usize&#062;\l
++ fn sub_quantity(&mut self, val: usize) -&#062; Option&#060;usize&#062;\l
++ fn sub_from_ressource(&mut self, val: &Ressource) -&#062; Option&#060;usize&#062;\l
+    }",
+    shape = record,
+  ]
+
+  nodeInventory [
+    label = "{
+      Inventory
+      |
+- 0 : std::collections::HashMap&#060;String, Ressource&#062;
+      |
++ fn new(ressources: Vec&#060;Ressource&#062;) -&#062; Inventory\l
+- fn from_result(ressources: Vec&#060;std::io::Result&#060;Ressource&#062;&#062;) -&#062; Option&#060;Inventory&#062;\l
++ fn from_line(ressources: &str) -&#062; Option&#060;Inventory&#062;\l
++ fn iter(&self) -&#062; std::collections::hash_map::Iter&#060;std::string::String, Ressource&#062;\l
++ fn is_empty(&self) -&#062; bool\l
++ fn push(&mut self, key: String, val: Ressource) -&#062; Option&#060;Ressource&#062;\l
++ fn any(&self, key: &str) -&#062; bool\l
++ fn any_from_ressource(&self, val: &Ressource) -&#062; bool\l
++ fn get(&self, key: &str) -&#062; Option&#060;&Ressource&#062;\l
++ fn get_mut( &mut self, key: &str) -&#062; Option&#060;&mut Ressource&#062;\l
++ fn get_mut_from_ressource(&mut self, val: &Ressource) -&#062; Option&#060;&mut Ressource&#062;\l
++ fn add(&mut self, val: &Ressource) -&#062; Option&#060;usize&#062;\l
++ fn add_from_inventory(&mut self, vals: &Inventory) -&#062; bool\l
++ fn sub(&mut self, val: &Ressource) -&#062; Option&#060;usize&#062;\l
++ fn sub_from_inventory(&mut self, vals: &Inventory) -&#062; bool\l
+    }",
+    shape = record,
+  ]
+
+  nodeProcess [
+    label = "{
+      Process
+      |
++ name : String\l
++ cycle : usize\l
++ input : Inventory\l
++ output: Inventory\l
++ heuristic: HashMap&#060;String, usize&#062;\l
+      |
++ fn from_line(name: String, need: &str, result_and_nb_cycle: &str) -&#062; std::io::Result&#060;Process&#062;\l
++ pub fn get_name(&self) -&#062; &str\l
+    }",
+    shape = record,
+  ]
+
+  nodeRunning [
+    label = "{
+      Running
+      |
+- 0 : std::collections::HashMap&#060;String, Process&#062;
+      |
++ fn new(process: Vec&#060;Ressource&#062;) -&#062; Running\l
++ fn iter(&self) -&#062; std::collections::hash_map::Iter&#060;std::string::String, Running&#062;\l
++ fn is_empty(&self) -&#062; bool\l
++ fn push(&mut self, key: String, val: Process) -&#062; Option&#060;Process&#062;\l
+    }",
+    shape = record,
+  ]
+
+  nodeOptimize [
+    label = "{
+      Optimize
+      |
+- stock : Vec&#060;String&#062;\l
+      |
++ fn new(stock: Vec&#060;String&#062) -&#062; Optimize\l
++ fn from_line(line: String) -&#062; Optimize\l
+    }",
+    shape = record,
+  ]
+
+  nodeConfiguration [
+    label = "{
+      Configuration
+      |
+- ressources : Inventory\l
+- running : Running\l
+- optimize : Optimize\l
+      |
++ fn new(filename: &str) -&#062; std::io::Result&#060;Configuration&#062;\l
+    }",
+    shape = record,
+  ]
+
+  nodeRessource -> nodeInventory[arrowhead = "none", headlabel = "0..*", taillabel = "0..1"];
+  nodeInventory -> nodeProcess[arrowhead = "none", headlabel = "2", taillabel = "0..1"];
+  nodeProcess -> nodeRunning[arrowhead = "none", headlabel = "0..*", taillabel = "0..1"];
+  nodeInventory -> nodeConfiguration[arrowhead = "none", headlabel = "1", taillabel = "0..1"];
+  nodeRunning -> nodeConfiguration[arrowhead = "none", headlabel = "1", taillabel = "0..1"];
+  nodeOptimize -> nodeConfiguration[arrowhead = "none", headlabel = "1", taillabel = "0..1"];
+}
