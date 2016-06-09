@@ -91,12 +91,25 @@ impl Ressource {
     self.sub_quantity(*val.get_quantity())
   }
 
-  /*pub fn can_order (
+  pub fn can_order (
     &self,
-    with: Ressource,
-  ) -> std::io::Result<(), usize> {
-    match 
-  }*/
+    with: &Ressource,
+  ) -> std::io::Result<usize> {
+    match with.get_quantity().checked_sub(*self.get_quantity()) {
+      Some(v) => Ok(v),
+      None => Err(from_error!("less qte")),
+    }
+  }
+
+  pub fn order (
+    &self,
+    with: &mut Ressource,
+  ) -> std::io::Result<usize> {
+    match with.can_order(self) {
+      Ok(v) => Ok(*with.set_quantity(v)),
+      w => w,
+    }
+  }
 }
 
 impl std::fmt::Display for Ressource {

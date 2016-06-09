@@ -124,6 +124,15 @@ impl Inventory {
         self.0.get(key)
     }
 
+    /// The `get_from_ressource` accessor function returns a item.
+
+    pub fn get_from_ressource (
+        &self,
+        val: &Ressource,
+    ) -> Option<&Ressource> {
+        self.get(val.get_name())
+    }
+
     /// The `get_mut` mutator function returns a item.
 
     pub fn get_mut (
@@ -208,6 +217,27 @@ impl Inventory {
              .iter().any(|item|
                            item.is_none()
                    )
+    }
+
+    /// The `can_order` checks if the order is possible.
+
+    pub fn can_order (
+      &self,
+      with: &Inventory,
+    ) -> bool {
+        self.iter()
+            .map(|(&_, ref must_have)|
+                    match with.clone().get_mut_from_ressource(&must_have) {
+                      Some(ref mut have) => must_have.order(have),
+                      None => Err(from_error!("haven't item")),
+                    }
+                  )
+            .collect::<Vec<std::result::Result<usize, std::io::Error>>>()
+            .iter()
+            .find(|e|
+                    e.is_err()
+                 )
+            .is_none()
     }
 
     /// The `to_vec` function returns a cloned list of ressource.
