@@ -14,7 +14,7 @@ use super::ressource::Ressource;
 pub struct Inventory (pub std::collections::HashMap<String, Ressource>);
 
 impl Inventory {
-    /// The `new` constructor function returns the list ressources.
+    /// The `new` constructor function returns the list of ressources.
 
     pub fn new (
         ressources: Vec<Ressource>,
@@ -219,15 +219,6 @@ impl Inventory {
     }
 }
 
-impl std::default::Default for Inventory {
-
-  /// The `default` constructor function returns a empty Inventory.
-
-  fn default() -> Self {
-    Inventory::new(Vec::new())
-  }
-}
-
 impl std::fmt::Display for Inventory {
 
     /// The `fmt` function prints the multiplication list.
@@ -236,8 +227,17 @@ impl std::fmt::Display for Inventory {
         &self,
         f: &mut std::fmt::Formatter,
     ) -> Result<(), std::fmt::Error> {
-        write!(f, "{}", self.0.iter().map(|a| format!("{}", a.1))
-                                     .collect::<Vec<String>>()
-                                     .join(", "))
+        write!(f, "({})", self.0.iter().map(|a| format!("{}", a.1))
+                                       .collect::<Vec<String>>()
+                                       .join(";"))
     }
+}
+
+impl std::default::Default for Inventory {
+
+  /// The `default` constructor function returns a empty Inventory.
+
+  fn default() -> Self {
+    Inventory::new(Vec::new())
+  }
 }

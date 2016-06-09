@@ -8,7 +8,7 @@
 
 extern crate std;
 
-use format::process::Process;
+use format::operate::process::Process;
 use format::stock::inventory::Inventory;
 use super::config::Configuration;
 

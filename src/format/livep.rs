@@ -7,7 +7,7 @@
 // except according to those terms.
 
 use super::stock::inventory::Inventory;
-use super::process::Process;
+use super::operate::process::Process;
 use std::cmp::Ordering;
 
 pub struct Livep<'a> {

@@ -25,7 +25,7 @@ impl Process {
 
     /// The `new` constructor function returns the Process.
 
-    pub fn new(
+    pub fn new (
         name: String,
         cycle: usize,
         input: Inventory,
@@ -47,6 +47,34 @@ impl Process {
             heuristic: hash
         }
     }
+
+    /// The `from_line` constructor function returns a parsed process.
+
+    pub fn from_line (
+      name: String,
+      need: &str,
+      result_and_nb_cycle: &str,
+    ) -> std::io::Result<Process> {
+      match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
+        [nb_cycle, result] if nb_cycle.parse::<usize>().is_ok() => Ok(
+                    Process::new (
+                       name,
+                       nb_cycle.parse::<usize>().unwrap_or(try!(Err(from_error!("bad number of cycle")))),
+                       Inventory::from_line(need).unwrap_or(try!(Err(from_error!("bad need")))),
+                       Inventory::from_line(result).unwrap_or(try!(Err(from_error!("bad result")))),
+                    )
+                 ),
+        why => Err(from_error!("parse_proces", why)),
+      }
+    }
+
+    /// The `get_name` accessor function returns the name
+    /// of process.
+
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
 
     pub fn get_h_value(&self, s: &String) -> usize {
         match self.heuristic.get(s) {
@@ -76,7 +104,7 @@ impl std::fmt::Display for Process {
    /// <nb_cycle>`.
 
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "(process: {}, {}, {}, {})", self.name, self.input, self.output, self.cycle)
+    write!(f, "{}:{}:{}:{}", self.name, self.input, self.output, self.cycle)
   }
 }
 

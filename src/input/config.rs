@@ -10,7 +10,8 @@ extern crate std;
 
 use format::stock::ressource::Ressource;
 use format::stock::inventory::Inventory;
-use format::process::Process;
+use format::operate::process::Process;
+use format::operate::running::Running;
 use format::optimize::Optimize;
 
 use std::io::prelude::*;
@@ -18,8 +19,8 @@ use std::io::prelude::*;
 /// The `Configuration` struct contains the Ressource, Process and Optimize.
 
 pub struct Configuration {
-  pub ressources: Inventory, // ressource.
-  pub process_list: Vec<Process>, // Shop.
+  pub ressources: Inventory, // Stock.
+  pub running: Running, // Shop.
   pub optimize: Optimize,
 }
 
@@ -50,11 +51,12 @@ impl Configuration {
                                             quantity.parse::<usize>().unwrap_or(0usize)));
               }
               [need, result_and_nb_cycle] if need.starts_with('(') => {
-                 result.process_list
-                       .push(try!(Configuration::parse_process(name,
-                                                               need,
-                                                               result_and_nb_cycle)))
-                            }
+                 result.running
+                       .push(name.to_string(),
+                             try!(Process::from_line(name.to_string(),
+                                                     need,
+                                                     result_and_nb_cycle)));
+              }
               why => {
                 try!(Err(from_error!("Configuration::new - splitn(2, \"):\")",
                                      why)))
@@ -70,29 +72,10 @@ impl Configuration {
     Ok(result)
   }
 
-  /// The `parse_process` function returns a process.
-
-  fn parse_process(name: &str,
-                   need: &str,
-                   result_and_nb_cycle: &str)
-                   -> std::io::Result<Process> {
-    match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
-      [nb_cycle, result] if nb_cycle.parse::<usize>().is_ok() => Ok(
-                  Process::new(
-                     name.to_string(),
-                     nb_cycle.parse::<usize>().unwrap_or(try!(Err(from_error!("bad number of cycle")))),
-                     Inventory::from_line(need).unwrap_or(try!(Err(from_error!("bad need")))),
-                     Inventory::from_line(result).unwrap_or(try!(Err(from_error!("bad result")))),
-                  )
-               ),
-      why => Err(from_error!("parse_proces", why)),
-    }
-  }
-
   pub fn buy_it(&mut self, it: String) -> Option<&usize> {
-    match self.process_list
+    match self.running
       .iter()
-      .find(|&a| a.name == it) {
+      .find(|&(_, a)| a.name == it) {
       Some(process) => { /* process.buy_it(&mut self.ressources) */ None },
       None => None, // There isn't any resource available at sell.
     }
@@ -105,7 +88,7 @@ impl std::default::Default for Configuration {
   fn default() -> Self {
     Configuration {
       ressources: Inventory::default(),
-      process_list: Vec::new(),
+      running: Running::default(),
       optimize: Optimize::default(),
     }
   }
