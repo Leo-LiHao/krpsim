@@ -44,15 +44,16 @@ impl Configuration {
                 result.optimize = Optimize::from_line(optimize.to_string())
               }
               [quantity] if quantity.parse::<usize>().is_ok() => {
-                  (*result.ressources)
-                      .push(Ressource::new(name.to_string(),
-                                           quantity.parse::<usize>().unwrap_or(0)))
+                result.ressources
+                       .push(name.to_string(),
+                             Ressource::new(name.to_string(),
+                                            quantity.parse::<usize>().unwrap_or(0usize)));
               }
               [need, result_and_nb_cycle] if need.starts_with('(') => {
-                                result.process_list
-                                    .push(try!(Configuration::parse_process(name,
-                                                                            need,
-                                                                            result_and_nb_cycle)))
+                 result.process_list
+                       .push(try!(Configuration::parse_process(name,
+                                                               need,
+                                                               result_and_nb_cycle)))
                             }
               why => {
                 try!(Err(from_error!("Configuration::new - splitn(2, \"):\")",
@@ -76,10 +77,10 @@ impl Configuration {
                    result_and_nb_cycle: &str)
                    -> std::io::Result<Process> {
     match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
-      [nb_cycle, result] if nb_cycle.parse::<u64>().is_ok() => Ok(
+      [nb_cycle, result] if nb_cycle.parse::<usize>().is_ok() => Ok(
                   Process::new(
                      name.to_string(),
-                     nb_cycle.parse::<u64>().unwrap_or(try!(Err(from_error!("bad number of cycle")))),
+                     nb_cycle.parse::<usize>().unwrap_or(try!(Err(from_error!("bad number of cycle")))),
                      Inventory::from_line(need).unwrap_or(try!(Err(from_error!("bad need")))),
                      Inventory::from_line(result).unwrap_or(try!(Err(from_error!("bad result")))),
                   )
@@ -88,11 +89,11 @@ impl Configuration {
     }
   }
 
-  pub fn buy_it(&mut self, it: String) -> Option<&u64> {
+  pub fn buy_it(&mut self, it: String) -> Option<&usize> {
     match self.process_list
       .iter()
       .find(|&a| a.name == it) {
-      Some(process) => process.buy_it(&mut self.ressources),
+      Some(process) => { /* process.buy_it(&mut self.ressources) */ None },
       None => None, // There isn't any resource available at sell.
     }
   }

@@ -6,20 +6,24 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::stock::ressource::Ressource;
+use super::stock::inventory::Inventory;
 use super::process::Process;
 use std::cmp::Ordering;
 
 pub struct Livep<'a> {
     process: &'a Process,
-    pub cycle_end: u64
+    pub cycle_end: usize
 }
 
 impl <'a> Eq for Livep <'a>{}
 
 impl <'a> Ord for Livep <'a> {
     fn cmp(&self, other: &Self) -> Ordering {
-        other.cycle_end.cmp(&(self.cycle_end))
+        match (other.cycle_end, self.cycle_end) {
+            (a, b) if a < b => Ordering::Less,
+            (a, b) if a > b => Ordering::Greater,
+            _ => Ordering::Equal,
+        }
     }
 }
 
@@ -37,7 +41,7 @@ impl <'a> PartialOrd for Livep <'a>{
 
 
 impl <'a> Livep <'a> {
-    pub fn new(process: &'a Process, cycle: u64) -> Self {
+    pub fn new(process: &'a Process, cycle: usize) -> Self {
         println!("process created: {} at cyle: {}",
                  process.name, cycle);
         Livep {
@@ -45,7 +49,7 @@ impl <'a> Livep <'a> {
             cycle_end: cycle + process.cycle
         }
     }
-    pub fn destruct(&self) -> &Vec<Ressource> {
+    pub fn destruct(&self) -> &Inventory {
         println!("process finished: {} at cyle: {}",
                  &self.process.name, &self.cycle_end);
         &self.process.output

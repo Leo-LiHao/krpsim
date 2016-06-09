@@ -15,16 +15,19 @@ use format::stock::inventory::Inventory;
 #[derive(Clone)]
 pub struct Process {
     pub name: String,
-    pub cycle: u64,
+    pub cycle: usize,
     pub input: Inventory,
     pub output: Inventory,
     neutral: Option<Ressource>,
-    pub heuristic: HashMap<String, f64>
+    pub heuristic: HashMap<String, usize>
 }
 
 ///if exist, return a neutral component
 pub fn get_neutral(input: &Inventory, output: &Inventory) -> Option<Ressource> {
-    input.into_iter().find(|&x| output.iter().any(|&y| y == x))
+    match input.iter().find(|&(_, x)| output.any_from_ressource(x)) {
+        Some((_, val)) => Some(val.clone()),
+        None => None,
+    }
 }
 
 impl Process {
@@ -32,17 +35,17 @@ impl Process {
 
     pub fn new(
         name: String,
-        cycle: u64,
+        cycle: usize,
         input: Inventory,
         output: Inventory,
     ) -> Self {
         let mut hash = HashMap::new();
-        for ressource in (*input).clone() {
-            hash.insert(ressource.0, (0.0 - ressource.1 as f64) / cycle as f64);
+        for ressource in input.to_vec() {
+            hash.insert(ressource.0, (0 - ressource.1));
         }
-        for ressource in (*output).clone() {
-            let rec = hash.entry(ressource.0).or_insert(ressource.1 as f64 / cycle as f64);
-            *rec += ressource.1 as f64 / cycle as f64;
+        for ressource in output.to_vec() {
+            let rec = hash.entry(ressource.0).or_insert(ressource.1);
+            *rec += ressource.1;
         }
         let neutral = get_neutral(&input, &output);
         Process {
@@ -55,89 +58,70 @@ impl Process {
         }
     }
 
-    pub fn get_h_value(&self, s: &String) -> f64 {
+    pub fn get_h_value(&self, s: &String) -> usize {
         match self.heuristic.get(s) {
             Some(&number) => number,
-            None => 0.0
+            None => 0
         }
     }
 
-    pub fn get_distance(need: &Ressource, owned: &Vec<Ressource>) -> u64 {
+    pub fn get_distance(need: &Ressource, owned: &Vec<Ressource>) -> usize {
         match owned.iter().find(|&x| x.0 == need.0) {
-            Some(a) => std::cmp::max(0, a.1 as u64 - need.1 as u64),
-            None => need.1 as u64
+            Some(a) if a.1 > need.1 => a.1 - need.1,
+            Some(_) => 0,
+            None => need.1
         }
     }
 
-    pub fn distance_overall(&self, owned: &Vec<Ressource>) -> u64 {
-        self.input.iter().fold(0, |acc, b| acc + Process::get_distance(b, owned)) //Maybe use a closure here?
+    pub fn get_producing_process(obj: Ressource, process: &Vec<Process>) ->Vec<Process> {
+        let mut ret = Vec::new();
+        for procs in process {
+            if procs.get_h_value(&obj.0) > 0 {
+                ret.push(procs.clone());
+            }
+        }
+        ret
     }
 
-    pub fn needed_process(&self, process: &Vec<Process>, ressources: &Vec<Ressource>) -> Option<Vec<Process>> {
+    pub fn get_time(&self, process: &Vec<Process>, ressources: &Inventory) -> usize {
+        1
+    }
+
+    pub fn needed_process(&self, process: &Vec<Process>, ressources: &Inventory)
+                          -> Result<Option<Vec<Process>>, ()> {
         let mut input = self.input.clone();
-        if let Some(x) = self.neutral {
+        if let Some(ref x) = self.neutral {
             // Check if the neutral ressource exist
            input.sub(&x);
         }
-        input.sub(&ressources);
-        let mut ret: Vec<Process> = Vec::new();
+        input.sub_from_inventory(ressources);
+        if input.is_empty() {
+            Ok(None)
+        } else {
+            let mut ret: Vec<Process> = Vec::new();
+            for obj in input.iter() {
+                let tmp = Process::get_producing_process(&obj, process);
+                if tmp.len() == 0 {
+                    Err(());
+                }
+                //temporary: should cycle tmp
+                let smt = match tmp.iter().max_by_key(|&x| x.get_h_value(&obj.0)) {
+                    None => return Err(()),
+                    Some(a) => a
+                };
+                match smt.needed_process(process, ressources) {
+                    Err(_) => return Err(()),
+                    Ok(None) => ret.push(smt.clone()),
+                    Ok(Some(a)) => ret.extend(a)
+                };
+            }
+            Ok(Some(ret))
+        }
 
-        None
     }
 
-    /// The `can_buy` checks if the ressource can be bought.
-
-    #[allow(unused_variables)]
-    pub fn buy_it (
-        &self,
-        inventory: &mut Inventory,
-    ) -> Option<&u64> {
-        //! Work in progress.
-        /*
-        let mut trunk = inventory.iter_mut();
-        let mut ss = self.input.into_iter().map(|required|
-        match trunk.skip_while(|has|
-        required.get_name() == has.get_name() &&
-        required.get_quantity() <= has.get_quantity()
-    ).nth(0) {
-        Some(ref has) => None,
-        None => None,
-    }
-    ).collect::<Vec<Option<(&Ressource, &mut Ressource)>>>();*/
-        None
-        /*
-            self.input.iter().all(|&required|
-            trunk.skip_while(|has|
-            required.get_name() == has.get_name() &&
-            required.get_quantity() <= has.get_quantity()
-    )
-            match trunk.nth(0) {
-            Some(ref has) if required.get_name() == has.get_name() &&
-            required.get_quantity() <= has.get_quantity() &&
-            trunk.next() => {
-            Some((has))
-    },
-            Some(_) | None => false,
-    }
-    ).collect::<Vec<&Ressource>>().len() == inventory.len();
-            if trunk.next().is_none() {
-            Some(&self.cycle)
-    }
-        else {
-            None
-    }*/
-        /*
-            match self.input.iter().zip(self.output.iter())
-            .find(|&(&ref i, &_)|
-            i.get_name() == inventory.get_name()
-    ) {
-            Some((i, o)) if i.get_quantity() <= inventory.get_quantity() => {
-            inventory.sub_quantity(*i.get_quantity());
-            Some(o)
-    },
-            Some((_, _)) | None => None,
-    }
-         */
+    pub fn distance_overall(&self, owned: &Vec<Ressource>) -> usize {
+        self.input.to_vec().iter().fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
     }
 }
 
@@ -160,9 +144,10 @@ impl std::default::Default for Process {
   fn default() -> Self {
     Process {
       name: String::new(),
-      cycle: 0u64,
+      cycle: 0usize,
       input: Inventory::default(),
       output: Inventory::default(),
+      neutral: None,
       heuristic: HashMap::new()
     }
   }

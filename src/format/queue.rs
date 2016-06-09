@@ -30,7 +30,7 @@ impl <'a> Queue <'a> {
 
     pub fn get_ended_process(
         &mut self,
-        cycle: u64
+        cycle: usize
     ) -> Option<Vec<Livep>> {
         if self.lst.peek().is_some() &&
            self.lst.peek().unwrap().cycle_end == cycle {
