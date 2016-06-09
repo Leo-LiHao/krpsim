@@ -6,11 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! The module `format` contains the primary module named `Inventory`,
-//! `Process` and `Optimize`.
+//! the module `operate` describes a list of process.
 
-pub mod stock;
-pub mod operate;
-pub mod optimize;
-pub mod livep;
-pub mod queue;
+pub mod process;
+pub mod running;

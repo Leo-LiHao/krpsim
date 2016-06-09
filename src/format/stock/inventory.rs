@@ -11,10 +11,10 @@ extern crate std;
 use super::ressource::Ressource;
 
 #[derive(Clone)]
-pub struct Inventory (pub std::collections::HashMap<String, Ressource>);
+pub struct Inventory (std::collections::HashMap<String, Ressource>);
 
 impl Inventory {
-    /// The `new` constructor function returns the list ressources.
+    /// The `new` constructor function returns the list of ressources.
 
     pub fn new (
         ressources: Vec<Ressource>,
@@ -87,6 +87,15 @@ impl Inventory {
         self.0.insert(key, val)
     }
 
+    /// The `is_empty` interface function returns true if
+    /// the map contains not elements.
+
+    pub fn is_empty (
+        &self,
+    ) -> bool {
+        self.0.is_empty()
+    }
+
     /// The `any` interface function checks if the map contains
     /// the key.
 
@@ -96,6 +105,7 @@ impl Inventory {
     ) -> bool {
         self.0.contains_key(key)
     }
+
     /// The `any` interface function checks if the map contains
     /// the key from a ressource.
     pub fn any_from_ressource (
@@ -209,15 +219,6 @@ impl Inventory {
     }
 }
 
-impl std::default::Default for Inventory {
-
-  /// The `default` constructor function returns a empty Inventory.
-
-  fn default() -> Self {
-    Inventory::new(Vec::new())
-  }
-}
-
 impl std::fmt::Display for Inventory {
 
     /// The `fmt` function prints the multiplication list.
@@ -226,8 +227,17 @@ impl std::fmt::Display for Inventory {
         &self,
         f: &mut std::fmt::Formatter,
     ) -> Result<(), std::fmt::Error> {
-        write!(f, "{}", self.0.iter().map(|a| format!("{}", a.1))
-                                     .collect::<Vec<String>>()
-                                     .join(", "))
+        write!(f, "({})", self.0.iter().map(|a| format!("{}", a.1))
+                                       .collect::<Vec<String>>()
+                                       .join(";"))
     }
+}
+
+impl std::default::Default for Inventory {
+
+  /// The `default` constructor function returns a empty Inventory.
+
+  fn default() -> Self {
+    Inventory::new(Vec::new())
+  }
 }

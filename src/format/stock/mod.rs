@@ -6,5 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! the module `stock` describes a list of ressources.
+
 pub mod ressource;
 pub mod inventory;

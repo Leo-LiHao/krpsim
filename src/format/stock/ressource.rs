@@ -35,6 +35,16 @@ impl Ressource {
     &self.1
   }
 
+  /// The `set_quantity` updates and returns the qte value.
+
+  fn set_quantity (
+      &mut self,
+      val: usize,
+  ) -> &usize {
+    self.1 = val;
+    &self.1
+  }
+
   /// The `add_from_ressource` function additiones a item
   /// with a value.
 
@@ -42,7 +52,10 @@ impl Ressource {
     &mut self,
     val: usize,
   ) -> Option<usize> {
-    self.1.checked_add(val)
+    match self.1.checked_add(val) {
+        Some(v) => Some(*self.set_quantity(v)),
+        None => None,
+    }
   }
 
   /// The `add_from_ressource` function additiones a item
@@ -62,7 +75,10 @@ impl Ressource {
     &mut self,
     val: usize,
   ) -> Option<usize> {
-    self.1.checked_sub(val)
+    match self.1.checked_sub(val) {
+      Some(v) => Some(*self.set_quantity(v)),
+      None => None,
+    }
   }
 
   /// The `sub_from_ressource` function substrates a item
@@ -74,6 +90,13 @@ impl Ressource {
   ) -> Option<usize> {
     self.sub_quantity(*val.get_quantity())
   }
+
+  /*pub fn can_order (
+    &self,
+    with: Ressource,
+  ) -> std::io::Result<(), usize> {
+    match
+  }*/
 }
 
 impl std::fmt::Display for Ressource {
@@ -81,7 +104,7 @@ impl std::fmt::Display for Ressource {
   /// like `<stock_name> :<quantity>`.
 
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "(ressource: {}, {})", self.0, self.1)
+    write!(f, "{}:{}", self.0, self.1)
   }
 }
 

@@ -14,7 +14,7 @@ const DEFAULT_DELAY: &'static str = "100";
 
 use krpsim::format::stock::ressource::Ressource;
 use krpsim::format::optimize::Optimize;
-use krpsim::format::process::Process;
+use krpsim::format::operate::process::Process;
 use krpsim::format::queue::Queue;
 use krpsim::format::livep::Livep;
 use krpsim::input::config::Configuration;

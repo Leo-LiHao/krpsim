@@ -9,6 +9,8 @@
 [docs-badge]: https://img.shields.io/badge/API-docs-blue.svg?style=flat-square
 [docs]: https://adjivas.github.io/krpsim/krpsim
 
+![Screen Shot](https://raw.githubusercontent.com/adjivas/krpsim/notes/uml.png)
+
 #### How to use
 Example:
 ```shell
