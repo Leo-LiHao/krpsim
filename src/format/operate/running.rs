@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! The module `Running` describes a shop.
+
 extern crate std;
 
 use super::process::Process;
@@ -86,6 +88,13 @@ impl Running {
             Some(&Some(cycle)) => Some(cycle),
             _ => None,
         }
+    }
+
+    #[deprecated]
+    pub fn to_vec (&self) -> Vec<Process> {
+      //! :/
+      self.0.iter().map(|process| process.1.clone())
+                   .collect::<Vec<Process>>()
     }
 }
 

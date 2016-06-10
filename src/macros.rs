@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! The default module `Macros` adds new macro of krpsim's library.
+
 /// The `parse_error` macro returns a formated error.
 
 #[macro_export]

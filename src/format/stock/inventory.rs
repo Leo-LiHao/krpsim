@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! The module `Inventory` describes a list of items.
+
 extern crate std;
 
 use super::ressource::Ressource;

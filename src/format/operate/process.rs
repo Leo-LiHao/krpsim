@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! The module `Process` describes a unity.
+
 extern crate std;
 
 use std::collections::HashMap;
