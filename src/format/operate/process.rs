@@ -22,7 +22,7 @@ pub struct Process {
     pub input: Inventory,
     pub output: Inventory,
     neutral: Option<Ressource>,
-    pub heuristic: HashMap<String, usize>
+    pub heuristic: HashMap<String, f64>
 }
 
 ///if exist, return a neutral component
@@ -44,11 +44,11 @@ impl Process {
     ) -> Self {
         let mut hash = HashMap::new();
         for ressource in input.to_vec() {
-            hash.insert(ressource.0, (0 - ressource.1));
+            hash.insert(ressource.0, (0.0 - ressource.1 as f64) / cycle as f64);
         }
         for ressource in output.to_vec() {
-            let rec = hash.entry(ressource.0).or_insert(ressource.1);
-            *rec += ressource.1;
+            let rec = hash.entry(ressource.0).or_insert(ressource.1 as f64 / cycle as f64);
+            *rec += ressource.1 as f64 / cycle as f64;
         }
         let neutral = get_neutral(&input, &output);
         Process {
@@ -111,10 +111,10 @@ impl Process {
         &self.cycle
     }
 
-    pub fn get_h_value(&self, s: &String) -> usize {
+    pub fn get_h_value(&self, s: &String) -> f64 {
         match self.heuristic.get(s) {
             Some(&number) => number,
-            None => 0
+            None => 0.0
         }
     }
 
@@ -129,7 +129,7 @@ impl Process {
     pub fn get_producing_process(obj: &Ressource, process: &Vec<Process>) ->Vec<Process> {
         let mut ret = Vec::new();
         for procs in process {
-            if procs.get_h_value(&obj.0) > 0 {
+            if procs.get_h_value(&obj.0) > 0.0 {
                 ret.push(procs.clone());
             }
         }
@@ -154,7 +154,7 @@ impl Process {
                     return Err(())
                 }
                 //temporary: should cycle tmp and give the fast
-                let smt = match tmp.iter().max_by_key(|&x| x.get_h_value(&obj.0)) {
+                let smt = match tmp.first() /*.iter().max_by_key(|&x| x.get_h_value(&obj.0))*/ {
                     None => return Err(()),
                     Some(a) => a
                 };
