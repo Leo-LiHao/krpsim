@@ -101,7 +101,7 @@ impl Process {
         }
     }
 
-    pub fn get_producing_process(obj: Ressource, process: &Vec<Process>) ->Vec<Process> {
+    pub fn get_producing_process(obj: &Ressource, process: &Vec<Process>) ->Vec<Process> {
         let mut ret = Vec::new();
         for procs in process {
             if procs.get_h_value(&obj.0) > 0 {
@@ -109,10 +109,6 @@ impl Process {
             }
         }
         ret
-    }
-
-    pub fn get_time(&self, process: &Vec<Process>, ressources: &Inventory) -> usize {
-        1
     }
 
     pub fn needed_process(&self, process: &Vec<Process>, ressources: &Inventory)
@@ -127,10 +123,10 @@ impl Process {
             Ok(None)
         } else {
             let mut ret: Vec<Process> = Vec::new();
-            for obj in input.iter() {
-                let tmp = Process::get_producing_process(&obj, process);
+            for (_, obj) in input.iter() {
+                let tmp = Process::get_producing_process(obj, process);
                 if tmp.len() == 0 {
-                    Err(());
+                    return Err(())
                 }
                 //temporary: should cycle tmp and give the fast
                 let smt = match tmp.iter().max_by_key(|&x| x.get_h_value(&obj.0)) {

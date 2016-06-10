@@ -13,11 +13,36 @@ extern crate krpsim;
 const DEFAULT_DELAY: &'static str = "100";
 
 use krpsim::format::stock::ressource::Ressource;
+use krpsim::format::stock::inventory::Inventory;
 use krpsim::format::optimize::Optimize;
 use krpsim::format::operate::process::Process;
 use krpsim::format::queue::Queue;
 use krpsim::format::livep::Livep;
 use krpsim::input::config::Configuration;
+
+
+fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut Inventory) -> () {
+    for process in process_list {
+        let mut add_ressource = |ressources_list: &Inventory| -> () {
+            for res in ressources_list.iter() {
+                if ressources.iter().find(|tmp| tmp.0 == res.0).is_none() {
+                    ressources.add(&Ressource::new(res.0.clone(), 0));
+                }
+            }
+        };
+        add_ressource(&process.input);
+        add_ressource(&process.output);
+    }
+}
+
+fn get_optimized_product(opti: &Vec<String>, ressources: &mut Inventory) -> Option<Ressource> {
+    for s in opti {
+        if ressources.any(&s.0) {
+            return Some(s.clone())
+        }
+    }
+    None
+}
 
 fn main() {
     let yaml = load_yaml!("cli.yml");
@@ -30,27 +55,34 @@ fn main() {
 
     let mut done = false;
     let mut process_queue = Queue::new();
- /*   get_ressources_from_process(&config.process_list, &mut config.ressources);
-    let production: String = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
+   get_ressources_from_process(&config.running, &mut config.ressources);
+    let production: Ressource = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
         Some(a) => a,
         None => panic!("You should optimize the production of at least one ressources!")
     };
-    let mut final_process: Vec<Process> = get_producing_process(&production, &config.process_list);
+   let mut final_process: Vec<Process> = Process::get_producing_process(&production, &config.running);
 
-    optimization(&mut config.process_list, &production);
+/*    optimization(&mut config.process_list, &production);*/
     while !done {
+        let mut usable_process:Vec<(Process, Vec<Process>)> = Vec::new();
 
-        let processes = get_available_process(&config.process_list,
-                                              &mut config.ressources,
-                                              cycle);
-        if processes.len() > 0 {
-            for process in processes {
-                process_queue.add(process);
+        for process in final_process {
+            match process.needed_process(&config.running, &config.ressources) {
+                Err(_) => {},
+                Ok(None) => usable_process.push((process.clone(), vec!(process.clone()))),
+                Ok(Some(a)) => usable_process.push(( process.clone(), a ))
             }
         }
+
         if process_queue.is_empty() {
             println!("Finished at cycle: {}", cycle);
             done = true;
+        }
+    }
+/*        if processes.len() > 0 {
+            for process in processes {
+                process_queue.add(process);
+            }
         }
         match process_queue.get_ended_process(cycle) {
             None => cycle += 1,
@@ -64,5 +96,5 @@ fn main() {
                 }
             }
         }
-    }*/
+    */
 }
