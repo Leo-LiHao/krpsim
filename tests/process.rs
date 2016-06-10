@@ -14,7 +14,7 @@ use self::krpsim::format::operate::process::Process;
 
 #[test]
 fn test_new() {
-  Process::new(
+  Process::from_integer(
     "knight".to_string(), // name
     10, // cycle
     Inventory::new(

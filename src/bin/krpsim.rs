@@ -21,7 +21,7 @@ use krpsim::format::livep::Livep;
 use krpsim::input::config::Configuration;
 
 
-fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut Inventory) -> () {
+fn get_ressources_from_process(process_list: &Vec<&Process>, ressources: &mut Inventory) -> () {
     for process in process_list {
         let mut add_ressource = |ressources_list: &Inventory| -> () {
             for res in ressources_list.iter() {
@@ -55,19 +55,19 @@ fn main() {
 
     let mut done = false;
     let mut process_queue = Queue::new();
-   get_ressources_from_process(&config.running.to_vec(), &mut config.ressources);
+    get_ressources_from_process(&config.running.get_process(), &mut config.ressources);
     let production: Ressource = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
         Some(a) => a,
         None => panic!("You should optimize the production of at least one ressources!")
     };
-   let mut final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.to_vec());
+   let mut final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.get_process());
 
 /*    optimization(&mut config.process_list, &production);*/
     while !done {
         let mut usable_process:Vec<(Process, Vec<Process>)> = Vec::new();
 
         for process in final_process.iter() {
-            match process.needed_process(&config.running.to_vec(), &config.ressources) {
+            match process.needed_process(&config.running.get_process(), &config.ressources) {
                 Err(_) => {},
                 Ok(None) => usable_process.push((process.clone(), vec!(process.clone()))),
                 Ok(Some(a)) => usable_process.push(( process.clone(), a ))

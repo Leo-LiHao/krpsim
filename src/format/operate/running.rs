@@ -90,11 +90,12 @@ impl Running {
         }
     }
 
-    #[deprecated]
-    pub fn to_vec (&self) -> Vec<Process> {
-      //! :/
-      self.0.iter().map(|process| process.1.clone())
-                   .collect::<Vec<Process>>()
+    /// The `get_process` function returns a accessor on
+    /// the list of process.
+
+    pub fn get_process(&self) -> Vec<&Process> {
+        self.0.iter().map(|(&_, process)| process)
+                     .collect::<Vec<&Process>>()
     }
 }
 

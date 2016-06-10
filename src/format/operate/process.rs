@@ -10,6 +10,7 @@
 
 extern crate std;
 
+use itertools::Itertools;
 use std::collections::HashMap;
 
 use format::stock::ressource::Ressource;
@@ -41,16 +42,10 @@ impl Process {
         cycle: usize,
         input: Inventory,
         output: Inventory,
+        hash: HashMap<String, f64>,
     ) -> Self {
-        let mut hash = HashMap::new();
-        for ressource in input.to_vec() {
-            hash.insert(ressource.0, (0.0 - ressource.1 as f64) / cycle as f64);
-        }
-        for ressource in output.to_vec() {
-            let rec = hash.entry(ressource.0).or_insert(ressource.1 as f64 / cycle as f64);
-            *rec += ressource.1 as f64 / cycle as f64;
-        }
         let neutral = get_neutral(&input, &output);
+
         Process {
             name: name,
             cycle: cycle,
@@ -61,6 +56,37 @@ impl Process {
         }
     }
 
+
+    pub fn from_integer (
+        name: String,
+        cycle: usize,
+        input: Inventory,
+        output: Inventory,
+    ) -> Self {
+        let mut hash = HashMap::new();
+
+        input.get_ressource().iter().foreach(|ressource| {
+            hash.insert(
+                ressource.get_name().to_string(),
+                -ressource.get_float_quantity() / cycle as f64
+            );
+        });
+        output.get_ressource().iter().foreach(|ressource| {
+           *hash.entry(
+               ressource.get_name().to_string()
+           ).or_insert(
+               ressource.get_float_quantity() / cycle as f64
+           ) += ressource.get_float_quantity() / cycle as f64;
+        });
+        Process::new (
+            name,
+            cycle,
+            input,
+            output,
+            hash,
+        )
+    }
+
     /// The `from_line` constructor function returns a parsed process.
 
     pub fn from_line (
@@ -69,7 +95,7 @@ impl Process {
       result_and_nb_cycle: &str,
     ) -> std::io::Result<Process> {
       match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
-        [nb_cycle, result] if nb_cycle.parse::<usize>().is_ok() => {
+        [nb_cycle, result] => if nb_cycle.parse::<usize>().is_ok() {
             match (Inventory::from_line(need), Inventory::from_line(result)) {
                 (None,    None   ) => Err(from_error!(
                     format!("bad need `{}` and rest `{}`", need, result)
@@ -81,15 +107,15 @@ impl Process {
                     format!("bad rest `{}`", result)
                 )),
                 (Some(n), Some(r)) => Ok(
-                    Process::new(
+                    Process::from_integer(
                        name,
                        nb_cycle.parse::<usize>().ok().unwrap_or_default(),
                        n, r
                     )
                 ),
             }
-        },
-        [nb_cycle, _] if nb_cycle.parse::<usize>().is_err() => {
+        }
+        else {
            Err(from_error!(format!("bad cycle `{}`", nb_cycle)))
         },
         why => Err(from_error!("parse_proces", why)),
@@ -102,7 +128,6 @@ impl Process {
     pub fn get_name(&self) -> &str {
         &self.name
     }
-
 
     /// The `get_cycle` accessor function returns the number
     /// of cycle required by the process.
@@ -126,17 +151,18 @@ impl Process {
         }
     }
 
-    pub fn get_producing_process(obj: &Ressource, process: &Vec<Process>) ->Vec<Process> {
-        let mut ret = Vec::new();
-        for procs in process {
+    pub fn get_producing_process(obj: &Ressource, process: &Vec<&Process>) -> Vec<Process> {
+        let mut ret: Vec<Process> = Vec::new();
+        
+        process.iter().foreach(|procs| 
             if procs.get_h_value(&obj.0) > 0.0 {
-                ret.push(procs.clone());
+                ret.push((*procs).clone());
             }
-        }
+        );
         ret
     }
 
-    pub fn needed_process(&self, process: &Vec<Process>, ressources: &Inventory)
+    pub fn needed_process(&self, process: &Vec<&Process>, ressources: &Inventory)
                           -> Result<Option<Vec<Process>>, ()> {
         let mut input = self.input.clone();
         if let Some(ref x) = self.neutral {
@@ -148,8 +174,8 @@ impl Process {
             Ok(None)
         } else {
             let mut ret: Vec<Process> = Vec::new();
-            for (_, obj) in input.iter() {
-                let tmp = Process::get_producing_process(obj, process);
+            for ressource in input.get_ressource().iter() {
+                let tmp = Process::get_producing_process(ressource, process);
                 if tmp.len() == 0 {
                     return Err(())
                 }
@@ -170,7 +196,7 @@ impl Process {
     }
 
     pub fn distance_overall(&self, owned: &Vec<Ressource>) -> usize {
-        self.input.to_vec().iter().fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
+        self.input.get_ressource().iter().fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
     }
 }
 

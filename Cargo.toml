@@ -24,3 +24,6 @@ unstable = [] # for travis-cargo
 version = "2"
 default-features = false
 features = ["wrap_help", "yaml", "suggestions", "color"]
+
+[dependencies.itertools]
+version = "0.4"

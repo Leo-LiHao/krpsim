@@ -32,6 +32,9 @@
 //! *Krpsim*'s code in this repo uses the [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html) [license](https://raw.githubusercontent.com/adjivas/krpsim/master/LICENSE).
 
 #[macro_use]
+extern crate itertools;
+
+#[macro_use]
 mod macros;
 pub mod format;
 pub mod input;

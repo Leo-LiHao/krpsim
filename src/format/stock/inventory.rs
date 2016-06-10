@@ -252,11 +252,12 @@ impl Inventory {
         )
     }
 
-    /// The `to_vec` function returns a cloned list of ressource.
+    /// The `get_ressource` function returns a accessor on
+    /// the list of ressource.
 
-    pub fn to_vec (&mut self) -> Vec<&mut Ressource> {
-      self.0.iter_mut().map(|(&_, ressoure)| ressoure)
-                   .collect::<Vec<&mut Ressource>>()
+    pub fn get_ressource(&self) -> Vec<&Ressource> {
+       self.0.iter().map(|(&_, ressoure)| ressoure)
+                    .collect::<Vec<&Ressource>>()
     }
 }
 

@@ -3,6 +3,7 @@ name = "krpsim"
 version = "0.1.0"
 dependencies = [
  "clap 2.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "itertools 0.4.15 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -28,6 +29,11 @@ dependencies = [
  "vec_map 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "yaml-rust 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "itertools"
+version = "0.4.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libc"
