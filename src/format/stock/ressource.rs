@@ -68,17 +68,40 @@ impl Ressource {
     self.add_quantity(*val.get_quantity())
   }
 
-  /// The `sub_from_ressource` function substrates a item
+  /// The `can_sub_quantity` function checks if the substrate is
+  /// possible.
+
+  pub fn can_sub_quantity (
+    &self,
+    val: usize,
+  ) -> Option<usize> {
+    match self.1.checked_sub(val) {
+      Some(v) => Some(v),
+      None => None,
+    }
+  }
+
+  /// The `sub_quantity` function substrates a item
   /// with a value.
 
   pub fn sub_quantity (
     &mut self,
     val: usize,
   ) -> Option<usize> {
-    match self.1.checked_sub(val) {
+    match self.can_sub_quantity(val) {
       Some(v) => Some(*self.set_quantity(v)),
       None => None,
     }
+  }
+
+  /// The `can_sub_from_ressource` function checks if the substrate of
+  /// a item is possible with another item.
+
+  pub fn can_sub_from_ressource (
+    &self,
+    val: &Ressource,
+  ) -> Option<usize> {
+    self.can_sub_quantity(*val.get_quantity())
   }
 
   /// The `sub_from_ressource` function substrates a item
@@ -91,12 +114,25 @@ impl Ressource {
     self.sub_quantity(*val.get_quantity())
   }
 
-  /*pub fn can_order (
+  pub fn can_order (
     &self,
-    with: Ressource,
-  ) -> std::io::Result<(), usize> {
-    match
-  }*/
+    with: &Ressource,
+  ) -> std::io::Result<usize> {
+    match with.get_quantity().checked_sub(*self.get_quantity()) {
+      Some(v) => Ok(v),
+      None => Err(from_error!("less qte")),
+    }
+  }
+
+  pub fn order (
+    &self,
+    with: &mut Ressource,
+  ) -> std::io::Result<usize> {
+    match self.can_order(with) {
+      Ok(v) => Ok(*with.set_quantity(v)),
+      w => w,
+    }
+  }
 }
 
 impl std::fmt::Display for Ressource {

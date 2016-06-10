@@ -6,7 +6,10 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! The module `Process` describes a unity.
+
 extern crate std;
+
 use std::collections::HashMap;
 
 use format::stock::ressource::Ressource;
@@ -85,6 +88,13 @@ impl Process {
         &self.name
     }
 
+
+    /// The `get_cycle` accessor function returns the number
+    /// of cycle required by the process.
+
+    pub fn get_cycle(&self) -> &usize {
+        &self.cycle
+    }
 
     pub fn get_h_value(&self, s: &String) -> usize {
         match self.heuristic.get(s) {

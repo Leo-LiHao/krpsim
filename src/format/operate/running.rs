@@ -6,13 +6,16 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! The module `Running` describes a shop.
+
 extern crate std;
 
 use super::process::Process;
 
-pub struct Running(std::collections::HashMap<String, Process>);
+pub struct Running (std::collections::HashMap<String, Process>);
 
 impl Running {
+
     /// The `new` constructor function returns the list of process.
 
     pub fn new (
@@ -53,6 +56,45 @@ impl Running {
         val: Process,
     ) -> Option<Process> {
         self.0.insert(key, val)
+    }
+
+    /// The `can_cycle` checks if the number and name of cycle is right
+    /// between two process.
+
+    pub fn can_cycle (
+        &self,
+        with: &Running,
+    ) -> Option<usize> {
+        match self.iter()
+                  .zip(with.iter())
+                  .fold(vec!(Some(0)), |mut cycles: Vec<Option<usize>>,
+                                        ((&_, ref must_have),
+                                         (&_, ref have))|
+                       if let Some(&Some(cycle)) = cycles.last() {
+                           if cycle == (*have.get_cycle() as usize)
+                           && must_have.get_name() == have.get_name() {
+                             cycles.push(Some(cycle + (*must_have.get_cycle() as usize)));
+                           }
+                           else {
+                             cycles.push(None);
+                           }
+                           cycles
+                       }
+                       else {
+                         cycles.push(None);
+                         cycles
+                       }
+                   ).last() {
+            Some(&Some(cycle)) => Some(cycle),
+            _ => None,
+        }
+    }
+
+    #[deprecated]
+    pub fn to_vec (&self) -> Vec<Process> {
+      //! :/
+      self.0.iter().map(|process| process.1.clone())
+                   .collect::<Vec<Process>>()
     }
 }
 

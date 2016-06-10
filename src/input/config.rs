@@ -6,6 +6,8 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! The module `config` describes a configuration of industrial process.
+
 extern crate std;
 
 use format::stock::ressource::Ressource;
@@ -72,13 +74,15 @@ impl Configuration {
     Ok(result)
   }
 
-  pub fn buy_it(&mut self, it: String) -> Option<&usize> {
-    match self.running
-      .iter()
-      .find(|&(_, a)| a.name == it) {
-      Some(process) => { /* process.buy_it(&mut self.ressources) */ None },
-      None => None, // There isn't any resource available at sell.
-    }
+  /// The `can_order` function check if the configuration can support
+  /// the command,
+
+  pub fn can_order (
+    &self,
+    must_command: Vec<String>,
+  ) {
+    let mut config = self.clone();
+
   }
 }
 

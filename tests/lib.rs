@@ -6,6 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! The module `input` contains all parsers.
-
-pub mod config;
+mod ressource;
+mod inventory;
+mod process;
+mod running;

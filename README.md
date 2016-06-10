@@ -17,3 +17,5 @@ Example:
 cargo run --bin krpsim -- --delay 1 --file resources/simple
 cargo run --bin krpsim_verif -- --delay 1 --file resources/simple --result_to_test resources/simple.krpsim.log
 ```
+#### License
+*Krpsim*'s code in this repo uses the [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html) [license](https://raw.githubusercontent.com/adjivas/krpsim    /master/LICENSE).
