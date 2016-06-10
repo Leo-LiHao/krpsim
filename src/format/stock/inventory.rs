@@ -254,10 +254,9 @@ impl Inventory {
 
     /// The `to_vec` function returns a cloned list of ressource.
 
-    #[deprecated]
-    pub fn to_vec (&self) -> Vec<Ressource> {
-      self.0.iter().map(|ressoure| ressoure.1.clone())
-                   .collect::<Vec<Ressource>>()
+    pub fn to_vec (&mut self) -> Vec<&mut Ressource> {
+      self.0.iter_mut().map(|(&_, ressoure)| ressoure)
+                   .collect::<Vec<&mut Ressource>>()
     }
 }
 
