@@ -69,14 +69,29 @@ impl Process {
       result_and_nb_cycle: &str,
     ) -> std::io::Result<Process> {
       match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
-        [nb_cycle, result] if nb_cycle.parse::<usize>().is_ok() => Ok(
-                    Process::new (
+        [nb_cycle, result] if nb_cycle.parse::<usize>().is_ok() => {
+            match (Inventory::from_line(need), Inventory::from_line(result)) {
+                (None,    None   ) => Err(from_error!(
+                    format!("bad need `{}` and rest `{}`", need, result)
+                )),
+                (None,    Some(_)) => Err(from_error!(
+                    format!("bad need `{}`", need)
+                )),
+                (Some(_), None   ) => Err(from_error!(
+                    format!("bad rest `{}`", result)
+                )),
+                (Some(n), Some(r)) => Ok(
+                    Process::new(
                        name,
-                       nb_cycle.parse::<usize>().unwrap_or(try!(Err(from_error!("bad number of cycle")))),
-                       Inventory::from_line(need).unwrap_or(try!(Err(from_error!("bad need")))),
-                       Inventory::from_line(result).unwrap_or(try!(Err(from_error!("bad result")))),
+                       nb_cycle.parse::<usize>().ok().unwrap_or_default(),
+                       n, r
                     )
-                 ),
+                ),
+            }
+        },
+        [nb_cycle, _] if nb_cycle.parse::<usize>().is_err() => {
+           Err(from_error!(format!("bad cycle `{}`", nb_cycle)))
+        },
         why => Err(from_error!("parse_proces", why)),
       }
     }

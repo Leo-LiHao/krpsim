@@ -14,9 +14,9 @@ use self::krpsim::format::operate::process::Process;
 
 #[test]
 fn test_new() {
-/*  Process::new(
+  Process::new(
     "knight".to_string(), // name
-    10., // cycle
+    10, // cycle
     Inventory::new(
       vec!(
         Ressource::new("green-rupee".to_string(), 1),
@@ -34,5 +34,5 @@ fn test_new() {
         Ressource::new("sword".to_string(), 40),
       ) // result
     ),
-  );*/
+  );
 }
