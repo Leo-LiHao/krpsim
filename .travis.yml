@@ -8,7 +8,8 @@ addons:
     - libdw-dev
     - binutils-dev
 rust:
-- nightly
+  - 1.10.0
+  - nightly
 os:
 - linux
 branches:
