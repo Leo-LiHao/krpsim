@@ -37,8 +37,8 @@ fn get_ressources_from_process(process_list: &Vec<Process>, ressources: &mut Inv
 
 fn get_optimized_product(opti: &Vec<String>, ressources: &mut Inventory) -> Option<Ressource> {
     for s in opti {
-        if ressources.any(&s.0) {
-            return Some(s.clone())
+        if let Some(x) = ressources.get(&s) {
+            return Some(x.clone())
         }
     }
     None
@@ -55,19 +55,19 @@ fn main() {
 
     let mut done = false;
     let mut process_queue = Queue::new();
-   get_ressources_from_process(&config.running, &mut config.ressources);
+   get_ressources_from_process(&config.running.to_vec(), &mut config.ressources);
     let production: Ressource = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
         Some(a) => a,
         None => panic!("You should optimize the production of at least one ressources!")
     };
-   let mut final_process: Vec<Process> = Process::get_producing_process(&production, &config.running);
+   let mut final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.to_vec());
 
 /*    optimization(&mut config.process_list, &production);*/
     while !done {
         let mut usable_process:Vec<(Process, Vec<Process>)> = Vec::new();
 
-        for process in final_process {
-            match process.needed_process(&config.running, &config.ressources) {
+        for process in final_process.iter() {
+            match process.needed_process(&config.running.to_vec(), &config.ressources) {
                 Err(_) => {},
                 Ok(None) => usable_process.push((process.clone(), vec!(process.clone()))),
                 Ok(Some(a)) => usable_process.push(( process.clone(), a ))
