@@ -218,16 +218,15 @@ impl Inventory {
                            item.is_none()
                    )
     }
+    /// The `order` order the command.
 
-    /// The `can_order` checks if the order is possible.
-
-    pub fn can_order (
+    pub fn order (
       &self,
-      with: &Inventory,
+      with: &mut Inventory,
     ) -> bool {
         self.iter()
             .map(|(&_, ref must_have)|
-                    match with.clone().get_mut_from_ressource(&must_have) {
+                    match with.get_mut_from_ressource(&must_have) {
                       Some(ref mut have) => must_have.order(have),
                       None => Err(from_error!("haven't item")),
                     }
@@ -238,6 +237,17 @@ impl Inventory {
                     e.is_err()
                  )
             .is_none()
+    }
+
+    /// The `can_order` checks if the order is possible.
+
+    pub fn can_order (
+      &self,
+      with: &Inventory,
+    ) -> bool {
+        self.order(
+          &mut with.clone()
+        )
     }
 
     /// The `to_vec` function returns a cloned list of ressource.

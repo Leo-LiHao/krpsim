@@ -10,17 +10,38 @@
 extern crate clap;
 extern crate krpsim;
 
-use krpsim::input::verif::ProcessVerif;
+use krpsim::format::operate::process::Process;
+use krpsim::format::stock::inventory::Inventory;
+use krpsim::input::config::Configuration;
 
-#[allow(unused_must_use)]
+use std::io::prelude::*;
+
+fn trace (
+  file: &str,
+  result_to_test: &str,
+) -> std::io::Result<usize> {
+  let configuration = try!(Configuration::new(file));
+  let reader: std::io::BufReader<std::fs::File> = std::io::BufReader::new(
+    try!(std::fs::File::open(result_to_test))
+  );
+    
+
+ /*  for readed in reader.lines() {
+      if let Ok(line) = readed {
+        if let Ok(process) = Inventory(line) {
+          result.process_list.push(process);
+        }
+      }
+   }*/
+  Ok(42usize)
+}
+
 fn main () {
   let yaml = load_yaml!("cli.yml");
   let options = clap::App::from_yaml(yaml).get_matches();
 
-  let verif = ProcessVerif::new(
+  trace(
     options.value_of("file").unwrap(),
     options.value_of("result_to_test").unwrap(),
-  ).unwrap();
-
-  verif.buy();
+  );
 }

@@ -68,17 +68,40 @@ impl Ressource {
     self.add_quantity(*val.get_quantity())
   }
 
-  /// The `sub_from_ressource` function substrates a item
+  /// The `can_sub_quantity` function checks if the substrate is
+  /// possible.
+
+  pub fn can_sub_quantity (
+    &self,
+    val: usize,
+  ) -> Option<usize> {
+    match self.1.checked_sub(val) {
+      Some(v) => Some(v),
+      None => None,
+    }
+  }
+
+  /// The `sub_quantity` function substrates a item
   /// with a value.
 
   pub fn sub_quantity (
     &mut self,
     val: usize,
   ) -> Option<usize> {
-    match self.1.checked_sub(val) {
+    match self.can_sub_quantity(val) {
       Some(v) => Some(*self.set_quantity(v)),
       None => None,
     }
+  }
+
+  /// The `can_sub_from_ressource` function checks if the substrate of
+  /// a item is possible with another item.
+
+  pub fn can_sub_from_ressource (
+    &self,
+    val: &Ressource,
+  ) -> Option<usize> {
+    self.can_sub_quantity(*val.get_quantity())
   }
 
   /// The `sub_from_ressource` function substrates a item

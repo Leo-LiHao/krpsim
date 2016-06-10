@@ -10,9 +10,10 @@ extern crate std;
 
 use super::process::Process;
 
-pub struct Running(std::collections::HashMap<String, Process>);
+pub struct Running (std::collections::HashMap<String, Process>);
 
 impl Running {
+
     /// The `new` constructor function returns the list of process.
 
     pub fn new (
@@ -68,9 +69,9 @@ impl Running {
                                         ((&_, ref must_have),
                                          (&_, ref have))|
                        if let Some(&Some(cycle)) = cycles.last() {
-                           if cycle == *have.get_cycle()
+                           if cycle == (*have.get_cycle() as usize)
                            && must_have.get_name() == have.get_name() {
-                             cycles.push(Some(cycle + *must_have.get_cycle()));
+                             cycles.push(Some(cycle + (*must_have.get_cycle() as usize)));
                            }
                            else {
                              cycles.push(None);
@@ -82,9 +83,9 @@ impl Running {
                          cycles
                        }
                    ).last() {
-                Some(&Some(cycle)) => Some(cycle),
-                _ => None,
-            }
+            Some(&Some(cycle)) => Some(cycle),
+            _ => None,
+        }
     }
 }
 

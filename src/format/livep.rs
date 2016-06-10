@@ -12,7 +12,7 @@ use std::cmp::Ordering;
 
 pub struct Livep<'a> {
     process: &'a Process,
-    pub cycle_end: usize
+    pub cycle_end: usize,
 }
 
 impl <'a> Eq for Livep <'a>{}
@@ -46,7 +46,7 @@ impl <'a> Livep <'a> {
                  process.name, cycle);
         Livep {
             process: process,
-            cycle_end: cycle + process.cycle
+            cycle_end: cycle + (*process.get_cycle() as usize)
         }
     }
     pub fn destruct(&self) -> &Inventory {

@@ -7,6 +7,7 @@
 // except according to those terms.
 
 extern crate std;
+
 use std::collections::HashMap;
 
 use format::stock::ressource::Ressource;
@@ -169,13 +170,6 @@ impl std::fmt::Display for Process {
 
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
     write!(f, "{}:{}:{}:{}", self.name, self.input, self.output, self.cycle)
-  }
-}
-
-
-impl PartialEq for Process {
-  fn eq(&self, with: &Process) -> bool {
-    self.get_name() == with.get_name()
   }
 }
 
