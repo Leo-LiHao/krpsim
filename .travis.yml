@@ -27,7 +27,7 @@ script:
 after_success:
 - |
   travis-cargo --only nightly doc-upload
-  travis-cargo --no-sudo coveralls
+  travis-cargo coveralls --no-sudo
 env:
   matrix:
   - FEATURES=travis
