@@ -13,26 +13,24 @@ use self::krpsim::format::stock::ressource::Ressource;
 use self::krpsim::format::operate::process::Process;
 
 #[test]
-fn test_new() {
-  Process::from_integer(
-    "knight".to_string(), // name
-    10, // cycle
-    Inventory::new(
-      vec!(
-        Ressource::new("green-rupee".to_string(), 1),
-        Ressource::new("blue-rupee".to_string(), 5),
-        Ressource::new("red-rupee".to_string(), 20),
-        Ressource::new("purple-rupee".to_string(), 50),
-        Ressource::new("orange-rupee".to_string(), 100),
-        Ressource::new("silver-rupee".to_string(), 200),
-        Ressource::new("gold-rupee".to_string(), 300),
-      ) // need
+fn test_constructor_new() {
+  assert_eq!(
+    format!("{}",
+      Process::from_integer(
+        "knight".to_string(), // name
+        10, // cycle
+        Inventory::new(
+          vec!(
+            Ressource::new("silver-rupee".to_string(), 200),
+          ) // need
+        ),
+        Inventory::new(
+          vec!(
+            Ressource::new("heart".to_string(), 10),
+          ) // result
+        ),
+      )
     ),
-    Inventory::new(
-      vec!(
-        Ressource::new("heart".to_string(), 10),
-        Ressource::new("sword".to_string(), 40),
-      ) // result
-    ),
+    "knight:(silver-rupee:200):(heart:10):10"
   );
 }

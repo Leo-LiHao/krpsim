@@ -6,11 +6,12 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! The module `Process` describes a unity.
+//! The module `Process` describes a offer.
 
 extern crate std;
 
 use itertools::Itertools;
+
 use std::collections::HashMap;
 
 use format::stock::ressource::Ressource;
@@ -26,14 +27,6 @@ pub struct Process {
     pub heuristic: HashMap<String, f64>
 }
 
-///if exist, return a neutral component
-pub fn get_neutral(input: &Inventory, output: &Inventory) -> Option<Ressource> {
-    match input.iter().find(|&(_, x)| output.any_from_ressource(x)) {
-        Some((_, val)) => Some(val.clone()),
-        None => None,
-    }
-}
-
 impl Process {
     /// The `new` constructor function returns the Process.
 
@@ -44,7 +37,7 @@ impl Process {
         output: Inventory,
         hash: HashMap<String, f64>,
     ) -> Self {
-        let neutral = get_neutral(&input, &output);
+        let neutral = input.get_neutral(&output);
 
         Process {
             name: name,
@@ -55,7 +48,6 @@ impl Process {
             heuristic: hash
         }
     }
-
 
     pub fn from_integer (
         name: String,
@@ -174,22 +166,27 @@ impl Process {
             Ok(None)
         } else {
             let mut ret: Vec<Process> = Vec::new();
-            for ressource in input.get_ressource().iter() {
-                let tmp = Process::get_producing_process(ressource, process);
-                if tmp.len() == 0 {
-                    return Err(())
-                }
-                //temporary: should cycle tmp and give the fast
-                let smt = match tmp.first() /*.iter().max_by_key(|&x| x.get_h_value(&obj.0))*/ {
-                    None => return Err(()),
-                    Some(a) => a
-                };
+            input.get_ressource().iter().all(|ressource| {
+              if let Some(smt) = Process::get_producing_process(
+                                            ressource,
+                                            process
+                                          ).first() {
                 match smt.needed_process(process, ressources) {
-                    Err(_) => return Err(()),
-                    Ok(None) => ret.push(smt.clone()),
-                    Ok(Some(a)) => ret.extend(a)
-                };
-            }
+                  Ok(None) => {
+                    ret.push(smt.clone());
+                    true
+                  },
+                  Ok(Some(a)) => {
+                    ret.extend(a);
+                    true
+                  },
+                  Err(_) => false,
+                }
+              }
+              else {
+                false
+              }
+            });
             Ok(Some(ret))
         }
 

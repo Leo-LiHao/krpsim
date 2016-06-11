@@ -10,6 +10,8 @@
 
 extern crate std;
 
+use itertools::Itertools;
+
 use super::ressource::Ressource;
 
 #[derive(Clone)]
@@ -21,11 +23,12 @@ impl Inventory {
     pub fn new (
         ressources: Vec<Ressource>,
     ) -> Self {
-        let mut map: std::collections::HashMap<String, Ressource> = std::collections::HashMap::with_capacity(ressources.len());
+        let mut map: std::collections::HashMap<String, Ressource> =
+                     std::collections::HashMap::with_capacity(ressources.len());
 
-        ressources.into_iter().all(|ressource|
-            map.insert(ressource.get_name().to_string(), ressource).is_none()
-        );
+        ressources.into_iter().foreach(|ressource| {
+            map.insert(ressource.get_name().to_string(), ressource);
+        });
         Inventory(map)
     }
 
@@ -258,6 +261,19 @@ impl Inventory {
     pub fn get_ressource(&self) -> Vec<&Ressource> {
        self.0.iter().map(|(&_, ressoure)| ressoure)
                     .collect::<Vec<&Ressource>>()
+    }
+
+    /// The `get_neutral` function returns return a neutral component
+    /// if the output ressource exist.
+
+    pub fn get_neutral (
+        &self,
+        output: &Inventory,
+    ) -> Option<Ressource> {
+        match self.iter().find(|&(_, x)| output.any_from_ressource(x)) {
+            Some((_, val)) => Some(val.clone()),
+            None => None,
+        }
     }
 }
 
