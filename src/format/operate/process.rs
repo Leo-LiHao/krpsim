@@ -136,11 +136,9 @@ impl Process {
       &self,
       with: &mut Inventory, // with
     ) -> bool {
-      if self.input.order(with) { // Pay pay pay.
-        with.add_from_inventory(&self.output) // Take the list items.
-      }
-      else {
-        false
+      match self.input.order(with) { // Pay pay pay.
+        Ok(_) => with.add_from_inventory(&self.output), // Take the list items.
+        Err(_) => false,
       }
     }
 

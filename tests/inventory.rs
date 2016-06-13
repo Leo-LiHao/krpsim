@@ -34,7 +34,7 @@ fn test_inventory_can_order() {
           Ressource::new("deku-shield".to_string(), 40),
         ) // with
       )
-    )
+    ).is_ok()
   );
   assert!( // more items
     Inventory::new(
@@ -52,10 +52,10 @@ fn test_inventory_can_order() {
           Ressource::new("deku-shield".to_string(), 40),
         )
       ) // with
-    )
+    ).is_ok()
   );
   assert!( // less items
-    !Inventory::new(
+    Inventory::new(
       vec!(
         Ressource::new("heart".to_string(), 10), 
         Ressource::new("arrows".to_string(), 20),
@@ -70,7 +70,7 @@ fn test_inventory_can_order() {
           Ressource::new("heart".to_string(), 10),
         )
       ) // with
-    )
+    ).is_err()
   );
   assert!( // more qte of items
     Inventory::new(
@@ -94,10 +94,10 @@ fn test_inventory_can_order() {
           Ressource::new("deku-shield".to_string(), 400),
         )
       ) // with
-    )
+    ).is_ok()
   );
-  /*assert!( // less qte of items
-    !Inventory::new(
+  assert!( // less qte of items
+    Inventory::new(
       vec!(
         Ressource::new("heart".to_string(), 100), 
         Ressource::new("arrows".to_string(), 200),
@@ -117,8 +117,8 @@ fn test_inventory_can_order() {
           Ressource::new("deku-shield".to_string(), 40),
         )
       ) // with
-    )
-  );*/
+    ).is_err()
+  );
 }
 
 #[test]

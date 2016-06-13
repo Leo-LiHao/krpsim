@@ -11,6 +11,7 @@
 extern crate std;
 
 use itertools::Itertools;
+use itertools::FoldWhile::{Continue, Done};
 
 use super::ressource::Ressource;
 
@@ -225,16 +226,19 @@ impl Inventory {
     pub fn order (
         &self,
         with: &mut Inventory,
-    ) -> bool {
-        self.iter().map(|(&_, ref must_have)|
-                          match with.get_mut_from_ressource(&must_have) {
-                            Some(ref mut have) => Ok(have.sub_from_ressource(must_have)),
-                            None => Err(from_error!("haven't item")),
-                          }
-                        )
-                   .collect::<Vec<std::result::Result<usize, std::io::Error>>>()
-                   .iter().find(|e| e.is_err())
-                          .is_none()
+    ) -> std::io::Result<usize> {
+        self.iter()
+            .fold_while(
+              Err(from_error!("empty order")),
+              |acc, (&_, ref must_have)| {
+                match with.get_mut_from_ressource(&must_have) {
+                  Some(ref mut have) if must_have.get_quantity() <= have.get_quantity() =>
+                    Continue(Ok(have.sub_from_ressource(must_have))),
+                  Some(_) => Done(Err(from_error!("less"))),
+                  None => Done(Err(from_error!("haven't item"))),
+                }
+              }
+            )
     }
 
     /// The `can_order` checks if the order is possible.
@@ -242,7 +246,7 @@ impl Inventory {
     pub fn can_order (
       &self,
       with: &Inventory,
-    ) -> bool {
+    ) -> std::io::Result<usize> {
         self.order(
           &mut with.clone()
         )
