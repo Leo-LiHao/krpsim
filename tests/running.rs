@@ -175,9 +175,13 @@ fn test_order() {
    
     assert!(
       running.buy_with(
-        "knight".to_string(),
+        &Trace::from_vec(
+          vec!(
+            ("knight".to_string(), 0usize),
+          )
+        ),
         &mut inventory
-      )
+      ).is_ok()
     );
     assert_eq!(
       format!("{}", inventory),

@@ -17,10 +17,6 @@ doc = false
 name = "krpsim_verif"
 doc = false
 
-[[bin]]
-name = "test"
-doc = false
-
 [features]
 unstable = [] # for travis-cargo
 

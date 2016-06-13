@@ -26,7 +26,7 @@ impl Trace {
   ) -> std::io::Result<Self> {
     std::io::BufReader::new(
       try!(std::fs::File::open(file))
-    ).lines().fold_while(Ok(Trace::default()), |mut acc, readed| {
+    ).lines().fold_while(Ok(Trace::default()), |acc, readed| {
       if let (Ok(mut trace), Ok(line)) = (acc, readed) {
         match &line.splitn(2, ":")
                    .collect::<Vec<&str>>()[..] {

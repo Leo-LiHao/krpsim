@@ -47,6 +47,15 @@ impl Running {
         self.0.is_empty()
     }
 
+    /// The `len` interface function returns the number of elements
+    /// in the map.
+
+    pub fn len (
+      &self,
+    ) -> usize {
+      self.0.len()
+    }
+
     /// The `iter` interface function returns a iterator.
 
     pub fn iter (
@@ -76,24 +85,43 @@ impl Running {
         self.0.get(key)
     }
 
+    /// The `buy_with` function buys one command with an inventary.
+
+    pub fn buy_with (
+        &self,
+        commands: &Trace, // product
+        inventory: &mut Inventory, // with
+    ) -> std::io::Result<()> {
+        commands.iter()
+                .fold_while(Err(from_error!("Empty")), |_, &(ref command, _)| {
+                  match self.get(&command) {
+                    Some(process) => match process.buy_with(inventory) {
+                      Ok(_) => Continue(Ok(())),
+                      why => Done(why),
+                    },
+                    None => Done(Err(from_error!("item wasn't found"))),
+                  }
+                })
+    }
+
     /// The `can_cycle` checks if the number and name of cycle is right
     /// between two process.
 
     pub fn can_cycle (
         &self,
-        with: &Trace,
+        check: &Trace,
     ) -> std::io::Result<usize> {
-        with.iter()
-            .fold_while(Ok(0usize), |acc, &(ref have_name, have_cycle)| {
-               match (self.get(have_name), acc) {
-                   (Some(ref process), Ok(cycle)) => if have_cycle == cycle {
-                       Continue(Ok(process.get_cycle() + cycle))
-                   } else {
-                       Done(Err(from_error!(format!("{}", process))))
-                   },
-                   (_, _) => Done(Err(from_error!("not item was found"))),
-               }
-            })
+        check.iter()
+             .fold_while(Ok(0usize), |acc, &(ref have_name, have_cycle)| {
+                match (self.get(have_name), acc) {
+                    (Some(ref process), Ok(cycle)) => if have_cycle == cycle {
+                        Continue(Ok(process.get_cycle() + cycle))
+                    } else {
+                        Done(Err(from_error!(format!("{}", process))))
+                    },
+                    (_, _) => Done(Err(from_error!("not item was found"))),
+                }
+             })
     }
 
     /// The `get_process` function returns a accessor on
@@ -102,17 +130,6 @@ impl Running {
     pub fn get_process(&self) -> Vec<&Process> {
         self.0.iter().map(|(&_, process)| process)
                      .collect::<Vec<&Process>>()
-    }
-
-    pub fn buy_with (
-        &self,
-        command: String, // product
-        inventory: &mut Inventory, // with
-    ) -> bool {
-        match self.0.get(&command) {
-            Some(process) => process.buy_with(inventory),
-            None => false,
-        }
     }
 }
 

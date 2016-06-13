@@ -135,10 +135,15 @@ impl Process {
     pub fn buy_with (
       &self,
       with: &mut Inventory, // with
-    ) -> bool {
+    ) -> std::io::Result<()> {
       match self.input.order(with) { // Pay pay pay.
-        Ok(_) => with.add_from_inventory(&self.output), // Take the list items.
-        Err(_) => false,
+        Ok(_) => if with.add_from_inventory(&self.output) {
+          Ok(())
+        }
+        else {
+          Err(from_error!("cannot add"))
+        }, // Take the list items.
+        why => why,
       }
     }
 
