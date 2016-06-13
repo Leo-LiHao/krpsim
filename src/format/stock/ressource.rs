@@ -95,7 +95,7 @@ impl Ressource {
     &mut self,
     val: &Ressource,
   ) -> usize {
-    self.sub_quantity(val.get_quantity()) 
+    self.sub_quantity(val.get_quantity())
   }
 }
 

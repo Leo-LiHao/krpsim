@@ -24,12 +24,11 @@ impl Inventory {
     pub fn new (
         ressources: Vec<Ressource>,
     ) -> Self {
-        let mut map: std::collections::HashMap<String, Ressource> =
-                     std::collections::HashMap::with_capacity(ressources.len());
+        let mut map: std::collections::HashMap<String, Ressource> = std::collections::HashMap::with_capacity(ressources.len());
 
-        ressources.into_iter().foreach(|ressource| {
-            map.insert(ressource.get_name().to_string(), ressource);
-        });
+        ressources.into_iter().all(|ressource|
+            map.insert(ressource.get_name().to_string(), ressource).is_none()
+        );
         Inventory(map)
     }
 
@@ -256,8 +255,8 @@ impl Inventory {
     /// the list of ressource.
 
     pub fn get_ressource(&self) -> Vec<&Ressource> {
-       self.0.iter().map(|(&_, ressoure)| ressoure)
-                    .collect::<Vec<&Ressource>>()
+        self.0.iter().map(|(&_, ressoure)| ressoure)
+            .collect::<Vec<&Ressource>>()
     }
 
     /// The `get_neutral` function returns return a neutral component
@@ -272,14 +271,21 @@ impl Inventory {
             None => None,
         }
     }
+    /// The `to_vec` function returns a cloned list of ressource.
+
+    #[deprecated]
+    pub fn to_vec (&self) -> Vec<Ressource> {
+      self.0.iter().map(|ressoure| ressoure.1.clone())
+                   .collect::<Vec<Ressource>>()
+    }
 }
 
 impl std::cmp::PartialEq for Inventory {
-    
+
     /// The `eq` function fast checks if two Inventory are equal.
 
     fn eq(&self, with: &Self) -> bool {
-        self.0 == self.0
+        self.0 == with.0
     }
 }
 

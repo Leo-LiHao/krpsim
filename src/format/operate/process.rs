@@ -65,11 +65,11 @@ impl Process {
             );
         });
         output.get_ressource().iter().foreach(|ressource| {
-           *hash.entry(
-               ressource.get_name().to_string()
-           ).or_insert(
-               ressource.get_float_quantity() / cycle as f64
-           ) += ressource.get_float_quantity() / cycle as f64;
+            *hash.entry(
+                ressource.get_name().to_string()
+            ).or_insert(
+                ressource.get_float_quantity() / cycle as f64
+            ) += ressource.get_float_quantity() / cycle as f64;
         });
         Process::new (
             name,
@@ -83,36 +83,36 @@ impl Process {
     /// The `from_line` constructor function returns a parsed process.
 
     pub fn from_line (
-      name: String,
-      need: &str,
-      result_and_nb_cycle: &str,
+        name: String,
+        need: &str,
+        result_and_nb_cycle: &str,
     ) -> std::io::Result<Process> {
-      match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
-        [nb_cycle, result] => if nb_cycle.parse::<usize>().is_ok() {
-            match (Inventory::from_line(need), Inventory::from_line(result)) {
-                (None,    None   ) => Err(from_error!(
-                    format!("bad need `{}` and rest `{}`", need, result)
-                )),
-                (None,    Some(_)) => Err(from_error!(
-                    format!("bad need `{}`", need)
-                )),
-                (Some(_), None   ) => Err(from_error!(
-                    format!("bad rest `{}`", result)
-                )),
-                (Some(n), Some(r)) => Ok(
-                    Process::from_integer(
-                       name,
-                       nb_cycle.parse::<usize>().ok().unwrap_or_default(),
-                       n, r
-                    )
-                ),
+        match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
+            [nb_cycle, result] => if nb_cycle.parse::<usize>().is_ok() {
+                match (Inventory::from_line(need), Inventory::from_line(result)) {
+                    (None,    None   ) => Err(from_error!(
+                        format!("bad need `{}` and rest `{}`", need, result)
+                    )),
+                    (None,    Some(_)) => Err(from_error!(
+                        format!("bad need `{}`", need)
+                    )),
+                    (Some(_), None   ) => Err(from_error!(
+                        format!("bad rest `{}`", result)
+                    )),
+                    (Some(n), Some(r)) => Ok(
+                        Process::from_integer(
+                            name,
+                            nb_cycle.parse::<usize>().ok().unwrap_or_default(),
+                            n, r
+                        )
+                    ),
+                }
             }
+            else {
+                Err(from_error!(format!("bad cycle `{}`", nb_cycle)))
+            },
+            why => Err(from_error!("parse_proces", why)),
         }
-        else {
-           Err(from_error!(format!("bad cycle `{}`", nb_cycle)))
-        },
-        why => Err(from_error!("parse_proces", why)),
-      }
     }
 
     /// The `get_name` accessor function returns the name
@@ -162,7 +162,7 @@ impl Process {
         process: &Vec<&Process>
     ) -> Vec<Process> {
         let mut ret: Vec<Process> = Vec::new();
-        
+
         process.iter().foreach(|procs| {
           if procs.get_h_value(&obj.0) > 0.0 {
             ret.push((*procs).clone());
@@ -179,35 +179,34 @@ impl Process {
         let mut input = self.input.clone();
         if let Some(ref x) = self.neutral {
             // Check if the neutral ressource exist
-           input.sub(&x);
+            input.sub(&x);
         }
+        println!("input:{}", input);
+        println!("rec:{}", ressources);
         input.sub_from_inventory(ressources);
+        println!("input:{}", input);
         if input.is_empty() {
             Ok(None)
         } else {
             let mut ret: Vec<Process> = Vec::new();
-            input.get_ressource().iter().all(|ressource| {
-              if let Some(smt) = Process::get_producing_process(
-                                            ressource,
-                                            process
-                                          ).first() {
-                match smt.needed_process(process, ressources) {
-                  Ok(None) => {
-                    ret.push(smt.clone());
-                    true
-                  },
-                  Ok(Some(a)) => {
-                    ret.extend(a);
-                    true
-                  },
-                  Err(_) => false,
+            for (_, obj) in input.iter() {
+                println!("obj:{}", obj);
+                let tmp = Process::get_producing_process(obj, process);
+                println!("tmp:{:?}", tmp);
+                if tmp.len() == 0 {
+                    return Err(())
                 }
-              }
-              else {
-                false
-              }
-            });
-            Ok(Some(ret))
+                let smt = match tmp.first()/*max_by_key(|&x| x.get_h_value(&obj.0))*/ {
+                    None => return Err(()),
+                    Some(a) => a
+                };
+                match smt.needed_process(process, ressources) {
+                    Err(_) => return Err(()),
+                    Ok(None) => ret.push(smt.clone()),
+                    Ok(Some(a)) => ret.extend(a)
+                }
+            }
+             Ok(Some(ret))
         }
 
     }
@@ -229,23 +228,35 @@ impl std::fmt::Display for Process {
     /// (<result> :<qty>[ ;<result> :<qty>[...]]) :
     /// <nb_cycle>`.
 
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "{}:{}:{}:{}", self.name, self.input, self.output, self.cycle)
-  }
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}:{}:{}:{}", self.name, self.input, self.output, self.cycle)
+    }
+}
+
+impl std::fmt::Debug for Process {
+
+    /// The `fmt` function prints the Process formated like `<name> :
+    /// (<need> :<qty>[ ;<need> :<qty>[...]]) :
+    /// (<result> :<qty>[ ;<result> :<qty>[...]]) :
+    /// <nb_cycle>`.
+
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}:{}:{}:{}", self.name, self.input, self.output, self.cycle)
+    }
 }
 
 impl std::default::Default for Process {
 
-  /// The `default` constructor function returns a empty Proces.
+    /// The `default` constructor function returns a empty Proces.
 
-  fn default() -> Self {
-    Process {
-      name: String::new(),
-      cycle: 0usize,
-      input: Inventory::default(),
-      output: Inventory::default(),
-      neutral: None,
-      heuristic: HashMap::new()
+    fn default() -> Self {
+        Process {
+            name: String::new(),
+            cycle: 0usize,
+            input: Inventory::default(),
+            output: Inventory::default(),
+            neutral: None,
+            heuristic: HashMap::new()
+        }
     }
-  }
 }
