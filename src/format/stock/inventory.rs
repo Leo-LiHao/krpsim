@@ -101,6 +101,15 @@ impl Inventory {
         self.0.is_empty()
     }
 
+    /// The `is_zero` interface function returns true if
+    /// the map contains only nul ressources
+
+    pub fn is_zero (
+        &self
+    ) -> bool {
+        self.iter().all(|(_, x)| x.1 == 0)
+    }
+
     /// The `any` interface function checks if the map contains
     /// the key.
 

@@ -183,18 +183,13 @@ impl Process {
             // Check if the neutral ressource exist
             input.sub(&x);
         }
-        println!("input:{}", input);
-        println!("rec:{}", ressources);
         input.sub_from_inventory(ressources);
-        println!("input:{}", input);
-        if input.is_empty() {
+        if input.is_zero() {
             Ok(None)
         } else {
             let mut ret: Vec<Process> = Vec::new();
             for (_, obj) in input.iter() {
-                println!("obj:{}", obj);
                 let tmp = Process::get_producing_process(obj, process);
-                println!("tmp:{:?}", tmp);
                 if tmp.len() == 0 {
                     return Err(())
                 }
