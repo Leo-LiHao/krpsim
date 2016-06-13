@@ -183,9 +183,10 @@ impl Process {
             // Check if the neutral ressource exist
             input.sub(&x);
         }
-        input.sub_from_inventory(ressources);
         println!("input:{}", input);
         println!("rec:{}", ressources);
+        input.sub_from_inventory(ressources);
+        println!("input:{}", input);
         if input.is_empty() {
             Ok(None)
         } else {

@@ -10,6 +10,7 @@
 
 extern crate std;
 
+use itertools::Itertools;
 use super::ressource::Ressource;
 
 #[derive(Clone)]
@@ -245,6 +246,26 @@ impl Inventory {
         )
     }
 
+    /// The `get_ressource` function returns a accessor on
+    /// the list of ressource.
+
+    pub fn get_ressource(&self) -> Vec<&Ressource> {
+        self.0.iter().map(|(&_, ressoure)| ressoure)
+            .collect::<Vec<&Ressource>>()
+    }
+
+    /// The `get_neutral` function returns return a neutral component
+    /// if the output ressource exist.
+
+    pub fn get_neutral (
+        &self,
+        output: &Inventory,
+    ) -> Option<Ressource> {
+        match self.iter().find(|&(_, x)| output.any_from_ressource(x)) {
+            Some((_, val)) => Some(val.clone()),
+            None => None,
+        }
+    }
     /// The `to_vec` function returns a cloned list of ressource.
 
     #[deprecated]
@@ -259,7 +280,7 @@ impl std::cmp::PartialEq for Inventory {
     /// The `eq` function fast checks if two Inventory are equal.
 
     fn eq(&self, with: &Self) -> bool {
-        self.0 == self.0
+        self.0 == with.0
     }
 }
 
