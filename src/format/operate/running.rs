@@ -48,9 +48,9 @@ impl Running {
         &self,
     ) -> std::collections::hash_map::Iter<std::string::String, Process> {
        self.0.iter()
-    }    
+    }
 
-    /// The `push` interface function inserts a new item to 
+    /// The `push` interface function inserts a new item to
     /// the inventory.
 
     pub fn push (

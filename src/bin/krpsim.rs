@@ -26,7 +26,7 @@ fn get_ressources_from_process(process_list: &Vec<&Process>, ressources: &mut In
         let mut add_ressource = |ressources_list: &Inventory| -> () {
             for res in ressources_list.iter() {
                 if ressources.iter().find(|tmp| tmp.0 == res.0).is_none() {
-                    ressources.add(&Ressource::new(res.0.clone(), 0));
+                    ressources.push(res.0.clone(), Ressource::new(res.0.clone(), 0));
                 }
             }
         };
@@ -60,41 +60,51 @@ fn main() {
         Some(a) => a,
         None => panic!("You should optimize the production of at least one ressources!")
     };
-   let mut final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.get_process());
+    //println!("{}", production);
+    let final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.get_process());
+    for prc in final_process.iter() {
+        println!("{}", prc);
+    }
 
-/*    optimization(&mut config.process_list, &production);*/
+    /*    optimization(&mut config.process_list, &production);*/
     while !done {
         let mut usable_process:Vec<(Process, Vec<Process>)> = Vec::new();
 
         for process in final_process.iter() {
             match process.needed_process(&config.running.get_process(), &config.ressources) {
-                Err(_) => {},
-                Ok(None) => usable_process.push((process.clone(), vec!(process.clone()))),
-                Ok(Some(a)) => usable_process.push(( process.clone(), a ))
+                Err(_) => {println!("error");},
+                Ok(None) => {println!("none"); usable_process.push((process.clone(), vec!(process.clone()))) },
+                Ok(Some(a)) => {println!("ret: {:?}", a); usable_process.push(( process.clone(), a ))}
             }
         }
-
+      /*  for (bid, truc) in usable_process {
+            println!("{}:main proc", bid);
+            for prc in truc {
+                println!("{}:tt", prc);
+            }
+        }
+*/
         if process_queue.is_empty() {
             println!("Finished at cycle: {}", cycle);
             done = true;
         }
     }
-/*        if processes.len() > 0 {
-            for process in processes {
-                process_queue.add(process);
-            }
-        }
-        match process_queue.get_ended_process(cycle) {
-            None => cycle += 1,
-            Some(livep_vec) => {
-                for ended_process in livep_vec {
-                    add(&mut config.ressources, ended_process.destruct(), 1f64);
-                }
-                if cycle > delay {
-                    println!("Finished at cycle: {}", cycle);
-                    done = true;
-                }
-            }
-        }
-    */
+    /*        if processes.len() > 0 {
+    for process in processes {
+    process_queue.add(process);
+}
+}
+    match process_queue.get_ended_process(cycle) {
+    None => cycle += 1,
+    Some(livep_vec) => {
+    for ended_process in livep_vec {
+    add(&mut config.ressources, ended_process.destruct(), 1f64);
+}
+    if cycle > delay {
+    println!("Finished at cycle: {}", cycle);
+    done = true;
+}
+}
+}
+     */
 }

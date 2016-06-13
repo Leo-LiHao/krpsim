@@ -10,8 +10,6 @@
 
 extern crate std;
 
-use itertools::Itertools;
-
 use super::ressource::Ressource;
 
 #[derive(Clone)]
@@ -23,12 +21,11 @@ impl Inventory {
     pub fn new (
         ressources: Vec<Ressource>,
     ) -> Self {
-        let mut map: std::collections::HashMap<String, Ressource> =
-                     std::collections::HashMap::with_capacity(ressources.len());
+        let mut map: std::collections::HashMap<String, Ressource> = std::collections::HashMap::with_capacity(ressources.len());
 
-        ressources.into_iter().foreach(|ressource| {
-            map.insert(ressource.get_name().to_string(), ressource);
-        });
+        ressources.into_iter().all(|ressource|
+            map.insert(ressource.get_name().to_string(), ressource).is_none()
+        );
         Inventory(map)
     }
 
@@ -217,7 +214,7 @@ impl Inventory {
         vals: &Inventory,
     ) -> bool {
         !vals.iter().map(|(_, val)|
-                           self.sub(&val)).collect::<Vec<Option<usize>>>(
+                           self.add(&val)).collect::<Vec<Option<usize>>>(
                    )
              .iter().any(|item|
                            item.is_none()
@@ -255,25 +252,12 @@ impl Inventory {
         )
     }
 
-    /// The `get_ressource` function returns a accessor on
-    /// the list of ressource.
+    /// The `to_vec` function returns a cloned list of ressource.
 
-    pub fn get_ressource(&self) -> Vec<&Ressource> {
-       self.0.iter().map(|(&_, ressoure)| ressoure)
-                    .collect::<Vec<&Ressource>>()
-    }
-
-    /// The `get_neutral` function returns return a neutral component
-    /// if the output ressource exist.
-
-    pub fn get_neutral (
-        &self,
-        output: &Inventory,
-    ) -> Option<Ressource> {
-        match self.iter().find(|&(_, x)| output.any_from_ressource(x)) {
-            Some((_, val)) => Some(val.clone()),
-            None => None,
-        }
+    #[deprecated]
+    pub fn to_vec (&self) -> Vec<Ressource> {
+      self.0.iter().map(|ressoure| ressoure.1.clone())
+                   .collect::<Vec<Ressource>>()
     }
 }
 
