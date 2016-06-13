@@ -84,7 +84,7 @@ impl Ressource {
   ) -> usize {
     match (self.get_quantity(), val) {
       (a, b) if a > b => self.set_quantity(a - b),
-      (a, b) => self.set_quantity(b - a),
+      _ => self.set_quantity(0),
     }
   }
 
@@ -96,13 +96,6 @@ impl Ressource {
     val: &Ressource,
   ) -> usize {
     self.sub_quantity(val.get_quantity()) 
-  }
-
-  pub fn order (
-    &self,
-    with: &mut Ressource,
-  ) -> usize {
-    with.sub_from_ressource(self)
   }
 }
 

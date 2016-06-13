@@ -96,7 +96,7 @@ fn test_inventory_can_order() {
       ) // with
     )
   );
-/*  assert!( // less qte of items
+  /*assert!( // less qte of items
     !Inventory::new(
       vec!(
         Ressource::new("heart".to_string(), 100), 
@@ -187,7 +187,7 @@ fn test_inventory_sub_from_inventory() {
 fn test_inventory_frale_co() {
   let mut inventory = Inventory::new(
     vec!(
-      Ressource::new("heart".to_string(), 5),
+      Ressource::new("heart".to_string(), 1),
     )
   );
 
@@ -195,14 +195,14 @@ fn test_inventory_frale_co() {
     inventory.sub_from_inventory(
       &Inventory::new(
         vec!(
-          Ressource::new("heart".to_string(), 1),
+          Ressource::new("heart".to_string(), 5),
         ) // from
       )
     )
   );
   assert_eq!(
     format!("{}", inventory),
-    "(heart:4)"
+    "(heart:0)"
   );
 }
 

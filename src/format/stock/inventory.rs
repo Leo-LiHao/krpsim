@@ -228,7 +228,7 @@ impl Inventory {
     ) -> bool {
         self.iter().map(|(&_, ref must_have)|
                           match with.get_mut_from_ressource(&must_have) {
-                            Some(ref mut have) => Ok(must_have.order(have)),
+                            Some(ref mut have) => Ok(have.sub_from_ressource(must_have)),
                             None => Err(from_error!("haven't item")),
                           }
                         )
