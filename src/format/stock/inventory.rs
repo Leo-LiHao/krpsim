@@ -24,13 +24,17 @@ impl Inventory {
     pub fn new (
         ressources: Vec<Ressource>,
     ) -> Self {
-        let mut map: std::collections::HashMap<String, Ressource> =
-                     std::collections::HashMap::with_capacity(ressources.len());
+        let len: usize = ressources.len();
 
-        ressources.into_iter().all(|ressource|
-            map.insert(ressource.get_name().to_string(), ressource).is_none()
-        );
-        Inventory(map)
+        Inventory(
+          ressources.into_iter().fold_while(
+            std::collections::HashMap::with_capacity(len),
+            |mut map, ressource| {
+              map.insert(ressource.get_name().to_string(), ressource);
+              Continue(map)
+            }
+          )
+        )
     }
 
     /// The `from_result` multi constructor function returns a list
