@@ -18,7 +18,7 @@ use krpsim::format::optimize::Optimize;
 use krpsim::format::operate::process::Process;
 use krpsim::format::queue::Queue;
 use krpsim::format::livep::Livep;
-use krpsim::input::config::Configuration;
+use krpsim::parser::config::Configuration;
 
 
 fn get_ressources_from_process(process_list: &Vec<&Process>, ressources: &mut Inventory) -> () {

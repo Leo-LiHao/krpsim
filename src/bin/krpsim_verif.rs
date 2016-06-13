@@ -12,7 +12,7 @@ extern crate krpsim;
 
 use krpsim::format::operate::process::Process;
 use krpsim::format::stock::inventory::Inventory;
-use krpsim::input::config::Configuration;
+use krpsim::parser::config::Configuration;
 
 use std::io::prelude::*;
 

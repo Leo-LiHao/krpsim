@@ -124,8 +124,8 @@ impl Process {
     /// The `get_cycle` accessor function returns the number
     /// of cycle required by the process.
 
-    pub fn get_cycle(&self) -> &usize {
-        &self.cycle
+    pub fn get_cycle(&self) -> usize {
+        self.cycle
     }
 
     pub fn get_h_value(&self, s: &String) -> f64 {
@@ -143,7 +143,10 @@ impl Process {
         }
     }
 
-    pub fn get_producing_process(obj: &Ressource, process: &Vec<&Process>) -> Vec<Process> {
+    pub fn get_producing_process (
+        obj: &Ressource,
+        process: &Vec<&Process>
+    ) -> Vec<Process> {
         let mut ret: Vec<Process> = Vec::new();
         
         process.iter().foreach(|procs| 
@@ -154,8 +157,11 @@ impl Process {
         ret
     }
 
-    pub fn needed_process(&self, process: &Vec<&Process>, ressources: &Inventory)
-                          -> Result<Option<Vec<Process>>, ()> {
+    pub fn needed_process (
+        &self,
+        process: &Vec<&Process>,
+        ressources: &Inventory,
+    ) -> Result<Option<Vec<Process>>, ()> {
         let mut input = self.input.clone();
         if let Some(ref x) = self.neutral {
             // Check if the neutral ressource exist
@@ -192,8 +198,13 @@ impl Process {
 
     }
 
-    pub fn distance_overall(&self, owned: &Vec<Ressource>) -> usize {
-        self.input.get_ressource().iter().fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
+    pub fn distance_overall (
+        &self,
+        owned: &Vec<Ressource>,
+    ) -> usize {
+        self.input.get_ressource()
+                  .iter()
+                  .fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
     }
 }
 

@@ -42,4 +42,4 @@ extern crate itertools;
 #[macro_use]
 mod macros;
 pub mod format;
-pub mod input;
+pub mod parser;

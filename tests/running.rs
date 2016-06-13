@@ -15,10 +15,10 @@ use self::krpsim::format::operate::running::Running;
 
 #[test]
 fn test_can_cycle() {
-/*  assert_eq!( // identical inventory
+  assert_eq!( // identical inventory
     Running::new(
       vec!(
-        Process::new(
+        Process::from_integer(
           "knight".to_string(), // name
           10usize, // cycle
           Inventory::new(
@@ -38,20 +38,83 @@ fn test_can_cycle() {
               Ressource::new("sword".to_string(), 40),
             ) // result
           ),
-        )
+        ),
+        Process::from_integer(
+          "guard".to_string(), // name
+          12usize, // cycle
+          Inventory::new(
+            vec!(
+              Ressource::new("blue-rupee".to_string(), 5),
+            ) // need
+          ),
+          Inventory::new(
+            vec!(
+              Ressource::new("sword".to_string(), 1),
+            ) // result
+          ),
+        ),
       )
     ).can_cycle(
-      &Running::new(
-        vec!(
-          Process::new(
-            "knight".to_string(),
-            0usize,
-            Inventory::default(),
-            Inventory::default(),
-          )
-        )
+      &vec!(
+        (
+          "knight".to_string(),
+          0usize,
+        ),
+      ) // will cycle
+    ).unwrap_or(!0usize),
+    10usize
+  );
+  assert_eq!( // identical inventory
+    Running::new(
+      vec!(
+        Process::from_integer(
+          "knight".to_string(), // name
+          10usize, // cycle
+          Inventory::new(
+            vec!(
+              Ressource::new("green-rupee".to_string(), 1),
+              Ressource::new("blue-rupee".to_string(), 5),
+              Ressource::new("red-rupee".to_string(), 20),
+              Ressource::new("purple-rupee".to_string(), 50),
+              Ressource::new("orange-rupee".to_string(), 100),
+              Ressource::new("silver-rupee".to_string(), 200),
+              Ressource::new("gold-rupee".to_string(), 300),
+            ) // need
+          ),
+          Inventory::new(
+            vec!(
+              Ressource::new("heart".to_string(), 10),
+              Ressource::new("sword".to_string(), 40),
+            ) // result
+          ),
+        ),
+        Process::from_integer(
+          "guard".to_string(), // name
+          12usize, // cycle
+          Inventory::new(
+            vec!(
+              Ressource::new("blue-rupee".to_string(), 5),
+            ) // need
+          ),
+          Inventory::new(
+            vec!(
+              Ressource::new("sword".to_string(), 1),
+            ) // result
+          ),
+        ),
       )
-    ),
-    Some(10)
-  );*/
+    ).can_cycle(
+      &vec!(
+        (
+          "knight".to_string(),
+          0usize,
+        ),
+        (
+          "knight".to_string(),
+          10usize,
+        ),
+      ) // will cycle
+    ).unwrap_or(!0usize),
+    20usize
+  );
 }

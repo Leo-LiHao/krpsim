@@ -10,6 +10,9 @@
 
 extern crate std;
 
+use itertools::Itertools;
+use itertools::FoldWhile::{Continue, Done};
+
 use super::process::Process;
 
 pub struct Running (std::collections::HashMap<String, Process>);
@@ -21,11 +24,12 @@ impl Running {
     pub fn new (
         process: Vec<Process>,
     ) -> Self {
-        let mut map: std::collections::HashMap<String, Process> = std::collections::HashMap::with_capacity(process.len());
+        let mut map: std::collections::HashMap<String, Process> =
+                     std::collections::HashMap::with_capacity(process.len());
 
-        process.into_iter().all(|task|
-            map.insert(task.get_name().to_string(), task).is_some()
-        );
+        process.into_iter().foreach(|task| {
+            map.insert(task.get_name().to_string(), task);
+        });
         Running(map)
     }
 
@@ -37,7 +41,6 @@ impl Running {
     ) -> bool {
         self.0.is_empty()
     }
-
 
     /// The `iter` interface function returns a iterator.
 
@@ -58,36 +61,34 @@ impl Running {
         self.0.insert(key, val)
     }
 
+    /// The `get_process` accesor function returns a process from map
+    /// according to a key name.
+
+    pub fn get (
+        &self,
+        key: &String,
+    ) -> Option<&Process> {
+        self.0.get(key)
+    }
+
     /// The `can_cycle` checks if the number and name of cycle is right
     /// between two process.
 
     pub fn can_cycle (
         &self,
-        with: &Running,
-    ) -> Option<usize> {
-        match self.iter()
-                  .zip(with.iter())
-                  .fold(vec!(Some(0)), |mut cycles: Vec<Option<usize>>,
-                                        ((&_, ref must_have),
-                                         (&_, ref have))|
-                       if let Some(&Some(cycle)) = cycles.last() {
-                           if cycle == (*have.get_cycle() as usize)
-                           && must_have.get_name() == have.get_name() {
-                             cycles.push(Some(cycle + (*must_have.get_cycle() as usize)));
-                           }
-                           else {
-                             cycles.push(None);
-                           }
-                           cycles
-                       }
-                       else {
-                         cycles.push(None);
-                         cycles
-                       }
-                   ).last() {
-            Some(&Some(cycle)) => Some(cycle),
-            _ => None,
-        }
+        with: &Vec<(String, usize)>,
+    ) -> std::io::Result<usize> {
+        with.iter()
+            .fold_while(Ok(0usize), |acc, &(ref have_name, have_cycle)| {
+               match (self.get(have_name), acc) {
+                   (Some(ref process), Ok(cycle)) => if have_cycle == cycle {
+                       Continue(Ok(process.get_cycle() + cycle))
+                   } else {
+                       Done(Err(from_error!(format!("{}", process))))
+                   },
+                   (_, _) => Done(Err(from_error!("not item was found"))),
+               }
+            })
     }
 
     /// The `get_process` function returns a accessor on

@@ -46,7 +46,7 @@ impl <'a> Livep <'a> {
                  process.name, cycle);
         Livep {
             process: process,
-            cycle_end: cycle + (*process.get_cycle() as usize)
+            cycle_end: cycle + process.get_cycle()
         }
     }
     pub fn destruct(&self) -> &Inventory {
