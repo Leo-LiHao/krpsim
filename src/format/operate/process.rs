@@ -28,6 +28,7 @@ pub struct Process {
 }
 
 impl Process {
+
     /// The `new` constructor function returns the Process.
 
     pub fn new (
@@ -128,6 +129,21 @@ impl Process {
         self.cycle
     }
 
+    /// The `buy_with` function substrates *with* argument with *input* and
+    /// additions the *output* to *with* argument.
+
+    pub fn buy_with (
+      &self,
+      with: &mut Inventory, // with
+    ) -> bool {
+      if self.input.order(with) { // Pay pay pay.
+        with.add_from_inventory(&self.output) // Take the list items.
+      }
+      else {
+        false
+      }
+    }
+
     pub fn get_h_value(&self, s: &String) -> f64 {
         match self.heuristic.get(s) {
             Some(&number) => number,
@@ -149,11 +165,11 @@ impl Process {
     ) -> Vec<Process> {
         let mut ret: Vec<Process> = Vec::new();
         
-        process.iter().foreach(|procs| 
-            if procs.get_h_value(&obj.0) > 0.0 {
-                ret.push((*procs).clone());
-            }
-        );
+        process.iter().foreach(|procs| {
+          if procs.get_h_value(&obj.0) > 0.0 {
+            ret.push((*procs).clone());
+          }
+        });
         ret
     }
 

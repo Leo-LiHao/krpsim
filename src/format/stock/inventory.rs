@@ -39,7 +39,8 @@ impl Inventory {
                  -> Option<Self> {
         if ressources.iter().any(|x| x.is_err()) {
             None
-        } else {
+        }
+        else {
             Some (
                 Inventory::new (
                     ressources.into_iter()
@@ -75,10 +76,11 @@ impl Inventory {
     }
 
     /// The `iter` interface function returns a iterator.
+
     pub fn iter (
       &self,
     ) -> std::collections::hash_map::Iter<std::string::String, Ressource> {
-      self.0.iter()
+        self.0.iter()
     }
 
     /// The `push` interface function inserts a new item to
@@ -163,9 +165,18 @@ impl Inventory {
         &mut self,
         val: &Ressource,
     ) -> Option<usize> {
-        match self.get_mut_from_ressource(val) {
-            Some(ref mut v) => v.add_from_ressource(val),
-            None => None,
+        if self.any_from_ressource(val) {
+          match self.get_mut_from_ressource(val) {
+            Some(v) => v.add_from_ressource(val),
+            None => unimplemented!(),
+          }
+        }
+        else {
+          self.push(
+           val.get_name().to_string(),
+           val.clone()
+          );
+          Some(val.get_quantity())
         }
     }
 
@@ -176,12 +187,9 @@ impl Inventory {
         &mut self,
         vals: &Inventory,
     ) -> bool {
-        !vals.iter().map(|(_, val)|
-                           self.add(&val)
-                   ).collect::<Vec<Option<usize>>>()
-             .iter().any(|item|
-                           item.is_none()
-                   )
+      !vals.iter().map(|(_, val)| self.add(&val))
+                  .collect::<Vec<Option<usize>>>()
+                  .iter().any(|item| item.is_none())
     }
 
     /// The `sub` interface function substractes a item
@@ -191,21 +199,9 @@ impl Inventory {
         &mut self,
         val: &Ressource,
     ) -> Option<usize> {
-        match {
-            match self.get_mut_from_ressource(val) {
-                Some(ref mut v) => v.sub_from_ressource(val),
-                None => None,
-            }
-        } {
-            Some(0) => {
-              if self.0.remove(val.get_name()).is_some() {
-                Some(0)
-              }
-              else {
-                None
-              }
-            },
-            v => v,
+        match self.get_mut_from_ressource(val) {
+          Some(ref mut v) => Some(v.sub_from_ressource(val)),
+          None => None,
         }
     }
 
@@ -217,31 +213,28 @@ impl Inventory {
         vals: &Inventory,
     ) -> bool {
         !vals.iter().map(|(_, val)|
-                           self.sub(&val)).collect::<Vec<Option<usize>>>(
+                     self.sub(&val)).collect::<Vec<Option<usize>>>(
                    )
              .iter().any(|item|
-                           item.is_none()
+                     item.is_none()
                    )
     }
-    /// The `order` order the command.
+
+    /// The `order` takes the payment of command.
 
     pub fn order (
-      &self,
-      with: &mut Inventory,
+        &self,
+        with: &mut Inventory,
     ) -> bool {
-        self.iter()
-            .map(|(&_, ref must_have)|
-                    match with.get_mut_from_ressource(&must_have) {
-                      Some(ref mut have) => must_have.order(have),
-                      None => Err(from_error!("haven't item")),
-                    }
-                  )
-            .collect::<Vec<std::result::Result<usize, std::io::Error>>>()
-            .iter()
-            .find(|e|
-                    e.is_err()
-                 )
-            .is_none()
+        self.iter().map(|(&_, ref must_have)|
+                          match with.get_mut_from_ressource(&must_have) {
+                            Some(ref mut have) => Ok(must_have.order(have)),
+                            None => Err(from_error!("haven't item")),
+                          }
+                        )
+                   .collect::<Vec<std::result::Result<usize, std::io::Error>>>()
+                   .iter().find(|e| e.is_err())
+                          .is_none()
     }
 
     /// The `can_order` checks if the order is possible.
@@ -277,6 +270,19 @@ impl Inventory {
     }
 }
 
+impl std::cmp::PartialEq for Inventory {
+    
+    /// The `eq` function fast checks if two Inventory are equal.
+
+    fn eq(&self, with: &Self) -> bool {
+        self.0 == self.0
+    }
+}
+
+impl std::cmp::Eq for Inventory {
+}
+
+
 impl std::fmt::Display for Inventory {
 
     /// The `fmt` function prints the multiplication list.
@@ -285,9 +291,10 @@ impl std::fmt::Display for Inventory {
         &self,
         f: &mut std::fmt::Formatter,
     ) -> Result<(), std::fmt::Error> {
-        write!(f, "({})", self.0.iter().map(|a| format!("{}", a.1))
-                                       .collect::<Vec<String>>()
-                                       .join(";"))
+        write!(f, "({})", self.iter().sorted()
+                                     .iter().map(|&(_, r)| format!("{}", r))
+                                            .collect::<Vec<String>>()
+                                            .join(";"))
     }
 }
 

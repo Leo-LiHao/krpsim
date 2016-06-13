@@ -6,6 +6,7 @@
 // This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! The module `input` contains all parsers.
+//! The module `parser` contains all parssable inputs.
 
 pub mod config;
+pub mod trace;

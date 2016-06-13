@@ -13,6 +13,8 @@ extern crate std;
 use itertools::Itertools;
 use itertools::FoldWhile::{Continue, Done};
 
+use parser::trace::Trace;
+use format::stock::inventory::Inventory;
 use super::process::Process;
 
 pub struct Running (std::collections::HashMap<String, Process>);
@@ -24,13 +26,16 @@ impl Running {
     pub fn new (
         process: Vec<Process>,
     ) -> Self {
-        let mut map: std::collections::HashMap<String, Process> =
-                     std::collections::HashMap::with_capacity(process.len());
+      let len: usize = process.len();
 
-        process.into_iter().foreach(|task| {
+      Running(
+        process.into_iter().fold_while(
+          std::collections::HashMap::with_capacity(len),
+          |mut map, task| {
             map.insert(task.get_name().to_string(), task);
-        });
-        Running(map)
+            Continue(map)
+        })
+      )  
     }
 
     /// The `is_empty` interface function returns true if
@@ -76,7 +81,7 @@ impl Running {
 
     pub fn can_cycle (
         &self,
-        with: &Vec<(String, usize)>,
+        with: &Trace,
     ) -> std::io::Result<usize> {
         with.iter()
             .fold_while(Ok(0usize), |acc, &(ref have_name, have_cycle)| {
@@ -97,6 +102,17 @@ impl Running {
     pub fn get_process(&self) -> Vec<&Process> {
         self.0.iter().map(|(&_, process)| process)
                      .collect::<Vec<&Process>>()
+    }
+
+    pub fn buy_with (
+        &self,
+        command: String, // product
+        inventory: &mut Inventory, // with
+    ) -> bool {
+        match self.0.get(&command) {
+            Some(process) => process.buy_with(inventory),
+            None => false,
+        }
     }
 }
 

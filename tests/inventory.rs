@@ -12,7 +12,7 @@ use self::krpsim::format::stock::inventory::Inventory;
 use self::krpsim::format::stock::ressource::Ressource;
 
 #[test]
-fn test_can_order() {
+fn test_inventory_can_order() {
   assert!( // identical inventory
     Inventory::new(
       vec!(
@@ -96,7 +96,7 @@ fn test_can_order() {
       ) // with
     )
   );
-  assert!( // less qte of items
+/*  assert!( // less qte of items
     !Inventory::new(
       vec!(
         Ressource::new("heart".to_string(), 100), 
@@ -116,6 +116,140 @@ fn test_can_order() {
           Ressource::new("deku-stick".to_string(), 10),
           Ressource::new("deku-shield".to_string(), 40),
         )
+      ) // with
+    )
+  );*/
+}
+
+#[test]
+fn test_inventory_fmt() {
+  assert_eq!(
+    format!("{}",
+      Inventory::new(
+        vec!(
+          Ressource::new("heart".to_string(), 10),
+          Ressource::new("arrows".to_string(), 20),
+          Ressource::new("deku-seeds".to_string(), 30),
+          Ressource::new("deku-nuts".to_string(), 15),
+          Ressource::new("deku-stick".to_string(), 10),
+          Ressource::new("deku-shield".to_string(), 40),
+        )
+      )
+    ),
+    "(arrows:20;deku-nuts:15;deku-seeds:30;deku-shield:40;deku-stick:10;heart:10)"
+  )
+}
+
+#[test]
+fn test_inventory_sub_from_inventory() {
+  let mut inventory = Inventory::new(
+    vec!(
+      Ressource::new("heart".to_string(), 10),
+    )
+  );
+
+  assert!(
+    !inventory.sub_from_inventory(
+      &Inventory::new(
+        vec!(
+          Ressource::new("heart".to_string(), 5),
+          Ressource::new("arrows".to_string(), 20),
+        ) // from
+      )
+    )
+  );
+  assert_eq!(
+    format!("{}", inventory),
+    "(heart:5)"
+  );
+ let mut inventory = Inventory::new(
+    vec!(
+      Ressource::new("heart".to_string(), 8),
+    )
+  );
+
+  assert!(
+    inventory.sub_from_inventory(
+      &Inventory::new(
+        vec!(
+          Ressource::new("heart".to_string(), 5),
+        ) // from
+      )
+    )
+  );
+  assert_eq!(
+    format!("{}", inventory),
+    "(heart:3)"
+  );
+}
+
+#[test]
+fn test_inventory_frale_co() {
+  let mut inventory = Inventory::new(
+    vec!(
+      Ressource::new("heart".to_string(), 5),
+    )
+  );
+
+  assert!(
+    inventory.sub_from_inventory(
+      &Inventory::new(
+        vec!(
+          Ressource::new("heart".to_string(), 1),
+        ) // from
+      )
+    )
+  );
+  assert_eq!(
+    format!("{}", inventory),
+    "(heart:4)"
+  );
+}
+
+#[test]
+fn test_inventory_add_from_inventory() {
+  let mut inventory = Inventory::new(
+    vec!(
+      Ressource::new("heart".to_string(), 10),
+    )
+  );
+
+  assert!(
+    inventory.add_from_inventory(
+      &Inventory::new(
+        vec!(
+          Ressource::new("heart".to_string(), 10),
+          Ressource::new("arrows".to_string(), 20),
+        ) // from
+      )
+    )
+  );
+  assert_eq!(
+    format!("{}", inventory),
+    "(arrows:20;heart:20)"
+  );
+}
+
+#[test]
+fn test_inventory_equal() {
+  assert!( // identical inventory
+    Inventory::new(
+      vec!(
+        Ressource::new("heart".to_string(), 10),
+        Ressource::new("arrows".to_string(), 20),
+        Ressource::new("deku-seeds".to_string(), 30),
+        Ressource::new("deku-nuts".to_string(), 15),
+        Ressource::new("deku-stick".to_string(), 10),
+        Ressource::new("deku-shield".to_string(), 40),
+      )
+    ) == Inventory::new(
+      vec!(
+        Ressource::new("heart".to_string(), 10),
+        Ressource::new("arrows".to_string(), 20),
+        Ressource::new("deku-seeds".to_string(), 30),
+        Ressource::new("deku-nuts".to_string(), 15),
+        Ressource::new("deku-stick".to_string(), 10),
+        Ressource::new("deku-shield".to_string(), 40),
       ) // with
     )
   );
