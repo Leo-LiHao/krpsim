@@ -13,30 +13,31 @@ use self::krpsim::format::stock::ressource::Ressource;
 #[test]
 fn test_ressource_can_order() {
   assert_eq!(
-    Ressource::new("apple".to_string(), 5).order(
-      &mut Ressource::new("apple".to_string(), 5) // with
+    Ressource::new("apple".to_string(), 5).sub_from_ressource(
+      &Ressource::new("apple".to_string(), 5) // with
     ),
     0usize
   );
   assert_eq!(
-    Ressource::new("apple".to_string(), 0).order(
-      &mut Ressource::new("apple".to_string(), 0) // with
+    Ressource::new("apple".to_string(), 0).sub_from_ressource(
+      &Ressource::new("apple".to_string(), 0) // with
     ),
     0usize
   );
   assert_eq!(
-    Ressource::new("apple".to_string(), 4).order(
-      &mut Ressource::new("apple".to_string(), 5) // with
+    Ressource::new("apple".to_string(), 4).sub_from_ressource(
+      &Ressource::new("apple".to_string(), 5) // with
     ),
-    1usize
+    0usize
   );
 }
-/*
+
 #[test]
 fn test_cannot_order() {
-  assert!(
-    Ressource::new("apple".to_string(), 5).order(
-      &mut Ressource::new("apple".to_string(), 0) // with
-    )
+  assert_eq!(
+    Ressource::new("apple".to_string(), 5).sub_from_ressource(
+      &Ressource::new("apple".to_string(), 0) // with
+    ),
+    5usize
   );
-}*/
+}

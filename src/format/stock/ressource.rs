@@ -82,9 +82,10 @@ impl Ressource {
     &mut self,
     val: usize,
   ) -> usize {
-      let qte = self.get_quantity();
-      self.set_quantity(
-          std::cmp::max(0, qte - val))
+    match (self.get_quantity(), val) {
+      (a, b) if a > b => self.set_quantity(a - b),
+      _ => self.set_quantity(0),
+    }
   }
 
   /// The `sub_from_ressource` function substrates a item
@@ -95,13 +96,6 @@ impl Ressource {
     val: &Ressource,
   ) -> usize {
     self.sub_quantity(val.get_quantity())
-  }
-
-  pub fn order (
-    &self,
-    with: &mut Ressource,
-  ) -> usize {
-    with.sub_from_ressource(self)
   }
 }
 
