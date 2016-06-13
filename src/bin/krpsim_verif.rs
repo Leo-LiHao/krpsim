@@ -13,35 +13,27 @@ extern crate krpsim;
 use krpsim::format::operate::process::Process;
 use krpsim::format::stock::inventory::Inventory;
 use krpsim::parser::config::Configuration;
+use krpsim::parser::trace::Trace;
 
-use std::io::prelude::*;
-
-fn trace (
+fn parse (
   file: &str,
   result_to_test: &str,
-) -> std::io::Result<usize> {
-  let configuration = try!(Configuration::new(file));
-  let reader: std::io::BufReader<std::fs::File> = std::io::BufReader::new(
-    try!(std::fs::File::open(result_to_test))
-  );
-    
-
- /*  for readed in reader.lines() {
-      if let Ok(line) = readed {
-        if let Ok(process) = Inventory(line) {
-          result.process_list.push(process);
-        }
-      }
-   }*/
-  Ok(42usize)
+) -> std::io::Result<(Configuration, Trace)> {
+  Ok((
+    try!(Configuration::new(file)),
+    try!(Trace::new(result_to_test))
+  ))
 }
 
 fn main () {
   let yaml = load_yaml!("cli.yml");
   let options = clap::App::from_yaml(yaml).get_matches();
 
-  trace(
+  match parse(
     options.value_of("file").unwrap(),
     options.value_of("result_to_test").unwrap(),
-  );
+  ) {
+      Ok((config, trace)) => println!("{}\n-\n{}", config, trace),
+      Err(why) => println!("{}", why),
+  }
 }

@@ -13,7 +13,7 @@ use self::krpsim::format::stock::ressource::Ressource;
 use self::krpsim::format::operate::process::Process;
 
 #[test]
-fn test_constructor_new() {
+fn test_process_constructor_new() {
   assert_eq!(
     format!("{}",
       Process::from_integer(

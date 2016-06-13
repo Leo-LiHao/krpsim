@@ -86,7 +86,24 @@ impl Configuration {
   }
 }
 
+impl std::fmt::Display for Configuration {
+
+  /// The `fmt` function prints the configuration.
+
+  fn fmt (
+    &self,
+    f: &mut std::fmt::Formatter,
+  ) -> Result<(), std::fmt::Error> {
+    write!(f, "{}\n{}\n{}",
+      self.ressources,
+      self.running,
+      self.optimize
+    )
+  }
+}
+
 impl std::default::Default for Configuration {
+
   /// The `default` constructor function returns a empty configuration.
 
   fn default() -> Self {
