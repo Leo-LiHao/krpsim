@@ -11,6 +11,8 @@
 extern crate std;
 
 use itertools::Itertools;
+use itertools::FoldWhile::{Continue, Done};
+
 use super::ressource::Ressource;
 
 #[derive(Clone)]
@@ -22,12 +24,17 @@ impl Inventory {
     pub fn new (
         ressources: Vec<Ressource>,
     ) -> Self {
-        let mut map: std::collections::HashMap<String, Ressource> = std::collections::HashMap::with_capacity(ressources.len());
+        let len: usize = ressources.len();
 
-        ressources.into_iter().all(|ressource|
-            map.insert(ressource.get_name().to_string(), ressource).is_none()
-        );
-        Inventory(map)
+        Inventory(
+          ressources.into_iter().fold_while(
+            std::collections::HashMap::with_capacity(len),
+            |mut map, ressource| {
+              map.insert(ressource.get_name().to_string(), ressource);
+              Continue(map)
+            }
+          )
+        )
     }
 
     /// The `from_result` multi constructor function returns a list
@@ -71,6 +78,15 @@ impl Inventory {
             _ => try!(Err(from_error!("unimplemented"))),
           })
           .collect::<Vec<std::io::Result<Ressource>>>())
+    }
+
+    /// The `len` interface function returns the number of elements
+    /// in the map.
+
+    pub fn len (
+      &self,
+    ) -> usize {
+      self.0.len()
     }
 
     /// The `iter` interface function returns a iterator.
@@ -122,6 +138,7 @@ impl Inventory {
 
     /// The `any` interface function checks if the map contains
     /// the key from a ressource.
+
     pub fn any_from_ressource (
         &self,
         val: &Ressource,
@@ -232,16 +249,21 @@ impl Inventory {
     pub fn order (
         &self,
         with: &mut Inventory,
-    ) -> bool {
-        self.iter().map(|(&_, ref must_have)|
-                          match with.get_mut_from_ressource(&must_have) {
-                            Some(ref mut have) => Ok(have.sub_from_ressource(must_have)),
-                            None => Err(from_error!("haven't item")),
-                          }
-                        )
-                   .collect::<Vec<std::result::Result<usize, std::io::Error>>>()
-                   .iter().find(|e| e.is_err())
-                          .is_none()
+    ) -> std::io::Result<()> {
+      self.iter()
+          .fold_while(
+            Err(from_error!("empty order")),
+              |_, (&_, ref must_have)| {
+                match with.get_mut_from_ressource(&must_have) {
+                Some(ref mut have) if must_have.get_quantity() <= have.get_quantity() => {
+                  have.sub_from_ressource(must_have);
+                  Continue(Ok(()))
+                },
+                Some(_) => Done(Err(from_error!("less"))),
+                None => Done(Err(from_error!("haven't item"))),
+              }
+            }
+          )
     }
 
     /// The `can_order` checks if the order is possible.
@@ -249,7 +271,7 @@ impl Inventory {
     pub fn can_order (
       &self,
       with: &Inventory,
-    ) -> bool {
+    ) -> std::io::Result<()> {
         self.order(
           &mut with.clone()
         )
@@ -309,6 +331,24 @@ impl std::fmt::Display for Inventory {
                                      .iter().map(|&(_, r)| format!("{}", r))
                                             .collect::<Vec<String>>()
                                             .join(";"))
+    }
+}
+
+impl std::fmt::Debug for Inventory {
+
+    /// The `fmt` function prints the multiplication list.
+
+    fn fmt (
+        &self,
+        f: &mut std::fmt::Formatter,
+    ) -> Result<(), std::fmt::Error> {
+        write!(f, "{}", self.iter().sorted()
+                                   .iter().map(|&(_, r)| format!(" {} => {}",
+                                                r.get_name(),
+                                                r.get_quantity()
+                                              ))
+                                          .collect::<Vec<String>>()
+                                          .join("\n"))
     }
 }
 

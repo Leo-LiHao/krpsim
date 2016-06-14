@@ -11,7 +11,7 @@ extern crate krpsim;
 use self::krpsim::format::stock::ressource::Ressource;
 
 #[test]
-fn test_ressource_can_order() {
+fn test_ressource_sub() {
   assert_eq!(
     Ressource::new("apple".to_string(), 5).sub_from_ressource(
       &Ressource::new("apple".to_string(), 5) // with
@@ -30,10 +30,12 @@ fn test_ressource_can_order() {
     ),
     0usize
   );
-}
-
-#[test]
-fn test_cannot_order() {
+  assert_eq!(
+    Ressource::new("apple".to_string(), 5).sub_from_ressource(
+      &Ressource::new("apple".to_string(), 3) // with
+    ),
+    2usize
+  );
   assert_eq!(
     Ressource::new("apple".to_string(), 5).sub_from_ressource(
       &Ressource::new("apple".to_string(), 0) // with

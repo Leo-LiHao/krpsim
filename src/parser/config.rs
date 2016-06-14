@@ -73,17 +73,6 @@ impl Configuration {
     }
     Ok(result)
   }
-
-  /// The `can_order` function check if the configuration can support
-  /// the command,
-
-  pub fn can_order (
-    &self,
-    must_command: Vec<String>,
-  ) {
-    let mut config = self.clone();
-
-  }
 }
 
 impl std::fmt::Display for Configuration {

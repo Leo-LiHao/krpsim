@@ -10,8 +10,6 @@
 extern crate clap;
 extern crate krpsim;
 
-use krpsim::format::operate::process::Process;
-use krpsim::format::stock::inventory::Inventory;
 use krpsim::parser::config::Configuration;
 use krpsim::parser::trace::Trace;
 
@@ -33,7 +31,28 @@ fn main () {
     options.value_of("file").unwrap(),
     options.value_of("result_to_test").unwrap(),
   ) {
-      Ok((config, trace)) => println!("{}\n-\n{}", config, trace),
-      Err(why) => println!("{}", why),
+    Ok((ref mut config, ref trace)) => { // parse
+      match (config.running.buy_with(trace, &mut config.ressources),
+             config.running.can_cycle(trace)) {
+        (Ok(()), Ok(cycle)) => { // config
+          println!("Nice file ! {} processes, {} stocks, {} to optimize\n\
+                    Evaluating .................. done.\n\
+                    Main walk\n\
+                    {}\n\
+                    no more process doable at time {}\n\
+                    Stock :\n\
+                    {:?}",
+            config.running.len(),
+            config.ressources.len(),
+            config.optimize.len(),
+            trace,
+            {cycle+1},
+            config.ressources
+          )
+        },
+        (Err(why), _) | (_, Err(why)) => println!("{}", why),
+      }
+    },
+    Err(why) => println!("{}", why),
   }
 }

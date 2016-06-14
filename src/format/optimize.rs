@@ -13,6 +13,7 @@ extern crate std;
 
 pub struct Optimize {
   pub stock: Vec<String>,
+  pub time: bool,
 }
 
 impl Optimize {
@@ -21,10 +22,12 @@ impl Optimize {
 
   pub fn new (
     stock: Vec<String>,
+    time: bool,
   ) -> Self {
-    Optimize {
-      stock: stock,
-    }
+      Optimize {
+        stock: stock,
+        time: time,
+      }
   }
 
   /// The `from_line` constructor function returns the optimization's item
@@ -33,12 +36,25 @@ impl Optimize {
   pub fn from_line (
     line: String,
   ) -> Self {
+    let stock: Vec<String> = line.split(&['(', ';', ')'][..])
+                                 .filter(|&a| !a.is_empty())
+                                 .map(|a| a.to_string())
+                                 .collect::<Vec<String>>();
     Optimize::new (
-      line.split(&['(', ';', ')'][..])
-          .filter(|& a| !a.is_empty())
-          .map(|a| a.to_string())
-          .collect::<Vec<String>>()
+      stock.iter().filter(|&a| a != "time")
+                  .map(|a| a.to_string())
+                  .collect::<Vec<String>>(),
+      stock.iter().any(|a| a == "time"),
     )
+  }
+
+  /// The `len` interface function returns the number of elements
+  /// in the list.
+
+  pub fn len (
+    &self,
+  ) -> usize {
+    self.stock.len()
   }
 }
 
@@ -49,6 +65,7 @@ impl std::default::Default for Optimize {
   fn default() -> Self {
     Optimize {
       stock: Vec::new(),
+      time: false,
     }
   }
 }
