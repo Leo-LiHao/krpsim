@@ -10,14 +10,14 @@ use super::stock::inventory::Inventory;
 use super::operate::process::Process;
 use std::cmp::Ordering;
 
-pub struct Livep<'a> {
-    process: &'a Process,
+pub struct Livep {
+    process: Process,
     pub cycle_end: usize,
 }
 
-impl <'a> Eq for Livep <'a>{}
+impl  Eq for Livep {}
 
-impl <'a> Ord for Livep <'a> {
+impl  Ord for Livep  {
     fn cmp(&self, other: &Self) -> Ordering {
         match (other.cycle_end, self.cycle_end) {
             (a, b) if a < b => Ordering::Less,
@@ -27,25 +27,25 @@ impl <'a> Ord for Livep <'a> {
     }
 }
 
-impl <'a> PartialEq for Livep <'a>{
+impl  PartialEq for Livep {
     fn eq(&self, other: &Self) -> bool {
         self.cycle_end == other.cycle_end
     }
 }
 
-impl <'a> PartialOrd for Livep <'a>{
+impl  PartialOrd for Livep {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
 
-impl <'a> Livep <'a> {
-    pub fn new(process: &'a Process, cycle: usize) -> Self {
+impl  Livep  {
+    pub fn new(process: Process, cycle: usize) -> Self {
         println!("process created: {} at cyle: {}",
                  process.name, cycle);
         Livep {
-            process: process,
+            process: process.clone(),
             cycle_end: cycle + process.get_cycle()
         }
     }

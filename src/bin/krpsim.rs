@@ -44,12 +44,19 @@ fn get_optimized_product(opti: &Vec<String>, ressources: &mut Inventory) -> Opti
     None
 }
 
+fn get_best(prcs: &Vec<(Process, Vec<Process>)>) -> Option<Vec<Process>> {
+    match prcs.first() {
+        Some(&(_, ref b)) => Some(b.clone()),
+        None => None
+    }
+}
+
 fn main() {
     let yaml = load_yaml!("cli.yml");
     let options = clap::App::from_yaml(yaml).get_matches();
 
-    let delay: f64 = options.value_of("delay").unwrap_or(DEFAULT_DELAY).parse::<f64>().unwrap();
-    let mut cycle: f64 = 0f64;
+    let delay: usize = options.value_of("delay").unwrap_or(DEFAULT_DELAY).parse::<usize>().unwrap();
+    let mut cycle: usize = 0usize;
 
     let mut config = Configuration::new(options.value_of("file").unwrap()).unwrap();
 
@@ -72,39 +79,44 @@ fn main() {
 
         for process in final_process.iter() {
             match process.needed_process(&config.running.get_process(), &config.ressources) {
-                Err(_) => {println!("error");},
-                Ok(None) => {println!("none"); usable_process.push((process.clone(), vec!(process.clone()))) },
-                Ok(Some(a)) => {println!("ret: {:?}", a); usable_process.push(( process.clone(), a ))}
+                Err(_) => {},
+                Ok(None) => usable_process.push((process.clone(), vec!(process.clone()))),
+                Ok(Some(a)) => usable_process.push(( process.clone(), a ))
             }
         }
-      /*  for (bid, truc) in usable_process {
-            println!("{}:main proc", bid);
-            for prc in truc {
-                println!("{}:tt", prc);
+        /*  for (bid, truc) in usable_process {
+        println!("{}:main proc", bid);
+        for prc in truc {
+        println!("{}:tt", prc);
+    }
+    }
+         */
+        match get_best(&usable_process) {
+            Some(a) => {
+                //should sub elements from inventory
+                for process in a {
+                    config.ressources.sub_from_inventory(&process.input);
+                    process_queue.add(Livep::new(process.clone(), cycle));
+                }
+            },
+            None => {
+                if process_queue.is_empty() {
+                    println!("Finished at cycle: {}", cycle);
+                    done = true;
+                }
+                match process_queue.get_ended_process(cycle) {
+                    None => cycle += 1,
+                    Some(livep_vec) => {
+                        for ended_process in livep_vec {
+                            config.ressources.add_from_inventory(ended_process.destruct());
+                        }
+                        if cycle > delay {
+                            println!("Finished at cycle: {}", cycle);
+                            done = true;
+                        }
+                    }
+                }
             }
-        }
-*/
-        if process_queue.is_empty() {
-            println!("Finished at cycle: {}", cycle);
-            done = true;
         }
     }
-    /*        if processes.len() > 0 {
-    for process in processes {
-    process_queue.add(process);
-}
-}
-    match process_queue.get_ended_process(cycle) {
-    None => cycle += 1,
-    Some(livep_vec) => {
-    for ended_process in livep_vec {
-    add(&mut config.ressources, ended_process.destruct(), 1f64);
-}
-    if cycle > delay {
-    println!("Finished at cycle: {}", cycle);
-    done = true;
-}
-}
-}
-     */
 }
