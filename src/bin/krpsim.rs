@@ -85,13 +85,6 @@ fn main() {
                 Ok(Some(a)) => usable_process.push(( process.clone(), a ))
             }
         }
-        /*  for (bid, truc) in usable_process {
-        println!("{}:main proc", bid);
-        for prc in truc {
-        println!("{}:tt", prc);
-    }
-    }
-         */
         match get_best(&usable_process) {
             Some(a) => {
                 //should sub elements from inventory
