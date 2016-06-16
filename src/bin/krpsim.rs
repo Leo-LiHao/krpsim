@@ -63,14 +63,15 @@ fn main() {
     let mut done = false;
     let mut process_queue = Queue::new();
     get_ressources_from_process(&config.running.get_process(), &mut config.ressources);
-    let production: Ressource = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
+    let mut production: Ressource = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
         Some(a) => a,
         None => panic!("You should optimize the production of at least one ressources!")
     };
+    production.add_quantity(1);
     //println!("{}", production);
     let final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.get_process());
     for prc in final_process.iter() {
-        println!("{}", prc);
+        println!("test: {}", prc);
     }
 
     /*    optimization(&mut config.process_list, &production);*/

@@ -42,6 +42,12 @@ impl Ressource {
     self.2
   }
 
+    /// The `is_empty` function return true if quantity is null
+
+    pub fn is_empty(&self) -> bool {
+        self.1 == 0
+    }
+
   /// The `set_quantity` updates and returns the qte value.
 
   fn set_quantity (
@@ -87,6 +93,19 @@ impl Ressource {
       _ => self.set_quantity(0),
     }
   }
+
+    /// The `euclidian_div` function return the result
+    /// of an euclidian division and set the quantity to the rest
+
+    pub fn euclidian_div(&mut self, nbr: usize) -> usize {
+        match self.1.checked_div(nbr) {
+            None => 0,
+            Some(a) => {
+                self.sub_quantity(a * nbr);
+                a
+            }
+        }
+    }
 
   /// The `sub_from_ressource` function substrates a item
   /// with another item.

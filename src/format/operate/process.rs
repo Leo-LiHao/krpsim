@@ -162,6 +162,15 @@ impl Process {
         }
     }
 
+    fn number_of_process(&self, obj: &Ressource) -> Vec<Process> {
+        if let Some(a) = self.output.get_from_ressource(obj) {
+            vec![self.clone();
+                 obj.clone().euclidian_div(a.1)]
+        } else {
+            vec![]
+        }
+    }
+
     pub fn get_producing_process (
         obj: &Ressource,
         process: &Vec<&Process>
@@ -202,7 +211,9 @@ impl Process {
                 };
                 match smt.needed_process(process, ressources) {
                     Err(_) => return Err(()),
-                    Ok(None) => ret.push(smt.clone()),
+                    Ok(None) => {
+                        ret.extend(smt.number_of_process(obj))
+                    },
                     Ok(Some(a)) => ret.extend(a)
                 }
             }
