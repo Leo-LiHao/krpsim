@@ -50,9 +50,9 @@ fn main () {
             config.ressources
           )
         },
-        (Err(why), _) | (_, Err(why)) => println!("{}", why),
+        (Err(why), _) | (_, Err(why)) => panic!(why),
       }
     },
-    Err(why) => println!("{}", why),
+    Err(why) => panic!(why),
   }
 }

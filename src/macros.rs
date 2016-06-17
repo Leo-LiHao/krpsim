@@ -13,10 +13,15 @@
 #[macro_export]
 macro_rules! println_stderr (
     ($($arg: tt)*) => {{
-        writeln!(
+        use std::io::prelude::*;
+
+        if let Err(why) = write!(
             &mut std::io::stderr(),
-            $($arg)*,
-        ).expect("failed printing to stderr");
+            "{}\n",
+            format_args!($($arg)*)
+        ) {
+          panic!("failed printing to stderr because {}.", why);
+        }
     }}
 );
 
