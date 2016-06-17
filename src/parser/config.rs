@@ -10,6 +10,9 @@
 
 extern crate std;
 
+use itertools::Itertools;
+use itertools::FoldWhile::{Continue, Done};
+
 use format::stock::ressource::Ressource;
 use format::stock::inventory::Inventory;
 use format::operate::process::Process;
@@ -17,6 +20,10 @@ use format::operate::running::Running;
 use format::optimize::Optimize;
 
 use std::io::prelude::*;
+
+pub const ERR_READ: &'static str = "Can't read `{}` from Config";
+pub const ERR_DOUBLE: &'static str = "Double optimization `{}` from Config";
+pub const ERR_SPLITN: &'static str = "Can't split `{}` from Config";
 
 /// The `Configuration` struct contains the Ressource, Process and Optimize.
 
@@ -30,48 +37,60 @@ impl Configuration {
   /// The `new` constructor function returns a parsed struct of
   /// Ressource, Process and Optimize.
 
-  pub fn new(filename: &str) -> std::io::Result<Self> {
-    let file: std::fs::File = try!(std::fs::File::open(filename));
-    let reader: std::io::BufReader<std::fs::File> =
-      std::io::BufReader::new(file);
-    let mut result: Configuration = Configuration::default();
-
-    for readed in reader.lines() {
-      if let Ok(line) = readed {
-        match &line.splitn(2, ':').collect::<Vec<&str>>()[..] {
-          [comment, _..] if comment.starts_with('#') => {}
+  pub fn new(file: &str) -> std::io::Result<Self> {
+    std::io::BufReader::new(
+      try!(std::fs::File::open(file))
+    ).lines().fold_while(Ok(Configuration::default()), |acc, readed| {
+      if let (Ok(mut config), Ok(line)) = (acc, readed) {
+        match &line.splitn(2, ':')
+                   .collect::<Vec<&str>>()[..] {
+          [comment, _..] if comment.starts_with('#') => Continue(Ok(config)),
           [name, thing] => {
-            match &thing.splitn(2, "):").collect::<Vec<&str>>()[..] {
+            match &thing.splitn(2, "):")
+                        .collect::<Vec<&str>>()[..] {
+              [quantity] if quantity.parse::<usize>().is_ok() => {
+                config.ressources.push(name.to_string(),
+                  Ressource::new(
+                    name.to_string(),
+                    quantity.parse::<usize>()
+                            .unwrap_or(0usize)
+                  )
+                );
+                Continue(Ok(config))
+              },
               [optimize] if optimize.starts_with('(') &&
                             optimize.ends_with(')') => {
-                result.optimize = Optimize::from_line(optimize.to_string())
-              }
-              [quantity] if quantity.parse::<usize>().is_ok() => {
-                result.ressources
-                       .push(name.to_string(),
-                             Ressource::new(name.to_string(),
-                                            quantity.parse::<usize>().unwrap_or(0usize)));
-              }
+                if config.optimize.is_empty() {
+                  config.optimize = Optimize::from_line(optimize.to_string());
+                  Continue(Ok(config))
+                }
+                else {
+                  Done(from_error!(ERR_DOUBLE, &format!("{}", config.optimize)))
+                }
+              },
               [need, result_and_nb_cycle] if need.starts_with('(') => {
-                 result.running
-                       .push(name.to_string(),
-                             try!(Process::from_line(name.to_string(),
-                                                     need,
-                                                     result_and_nb_cycle)));
-              }
-              why => {
-                try!(Err(from_error!("Configuration::new - splitn(2, \"):\")",
-                                     why)))
-              }
+                match Process::from_line(
+                  name.to_string(),
+                  need,
+                  result_and_nb_cycle
+                ) {
+                  Ok(run) => {
+                    config.running.push(name.to_string(), run);
+                    Continue(Ok(config))
+                  },
+                  Err(why) => Done(Err(why)),
+                }
+              },
+              why => Done(from_error!(ERR_SPLITN, &format!("{:?}", why))),
             }
-          }
-          [why..] => {
-            try!(Err(from_error!("Configuration::new - splitn(2, ':')", why)))
-          }
+          },
+          [why..] => Done(from_error!(ERR_SPLITN, &format!("{:?}", why))),
         }
       }
-    }
-    Ok(result)
+      else {
+        Done(from_error!(ERR_READ, file))
+      }
+    })
   }
 }
 

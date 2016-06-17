@@ -17,6 +17,10 @@ use parser::trace::Trace;
 use format::stock::inventory::Inventory;
 use super::process::Process;
 
+pub const ERR_NOT_FOUND: &'static str = "Item wasn't found `{}` from Running";
+pub const ERR_WRONG_CYCLE: &'static str = "Invalid cycle {} from Running";
+pub const ERR_EMPTY: &'static str = "There isn't any command `{}` from Running";
+
 pub struct Running (std::collections::HashMap<String, Process>);
 
 impl Running {
@@ -26,16 +30,16 @@ impl Running {
     pub fn new (
         process: Vec<Process>,
     ) -> Self {
-      let len: usize = process.len();
+        let len: usize = process.len();
 
-      Running(
-        process.into_iter().fold_while(
-          std::collections::HashMap::with_capacity(len),
-          |mut map, task| {
-            map.insert(task.get_name().to_string(), task);
-            Continue(map)
-        })
-      )  
+        Running(
+          process.into_iter().fold_while(
+            std::collections::HashMap::with_capacity(len),
+            |mut map, task| {
+              map.insert(task.get_name().to_string(), task);
+              Continue(map)
+          })
+        )  
     }
 
     /// The `is_empty` interface function returns true if
@@ -51,9 +55,9 @@ impl Running {
     /// in the map.
 
     pub fn len (
-      &self,
+        &self,
     ) -> usize {
-      self.0.len()
+        self.0.len()
     }
 
     /// The `iter` interface function returns a iterator.
@@ -61,7 +65,7 @@ impl Running {
     pub fn iter (
         &self,
     ) -> std::collections::hash_map::Iter<std::string::String, Process> {
-       self.0.iter()
+        self.0.iter()
     }
 
     /// The `push` interface function inserts a new item to
@@ -93,13 +97,16 @@ impl Running {
         inventory: &mut Inventory, // with
     ) -> std::io::Result<()> {
         commands.iter()
-                .fold_while(Err(from_error!("Empty")), |_, &(ref command, _)| {
-                  match self.get(&command) {
-                    Some(process) => match process.buy_with(inventory) {
-                      Ok(_) => Continue(Ok(())),
-                      why => Done(why),
+                .fold_while(from_error!(ERR_EMPTY, &format!("{}", commands)),
+                           |_, &(ref command_name, _)| {
+                  match self.get(&command_name) {
+                    Some(process) => {
+                      match process.buy_with(inventory) {
+                        Ok(_) => Continue(Ok(())),
+                        why => Done(why),
+                      }
                     },
-                    None => Done(Err(from_error!("item wasn't found"))),
+                    None => Done(from_error!(ERR_NOT_FOUND, command_name)),
                   }
                 })
     }
@@ -109,19 +116,23 @@ impl Running {
 
     pub fn can_cycle (
         &self,
-        check: &Trace,
+        checks: &Trace,
     ) -> std::io::Result<usize> {
-        check.iter()
-             .fold_while(Ok(0usize), |acc, &(ref have_name, have_cycle)| {
-                match (self.get(have_name), acc) {
-                    (Some(ref process), Ok(cycle)) => if have_cycle == cycle {
-                        Continue(Ok(process.get_cycle() + cycle))
-                    } else {
-                        Done(Err(from_error!(format!("{}", process))))
-                    },
-                    (_, _) => Done(Err(from_error!("not item was found"))),
+        checks.iter()
+              .fold_while(Ok(0usize),
+                         |acc, &(ref check_name, check_cycle)| {
+                match (self.get(check_name), acc) {
+                  (Some(ref process), Ok(cycle)) => {
+                    if check_cycle == cycle {
+                      Continue(Ok(process.get_cycle() + cycle))
+                    }
+                    else {
+                      Done(from_error!(ERR_WRONG_CYCLE, &format!("{}", process)))
+                    }
+                  },
+                  _ => Done(from_error!(ERR_NOT_FOUND, check_name)),
                 }
-             })
+              })
     }
 
     /// The `get_process` function returns a accessor on

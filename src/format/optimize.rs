@@ -40,7 +40,7 @@ impl Optimize {
                                  .filter(|&a| !a.is_empty())
                                  .map(|a| a.to_string())
                                  .collect::<Vec<String>>();
-    Optimize::new (
+    Optimize::new(
       stock.iter().filter(|&a| a != "time")
                   .map(|a| a.to_string())
                   .collect::<Vec<String>>(),
@@ -55,6 +55,15 @@ impl Optimize {
     &self,
   ) -> usize {
     self.stock.len()
+  }
+
+  /// The `is_empty` interface function returns true if
+  /// the vector Optimize contains no elements.
+
+  pub fn is_empty (
+    &self
+  ) -> bool {
+    self.stock.is_empty() && !self.time
   }
 }
 

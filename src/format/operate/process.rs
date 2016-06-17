@@ -17,6 +17,16 @@ use std::collections::HashMap;
 use format::stock::ressource::Ressource;
 use format::stock::inventory::Inventory;
 
+pub const ERR_WRONG_CYCLE: &'static str = "Invalid cycle {} from Process";
+pub const ERR_PARSE: &'static str = "Can't parse `{}` from Process";
+pub const ERR_BUY: &'static str = "Can't buy `{}` from Process";
+pub const ERR_NEED: &'static str = "Inventory can't parse `{}`'s\
+                                    from need Process";
+pub const ERR_REST: &'static str = "Inventory can't parse `{}`'s\
+                                    from rest Process";
+pub const ERR_BOTH: &'static str = "Inventory can't parse `{}`'s\
+                                    from both Process"; // need and rest
+
 #[derive(Clone)]
 pub struct Process {
     pub name: String,
@@ -90,15 +100,11 @@ impl Process {
         match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
             [nb_cycle, result] => if nb_cycle.parse::<usize>().is_ok() {
                 match (Inventory::from_line(need), Inventory::from_line(result)) {
-                    (None,    None   ) => Err(from_error!(
-                        format!("bad need `{}` and rest `{}`", need, result)
-                    )),
-                    (None,    Some(_)) => Err(from_error!(
-                        format!("bad need `{}`", need)
-                    )),
-                    (Some(_), None   ) => Err(from_error!(
-                        format!("bad rest `{}`", result)
-                    )),
+                    (None, Some(_)) => from_error!(ERR_NEED, need),
+                    (Some(_), None   ) => from_error!(ERR_REST, result),
+                    (None, None) => from_error!(ERR_BOTH,
+                        &format!("{}, {}", need, result)
+                    ),
                     (Some(n), Some(r)) => Ok(
                         Process::from_integer(
                             name,
@@ -109,9 +115,9 @@ impl Process {
                 }
             }
             else {
-                Err(from_error!(format!("bad cycle `{}`", nb_cycle)))
+                from_error!(ERR_WRONG_CYCLE, &format!("{}", nb_cycle))
             },
-            why => Err(from_error!("parse_proces", why)),
+            why => from_error!(ERR_PARSE, &format!("{:?}", why)),
         }
     }
 
@@ -141,7 +147,7 @@ impl Process {
           Ok(())
         }
         else {
-          Err(from_error!("cannot add"))
+          from_error!(ERR_BUY, &format!("{}", self))
         }, // Take the list items.
         why => why,
       }

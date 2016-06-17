@@ -15,6 +15,9 @@ use itertools::FoldWhile::{Continue, Done};
 
 use std::io::prelude::*;
 
+pub const ERR_READ: &'static str = "Can't read `{}` from Trace";
+pub const ERR_SPLITN: &'static str = "Can't split `{}` from Trace";
+
 pub struct Trace(Vec<(String, usize)>);
 
 impl Trace {
@@ -38,14 +41,12 @@ impl Trace {
             );
             Continue(Ok(trace))
           },
-          [why..] => Done(
-            Err(from_error!("Trace::new", why))
-          ),
+          [why..] => Done(from_error!(ERR_SPLITN, &format!("{:?}", why))),
         }
       }
-      else {Done(
-        Err(from_error!("Trace::new - unimplemented"))
-      )}
+      else {
+        Done(from_error!(ERR_READ, file))
+      }
     })
   }
 

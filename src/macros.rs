@@ -8,22 +8,26 @@
 
 //! The default module `Macros` adds new macro of krpsim's library.
 
+/// The `println_stderr` macro writes an error message.
+
+#[macro_export]
+macro_rules! println_stderr (
+    ($($arg: tt)*) => {{
+        writeln!(
+            &mut std::io::stderr(),
+            $($arg)*,
+        ).expect("failed printing to stderr");
+    }}
+);
+
 /// The `parse_error` macro returns a formated error.
 
 #[macro_export]
 macro_rules! from_error {
-    ($msg: expr) => ({
+    ($msg: expr) => ({Err(
         std::io::Error::new(std::io::ErrorKind::InvalidData, $msg)
-    });
+    )});
     ($msg: expr, $extra: expr) => ({
-        from_error!(
-            format!("{} - {}",
-                $msg,
-                $extra.iter()
-                      .map(|a| format!("{}", a))
-                      .collect::<Vec<String>>()
-                      .concat()
-            )
-        )
+        from_error!($msg.replace("{}", $extra))
     });
 }

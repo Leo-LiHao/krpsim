@@ -15,6 +15,11 @@ use itertools::FoldWhile::{Continue, Done};
 
 use super::ressource::Ressource;
 
+pub const ERR_WRONG_QTE: &'static str = "Invalid quantity {} from Inventory";
+pub const ERR_NOT_FOUND: &'static str = "Item wasn't found `{}` from Inventory";
+pub const ERR_EMPTY: &'static str = "There isn't any command `{}` from Inventory";
+pub const ERR_LESS: &'static str = "The {}'s payment is insufficient";
+
 #[derive(Clone)]
 pub struct Inventory (std::collections::HashMap<String, Ressource>);
 
@@ -67,16 +72,18 @@ impl Inventory {
           .filter(|&a| !a.is_empty())
           .collect::<Vec<&str>>()
           .chunks(2)
-          .map(|ressource| match &ressource[..] {
-            [n, q] => {
-              if let Some(quantity) = q.parse::<usize>().ok() {
-                Ok(Ressource::new(n.to_string(), quantity))
-              } else {
-                try!(Err(from_error!("quantity isn't parsable")))
+          .map(|ressource|
+            match &ressource[..] {
+              [n, q] => {
+                if let Some(quantity) = q.parse::<usize>().ok() {
+                  Ok(Ressource::new(n.to_string(), quantity))
+                }
+                else {
+                  try!(from_error!(ERR_WRONG_QTE, &format!("{}", q)))
+                }
               }
-            }
-            _ => try!(Err(from_error!("unimplemented"))),
-          })
+              _ => unimplemented!(),
+            })
           .collect::<Vec<std::io::Result<Ressource>>>())
     }
 
@@ -252,15 +259,15 @@ impl Inventory {
     ) -> std::io::Result<()> {
       self.iter()
           .fold_while(
-            Err(from_error!("empty order")),
-              |_, (&_, ref must_have)| {
+            from_error!(ERR_EMPTY, &format!("{}", self)),
+            |_, (&_, ref must_have)| {
                 match with.get_mut_from_ressource(&must_have) {
                 Some(ref mut have) if must_have.get_quantity() <= have.get_quantity() => {
                   have.sub_from_ressource(must_have);
                   Continue(Ok(()))
                 },
-                Some(_) => Done(Err(from_error!("less"))),
-                None => Done(Err(from_error!("haven't item"))),
+                Some(_) => Done(from_error!(ERR_LESS, &format!("{}", self))),
+                None => Done(from_error!(ERR_NOT_FOUND, must_have.get_name())),
               }
             }
           )
@@ -318,7 +325,6 @@ impl std::cmp::PartialEq for Inventory {
 impl std::cmp::Eq for Inventory {
 }
 
-
 impl std::fmt::Display for Inventory {
 
     /// The `fmt` function prints the multiplication list.
@@ -343,10 +349,11 @@ impl std::fmt::Debug for Inventory {
         f: &mut std::fmt::Formatter,
     ) -> Result<(), std::fmt::Error> {
         write!(f, "{}", self.iter().sorted()
-                                   .iter().map(|&(_, r)| format!(" {} => {}",
-                                                r.get_name(),
-                                                r.get_quantity()
-                                              ))
+                                   .iter().map(|&(_, r)|
+                                                 format!(" {} => {}",
+                                                   r.get_name(),
+                                                   r.get_quantity()
+                                                 ))
                                           .collect::<Vec<String>>()
                                           .join("\n"))
     }
