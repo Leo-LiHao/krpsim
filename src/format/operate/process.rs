@@ -133,18 +133,18 @@ impl Process {
     /// additions the *output* to *with* argument.
 
     pub fn buy_with (
-      &self,
-      with: &mut Inventory, // with
+        &self,
+        with: &mut Inventory, // with
     ) -> std::io::Result<()> {
-      match self.input.order(with) { // Pay pay pay.
-        Ok(_) => if with.add_from_inventory(&self.output) {
-          Ok(())
+        match self.input.order(with) { // Pay pay pay.
+            Ok(_) => if with.add_from_inventory(&self.output) {
+                Ok(())
+            }
+            else {
+                Err(from_error!("cannot add"))
+            }, // Take the list items.
+            why => why,
         }
-        else {
-          Err(from_error!("cannot add"))
-        }, // Take the list items.
-        why => why,
-      }
     }
 
     pub fn get_h_value(&self, s: &String) -> f64 {
@@ -178,46 +178,44 @@ impl Process {
         let mut ret: Vec<Process> = Vec::new();
 
         process.iter().foreach(|procs| {
-          if procs.get_h_value(&obj.0) > 0.0 {
-            ret.push((*procs).clone());
-          }
+            if procs.get_h_value(&obj.0) > 0.0 {
+                ret.push((*procs).clone());
+            }
         });
         ret
     }
 
-    pub fn needed_process (
+    pub fn needed_process ( //need to return time aswell
         &self,
         process: &Vec<&Process>,
         ressources: &Inventory,
     ) -> Result<Option<Vec<Process>>, ()> {
         let mut input = self.input.clone();
-        if let Some(ref x) = self.neutral {
-            // Check if the neutral ressource exist
-            input.sub(&x);
-        }
         input.sub_from_inventory(ressources);
         if input.is_zero() {
             Ok(None)
         } else {
             let mut ret: Vec<Process> = Vec::new();
             for (_, obj) in input.iter() {
-                let tmp = Process::get_producing_process(obj, process);
-                if tmp.len() == 0 {
-                    return Err(())
-                }
-                let smt = match tmp.first()/*max_by_key(|&x| x.get_h_value(&obj.0))*/ {
-                    None => return Err(()),
-                    Some(a) => a
-                };
-                match smt.needed_process(process, ressources) {
-                    Err(_) => return Err(()),
-                    Ok(None) => {
-                        ret.extend(smt.number_of_process(obj))
-                    },
-                    Ok(Some(a)) => ret.extend(a)
+                if obj.1 > 0 {
+                    let tmp = Process::get_producing_process(obj, process);
+                    if tmp.len() == 0 {
+                        return Err(())
+                    }
+                    let smt = match tmp.first()/*max_by_key(|&x| x.get_h_value(&obj.0))*/ {
+                        None => return Err(()),
+                        Some(a) => a
+                    };
+                    match smt.needed_process(process, ressources) {
+                        Err(_) => return Err(()),
+                        Ok(None) => {
+                            ret.extend(smt.number_of_process(obj))
+                        },
+                        Ok(Some(a)) => ret.extend(a)
+                    }
                 }
             }
-             Ok(Some(ret))
+            Ok(Some(ret))
         }
 
     }
@@ -227,8 +225,8 @@ impl Process {
         owned: &Vec<Ressource>,
     ) -> usize {
         self.input.get_ressource()
-                  .iter()
-                  .fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
+            .iter()
+            .fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
     }
 }
 

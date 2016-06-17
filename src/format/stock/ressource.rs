@@ -94,6 +94,10 @@ impl Ressource {
     }
   }
 
+    pub fn can_sub(&self, val: &Ressource) -> bool {
+        self.1 > val.1
+    }
+
     /// The `euclidian_div` function return the result
     /// of an euclidian division and set the quantity to the rest
 

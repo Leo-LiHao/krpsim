@@ -70,10 +70,6 @@ fn main() {
     production.add_quantity(1);
     //println!("{}", production);
     let final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.get_process());
-    for prc in final_process.iter() {
-        println!("test: {}", prc);
-    }
-
     /*    optimization(&mut config.process_list, &production);*/
     while !done {
         let mut usable_process:Vec<(Process, Vec<Process>)> = Vec::new();
@@ -87,7 +83,6 @@ fn main() {
         }
         match get_best(&usable_process) {
             Some(a) => {
-                //should sub elements from inventory
                 for process in a {
                     config.ressources.sub_from_inventory(&process.input);
                     process_queue.add(Livep::new(process.clone(), cycle));
