@@ -185,37 +185,59 @@ impl Process {
         ret
     }
 
+    fn time_cmp(ori:&Result<(Vec<Process>, usize), ()>,
+                new: usize) -> bool() {
+        match ori {
+            &Err(_) => true,
+            &Ok((_, t)) => new < t
+        }
+    }
+
     pub fn needed_process ( //need to return time aswell
         &self,
         process: &Vec<&Process>,
         ressources: &Inventory,
-    ) -> Result<Option<Vec<Process>>, ()> {
+    ) -> Result<(Option<Vec<Process>>, usize), ()> {
         let mut input = self.input.clone();
+        let mut time = self.cycle.clone();
         input.sub_from_inventory(ressources);
         if input.is_zero() {
-            Ok(None)
+            Ok((None, time))
         } else {
             let mut ret: Vec<Process> = Vec::new();
             for (_, obj) in input.iter() {
                 if obj.1 > 0 {
-                    let tmp = Process::get_producing_process(obj, process);
-                    if tmp.len() == 0 {
+                    let lst = Process::get_producing_process(obj, process);
+                    if lst.len() == 0 {
                         return Err(())
                     }
-                    let smt = match tmp.first()/*max_by_key(|&x| x.get_h_value(&obj.0))*/ {
-                        None => return Err(()),
-                        Some(a) => a
-                    };
-                    match smt.needed_process(process, ressources) {
+
+                    match lst.iter().fold(Err(()), |acc:Result<(Vec<Process>, usize), ()>, smt|{
+                        match smt.needed_process(process, ressources) {
+                            Err(_) => acc,
+                            Ok((None, t)) => {
+                                let vect = smt.number_of_process(&obj);
+                                let total_time = vect.len() * t;
+                                if Process::time_cmp(&acc, total_time) {
+                                    Ok((vect, total_time))
+                                } else {acc}
+                            },
+                            Ok((Some(a), t)) => {
+                                if Process::time_cmp(&acc, t) {
+                                    Ok((a, t))
+                                } else {acc}
+                            }
+                        }
+                    }) {
                         Err(_) => return Err(()),
-                        Ok(None) => {
-                            ret.extend(smt.number_of_process(obj))
-                        },
-                        Ok(Some(a)) => ret.extend(a)
+                        Ok((a, t)) => {
+                            time += t;
+                            ret.extend(a);
+                        }
                     }
                 }
             }
-            Ok(Some(ret))
+            Ok((Some(ret), time))
         }
 
     }

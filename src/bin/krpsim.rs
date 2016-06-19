@@ -77,8 +77,8 @@ fn main() {
         for process in final_process.iter() {
             match process.needed_process(&config.running.get_process(), &config.ressources) {
                 Err(_) => {},
-                Ok(None) => usable_process.push((process.clone(), vec!(process.clone()))),
-                Ok(Some(a)) => usable_process.push(( process.clone(), a ))
+                Ok((None, _)) => usable_process.push((process.clone(), vec!(process.clone()))),
+                Ok((Some(a), _)) => usable_process.push(( process.clone(), a ))
             }
         }
         match get_best(&usable_process) {
