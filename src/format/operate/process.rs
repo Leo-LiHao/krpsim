@@ -139,13 +139,13 @@ impl Process {
     /// additions the *output* to *with* argument.
 
     pub fn buy_with (
-      &self,
-      with: &mut Inventory, // with
+        &self,
+        with: &mut Inventory, // with
     ) -> std::io::Result<()> {
-      match self.input.order(with) { // Pay pay pay.
-        Ok(_) => if with.add_from_inventory(&self.output) {
-          Ok(())
-        }
+        match self.input.order(with) { // Pay pay pay.
+            Ok(_) => if with.add_from_inventory(&self.output) {
+                Ok(())
+            }
         else {
           from_error!(ERR_BUY, &format!("{}", self))
         }, // Take the list items.
@@ -168,51 +168,96 @@ impl Process {
         }
     }
 
+    fn number_of_process(&self, obj: &Ressource) -> Vec<Process> {
+        if let Some(a) = self.output.get_from_ressource(obj) {
+            vec![self.clone();
+                 {
+                     if let Some(_) = self.neutral {
+                         1
+                     } else {
+                         obj.clone().euclidian_div(a.1)
+                     }
+                 }
+            ]
+        } else {
+            vec![]
+        }
+    }
+
     pub fn get_producing_process (
         obj: &Ressource,
-        process: &Vec<&Process>
+        process: &Vec<&Process>,
+        used_process: Vec<Process>
     ) -> Vec<Process> {
         let mut ret: Vec<Process> = Vec::new();
 
         process.iter().foreach(|procs| {
-          if procs.get_h_value(&obj.0) > 0.0 {
-            ret.push((*procs).clone());
-          }
+            if procs.get_h_value(&obj.0) > 0.0 {
+                if !used_process.iter().any(|prc| {prc.name == (*procs).name}) {
+                    ret.push((*procs).clone());
+                }
+            }
         });
         ret
+    }
+
+    fn time_cmp(ori:&Result<(Vec<Process>, usize), ()>,
+                new: usize) -> bool() {
+        match ori {
+            &Err(_) => true,
+            &Ok((_, t)) => new < t
+        }
     }
 
     pub fn needed_process (
         &self,
         process: &Vec<&Process>,
         ressources: &Inventory,
-    ) -> Result<Option<Vec<Process>>, ()> {
+        already_used: Vec<Process>,
+    ) -> Result<(Option<Vec<Process>>, usize), ()> {
         let mut input = self.input.clone();
-        if let Some(ref x) = self.neutral {
-            // Check if the neutral ressource exist
-            input.sub(&x);
-        }
+        let mut time = self.cycle.clone();
         input.sub_from_inventory(ressources);
         if input.is_zero() {
-            Ok(None)
+            Ok((None, time))
         } else {
             let mut ret: Vec<Process> = Vec::new();
             for (_, obj) in input.iter() {
-                let tmp = Process::get_producing_process(obj, process);
-                if tmp.len() == 0 {
-                    return Err(())
-                }
-                let smt = match tmp.first()/*max_by_key(|&x| x.get_h_value(&obj.0))*/ {
-                    None => return Err(()),
-                    Some(a) => a
-                };
-                match smt.needed_process(process, ressources) {
-                    Err(_) => return Err(()),
-                    Ok(None) => ret.push(smt.clone()),
-                    Ok(Some(a)) => ret.extend(a)
+                if obj.1 > 0 {
+                    let lst = Process::get_producing_process(obj, process, already_used.clone());
+                    if lst.len() == 0 {
+                        return Err(())
+                    }
+
+                    let mut temp = already_used.clone();
+                    match lst.iter().fold(Err(()), |acc:Result<(Vec<Process>, usize), ()>, smt|{
+                        temp.push(smt.clone());
+                        match smt.needed_process(
+                            process, ressources, temp.clone()) {
+                            Err(_) => acc,
+                            Ok((None, t)) => {
+                                let vect = smt.number_of_process(&obj);
+                                let total_time = vect.len() * t;
+                                if Process::time_cmp(&acc, total_time) {
+                                    Ok((vect, total_time))
+                                } else {acc}
+                            },
+                            Ok((Some(a), t)) => {
+                                if Process::time_cmp(&acc, t) {
+                                    Ok((a, t))
+                                } else {acc}
+                            }
+                        }
+                    }) {
+                        Err(_) => return Err(()),
+                        Ok((a, t)) => {
+                            time += t;
+                            ret.extend(a);
+                        }
+                    }
                 }
             }
-             Ok(Some(ret))
+            Ok((Some(ret), time))
         }
 
     }
@@ -222,8 +267,8 @@ impl Process {
         owned: &Vec<Ressource>,
     ) -> usize {
         self.input.get_ressource()
-                  .iter()
-                  .fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
+            .iter()
+            .fold(0usize, |acc, b| acc + Process::get_distance(b, owned))
     }
 }
 

@@ -62,40 +62,34 @@ fn main() {
     let mut done = false;
     let mut process_queue = Queue::new();
     get_ressources_from_process(&config.running.get_process(), &mut config.ressources);
-    let production: Ressource = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
+    let mut production: Ressource = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
         Some(a) => a,
         None => panic!("You should optimize the production of at least one ressources!")
     };
+    production.add_quantity(1);
     //println!("{}", production);
-    let final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.get_process());
-    for prc in final_process.iter() {
-        println!("{}", prc);
-    }
-
+    let final_process: Vec<Process> = Process::get_producing_process(&production,
+                                                                     &config.running.get_process(),
+                                                                     Vec::new());
     /*    optimization(&mut config.process_list, &production);*/
     while !done {
         let mut usable_process:Vec<(Process, Vec<Process>)> = Vec::new();
 
         for process in final_process.iter() {
-            match process.needed_process(&config.running.get_process(), &config.ressources) {
+            match process.needed_process(
+                &config.running.get_process(), &config.ressources,
+                final_process.clone()) {
                 Err(_) => {},
-                Ok(None) => usable_process.push((process.clone(), vec!(process.clone()))),
-                Ok(Some(a)) => usable_process.push(( process.clone(), a ))
+                Ok((None, _)) => usable_process.push((process.clone(), vec!(process.clone()))),
+                Ok((Some(a), _)) => usable_process.push(( process.clone(), a ))
             }
         }
-        /*  for (bid, truc) in usable_process {
-        println!("{}:main proc", bid);
-        for prc in truc {
-        println!("{}:tt", prc);
-    }
-    }
-         */
         match get_best(&usable_process) {
             Some(a) => {
-                //should sub elements from inventory
                 for process in a {
                     config.ressources.sub_from_inventory(&process.input);
                     process_queue.add(Livep::new(process.clone(), cycle));
+                    println!("inventory: {}", config.ressources);
                 }
             },
             None => {
@@ -108,6 +102,7 @@ fn main() {
                     Some(livep_vec) => {
                         for ended_process in livep_vec {
                             config.ressources.add_from_inventory(ended_process.destruct());
+                            println!("inventory: {}", config.ressources);
                         }
                         if cycle > delay {
                             println!("Finished at cycle: {}", cycle);
