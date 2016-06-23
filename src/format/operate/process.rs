@@ -163,9 +163,17 @@ impl Process {
     }
 
     fn number_of_process(&self, obj: &Ressource) -> Vec<Process> {
+        //TODO: check number of neutral
         if let Some(a) = self.output.get_from_ressource(obj) {
             vec![self.clone();
-                 obj.clone().euclidian_div(a.1)]
+                 {
+                     if let Some(_) = self.neutral {
+                         1
+                     } else {
+                         obj.clone().euclidian_div(a.1)
+                     }
+                 }
+            ]
         } else {
             vec![]
         }
@@ -173,13 +181,16 @@ impl Process {
 
     pub fn get_producing_process (
         obj: &Ressource,
-        process: &Vec<&Process>
+        process: &Vec<&Process>,
+        used_process: Vec<Process>
     ) -> Vec<Process> {
         let mut ret: Vec<Process> = Vec::new();
 
         process.iter().foreach(|procs| {
             if procs.get_h_value(&obj.0) > 0.0 {
-                ret.push((*procs).clone());
+                if !used_process.iter().any(|prc| {prc.name == (*procs).name}) {
+                    ret.push((*procs).clone());
+                }
             }
         });
         ret
@@ -193,10 +204,11 @@ impl Process {
         }
     }
 
-    pub fn needed_process ( //need to return time aswell
+    pub fn needed_process (
         &self,
         process: &Vec<&Process>,
         ressources: &Inventory,
+        already_used: Vec<Process>,
     ) -> Result<(Option<Vec<Process>>, usize), ()> {
         let mut input = self.input.clone();
         let mut time = self.cycle.clone();
@@ -207,13 +219,16 @@ impl Process {
             let mut ret: Vec<Process> = Vec::new();
             for (_, obj) in input.iter() {
                 if obj.1 > 0 {
-                    let lst = Process::get_producing_process(obj, process);
+                    let lst = Process::get_producing_process(obj, process, already_used.clone());
                     if lst.len() == 0 {
                         return Err(())
                     }
 
+                    let mut temp = already_used.clone();
                     match lst.iter().fold(Err(()), |acc:Result<(Vec<Process>, usize), ()>, smt|{
-                        match smt.needed_process(process, ressources) {
+                        temp.push(smt.clone());
+                        match smt.needed_process(
+                            process, ressources, temp.clone()) {
                             Err(_) => acc,
                             Ok((None, t)) => {
                                 let vect = smt.number_of_process(&obj);

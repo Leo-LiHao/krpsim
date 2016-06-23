@@ -35,7 +35,7 @@ impl Running {
             map.insert(task.get_name().to_string(), task);
             Continue(map)
         })
-      )  
+      )
     }
 
     /// The `is_empty` interface function returns true if
@@ -130,6 +130,11 @@ impl Running {
     pub fn get_process(&self) -> Vec<&Process> {
         self.0.iter().map(|(&_, process)| process)
                      .collect::<Vec<&Process>>()
+    }
+
+    pub fn get_cloned_process(&self) -> Vec<Process> {
+        self.0.iter().map(|(&_, process)| process.clone())
+            .collect::<Vec<Process>>()
     }
 }
 

@@ -69,13 +69,17 @@ fn main() {
     };
     production.add_quantity(1);
     //println!("{}", production);
-    let final_process: Vec<Process> = Process::get_producing_process(&production, &config.running.get_process());
+    let final_process: Vec<Process> = Process::get_producing_process(&production,
+                                                                     &config.running.get_process(),
+                                                                     Vec::new());
     /*    optimization(&mut config.process_list, &production);*/
     while !done {
         let mut usable_process:Vec<(Process, Vec<Process>)> = Vec::new();
 
         for process in final_process.iter() {
-            match process.needed_process(&config.running.get_process(), &config.ressources) {
+            match process.needed_process(
+                &config.running.get_process(), &config.ressources,
+                final_process.clone()) {
                 Err(_) => {},
                 Ok((None, _)) => usable_process.push((process.clone(), vec!(process.clone()))),
                 Ok((Some(a), _)) => usable_process.push(( process.clone(), a ))
@@ -86,6 +90,7 @@ fn main() {
                 for process in a {
                     config.ressources.sub_from_inventory(&process.input);
                     process_queue.add(Livep::new(process.clone(), cycle));
+                    println!("inventory: {}", config.ressources);
                 }
             },
             None => {
@@ -98,6 +103,7 @@ fn main() {
                     Some(livep_vec) => {
                         for ended_process in livep_vec {
                             config.ressources.add_from_inventory(ended_process.destruct());
+                            println!("inventory: {}", config.ressources);
                         }
                         if cycle > delay {
                             println!("Finished at cycle: {}", cycle);
