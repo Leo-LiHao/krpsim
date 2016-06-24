@@ -8,6 +8,7 @@
 
 #[macro_use]
 extern crate clap;
+extern crate itertools;
 extern crate krpsim;
 
 const DEFAULT_DELAY: &'static str = "100";
@@ -20,27 +21,32 @@ use krpsim::format::queue::Queue;
 use krpsim::format::livep::Livep;
 use krpsim::parser::config::Configuration;
 
+use itertools::Itertools;
+
 fn get_ressources_from_process(process_list: &Vec<&Process>, ressources: &mut Inventory) -> () {
-    for process in process_list {
+    process_list.iter().foreach(|process| {
         let mut add_ressource = |ressources_list: &Inventory| -> () {
-            for res in ressources_list.iter() {
+            ressources_list.iter().foreach(|res| {
                 if ressources.iter().find(|tmp| tmp.0 == res.0).is_none() {
                     ressources.push(res.0.clone(), Ressource::new(res.0.clone(), 0));
                 }
-            }
+            });
         };
         add_ressource(&process.input);
         add_ressource(&process.output);
-    }
+    })
 }
 
 fn get_optimized_product(opti: &Vec<String>, ressources: &mut Inventory) -> Option<Ressource> {
-    for s in opti {
-        if let Some(x) = ressources.get(&s) {
-            return Some(x.clone())
+    match opti.iter().find(|s| ressources.any(s)) {
+        Some(s) => if let Some(x) = ressources.get(&s) {
+            Some(x.clone())
         }
+        else {
+            None
+        },
+        None => None,
     }
-    None
 }
 
 fn get_best(prcs: &Vec<(Process, Vec<Process>)>) -> Option<Vec<Process>> {
@@ -75,7 +81,7 @@ fn main() {
     while !done {
         let mut usable_process:Vec<(Process, Vec<Process>)> = Vec::new();
 
-        for process in final_process.iter() {
+        final_process.iter().foreach(|process| {
             match process.needed_process(
                 &config.running.get_process(), &config.ressources,
                 final_process.clone()) {
@@ -83,15 +89,13 @@ fn main() {
                 Ok((None, _)) => usable_process.push((process.clone(), vec!(process.clone()))),
                 Ok((Some(a), _)) => usable_process.push(( process.clone(), a ))
             }
-        }
+        });
         match get_best(&usable_process) {
-            Some(a) => {
-                for process in a {
-                    config.ressources.sub_from_inventory(&process.input);
-                    process_queue.add(Livep::new(process.clone(), cycle));
-                    println!("inventory: {}", config.ressources);
-                }
-            },
+            Some(a) => a.iter().foreach(|process| {
+                config.ressources.sub_from_inventory(&process.input);
+                process_queue.add(Livep::new(process.clone(), cycle));
+                println!("inventory: {}", config.ressources);
+            }),
             None => {
                 if process_queue.is_empty() {
                     println!("Finished at cycle: {}", cycle);
@@ -100,10 +104,10 @@ fn main() {
                 match process_queue.get_ended_process(cycle) {
                     None => cycle += 1,
                     Some(livep_vec) => {
-                        for ended_process in livep_vec {
+                        livep_vec.iter().foreach(|ended_process| {
                             config.ressources.add_from_inventory(ended_process.destruct());
                             println!("inventory: {}", config.ressources);
-                        }
+                        });
                         if cycle > delay {
                             println!("Finished at cycle: {}", cycle);
                             done = true;
