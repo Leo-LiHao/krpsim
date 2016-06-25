@@ -9,18 +9,37 @@
 [docs-badge]: https://img.shields.io/badge/API-docs-blue.svg?style=flat-square
 [docs]: https://adjivas.github.io/krpsim/krpsim
 
+#### Usage
+```
+Krpsim
+francois LE CORRE <lecorre.f@gmail.com>, geam <geam@users.noreply.github.com>, adjivas <adjivas@users.noreply.github.com>
+Krpsim
+
+USAGE:
+    krpsim_verif [FLAGS] [OPTIONS] --file <file>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -d, --delay <delay>                      Defines the delay.
+    -f, --file <file>                        Defines the input's files who contain the stock, process and optimization.
+    -r, --result_to_test <result_to_test>    Defines the log result's of output
+```
+
 ##### How to use
 Example:
 ```shell
 cargo run --bin krpsim -- --delay 1 --file resources/simple
 cargo run --bin krpsim_verif -- --delay 1 --file resources/simple --result_to_test resources/simple.krpsim.log
 ```
-##### UML-Language
+#### UML-Language
 ![Screen Shot](https://raw.githubusercontent.com/adjivas/krpsim/notes/uml.png)
 
-##### Graph-Dependency
+#### Graph-Dependency
 Many thanks goes to:
 ![Screen Shot](https://raw.githubusercontent.com/adjivas/krpsim/notes/cargo.png)
 
-##### License
+#### License
 *Krpsim*'s code in this repo uses the [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html) [license](https://raw.githubusercontent.com/adjivas/krpsim    /master/LICENSE).
