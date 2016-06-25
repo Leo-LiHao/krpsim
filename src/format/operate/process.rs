@@ -172,10 +172,9 @@ impl Process {
         if let Some(a) = self.output.get_from_ressource(obj) {
             vec![self.clone();
                  {
-                     if let Some(_) = self.neutral {
-                         1
-                     } else {
-                         obj.clone().euclidian_div(a.1)
+                     match self.neutral {
+                         Some(_) => 1,
+                         None => obj.clone().euclidian_div(a.1)
                      }
                  }
             ]
@@ -224,11 +223,12 @@ impl Process {
             let mut ret: Vec<Process> = Vec::new();
             for (_, obj) in input.iter() {
                 if obj.1 > 0 {
-                    let lst = Process::get_producing_process(obj, process, already_used.clone());
+                    let mut lst = Process::get_producing_process(obj, process, already_used.clone());
                     if lst.len() == 0 {
                         return Err(())
                     }
-
+                    lst.sort_by(|a, b|
+                                a.get_h_value(&obj.0).partial_cmp(&b.get_h_value(&obj.0)).unwrap());
                     let mut temp = already_used.clone();
                     match lst.iter().fold(Err(()), |acc:Result<(Vec<Process>, usize), ()>, smt|{
                         temp.push(smt.clone());
@@ -242,6 +242,7 @@ impl Process {
                                     Ok((vect, total_time))
                                 } else {acc}
                             },
+
                             Ok((Some(a), t)) => {
                                 if Process::time_cmp(&acc, t) {
                                     Ok((a, t))
