@@ -16,11 +16,12 @@ francois LE CORRE <lecorre.f@gmail.com>, geam <geam@users.noreply.github.com>, a
 Krpsim
 
 USAGE:
-    krpsim_verif [FLAGS] [OPTIONS] --file <file>
+    krpsim [FLAGS] [OPTIONS] --file <file>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+    -v, --verbose    Defines a output with more informations.
 
 OPTIONS:
     -d, --delay <delay>                      Defines the delay.

@@ -7,7 +7,12 @@ solve a configuration:
 
 solve a configuration with a delay
 
-    krpsim --delay 1 --file resources/simple
+    krpsim --file resources/simple --delay 1
+
+
+solve a configuration with more output informations
+
+    krpsim --file resources/simple --verbose
 
 
 # Basic Usage

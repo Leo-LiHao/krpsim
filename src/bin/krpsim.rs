@@ -61,9 +61,10 @@ fn main() {
     let options = clap::App::from_yaml(yaml).get_matches();
 
     let delay: usize = options.value_of("delay").unwrap_or(DEFAULT_DELAY).parse::<usize>().unwrap();
-    let mut cycle: usize = 0usize;
-
+    let verbose: bool = options.is_present("verbose");
     let mut config = Configuration::new(options.value_of("file").unwrap()).unwrap();
+
+    let mut cycle: usize = 0usize;
 
     let mut done = false;
     let mut process_queue = Queue::new();
