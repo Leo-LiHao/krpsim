@@ -71,15 +71,15 @@ impl Process {
         input.get_ressource().iter().foreach(|ressource| {
             hash.insert(
                 ressource.get_name().to_string(),
-                -ressource.get_float_quantity() / cycle as f64
+                -ressource.get_float_quantity()
             );
         });
         output.get_ressource().iter().foreach(|ressource| {
             *hash.entry(
                 ressource.get_name().to_string()
             ).or_insert(
-                ressource.get_float_quantity() / cycle as f64
-            ) += ressource.get_float_quantity() / cycle as f64;
+                ressource.get_float_quantity()
+            ) += ressource.get_float_quantity();
         });
         Process::new (
             name,
@@ -200,11 +200,20 @@ impl Process {
         ret
     }
 
-    fn time_cmp(ori:&Result<(Vec<Process>, usize), ()>,
-                new: usize) -> bool() {
+    fn get_ressource_number(vect: &Vec<Process>, obj: &Ressource) -> f64 {
+        vect.iter().fold(0.0, |acc:f64, find| {
+            acc + find.get_h_value(&obj.0)
+        })
+    }
+
+    pub fn time_cmp(ori:&Result<(Vec<Process>, usize), ()>,
+                new: (&Vec<Process>, usize),
+                obj: &Ressource) -> bool() {
         match ori {
             &Err(_) => true,
-            &Ok((_, t)) => new < t
+            &Ok((ref a, t)) => {
+                (Process::get_ressource_number(&a, obj) / t as f64) < (Process::get_ressource_number(&new.0, obj) / new.1 as f64)
+            }
         }
     }
 
@@ -222,6 +231,7 @@ impl Process {
         } else {
             let mut ret: Vec<Process> = Vec::new();
             for (_, obj) in input.iter() {
+
                 if obj.1 > 0 {
                     let mut lst = Process::get_producing_process(obj, process, already_used.clone());
                     if lst.len() == 0 {
@@ -238,13 +248,13 @@ impl Process {
                             Ok((None, t)) => {
                                 let vect = smt.number_of_process(&obj);
                                 let total_time = vect.len() * t;
-                                if Process::time_cmp(&acc, total_time) {
+                                if Process::time_cmp(&acc, (&vect, total_time), obj) {
                                     Ok((vect, total_time))
                                 } else {acc}
                             },
 
                             Ok((Some(a), t)) => {
-                                if Process::time_cmp(&acc, t) {
+                                if Process::time_cmp(&acc, (&a, t), obj) {
                                     Ok((a, t))
                                 } else {acc}
                             }
@@ -252,12 +262,12 @@ impl Process {
                     }) {
                         Err(_) => return Err(()),
                         Ok((a, t)) => {
-                            time += t;
                             ret.extend(a);
                         }
                     }
                 }
             }
+
             Ok((Some(ret), time))
         }
 
