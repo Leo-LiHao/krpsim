@@ -224,7 +224,7 @@ impl Process {
         already_used: Vec<Process>,
     ) -> Result<(Option<Vec<Process>>, usize), ()> {
         let mut input = self.input.clone();
-        let mut time = self.cycle.clone();
+        let time = self.cycle.clone();
         input.sub_from_inventory(ressources);
         if input.is_zero() {
             Ok((None, time))
@@ -261,7 +261,7 @@ impl Process {
                         }
                     }) {
                         Err(_) => return Err(()),
-                        Ok((a, t)) => {
+                        Ok((a, _)) => {
                             ret.extend(a);
                         }
                     }
