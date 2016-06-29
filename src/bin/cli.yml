@@ -21,3 +21,8 @@ args:
         short: r
         long: result_to_test
         takes_value: true
+    - verbose:
+        help: Defines a output with more informations.
+        short: v
+        long: verbose
+        takes_value: false
