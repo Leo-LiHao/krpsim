@@ -99,24 +99,28 @@ fn main() {
             Ok((a, _)) => {
                 for process in a {
                     config.ressources.sub_from_inventory(&process.input);
-                    process_queue.add(Livep::new(process.clone(), cycle));
-                    println!("inventory: {}", config.ressources);
+                    process_queue.add(Livep::new(process.clone(), cycle, verbose));
+                    if verbose {
+                        println!("inventory: {}", config.ressources);
+                    }
                 }
             },
             Err(_) => {
                 if process_queue.is_empty() {
-                    println!("Finished at cycle: {}", cycle);
+                    println!("# no more process doable at time {}\n# {}", cycle, config.ressources);
                     done = true;
                 }
                 match process_queue.get_ended_process(cycle) {
                     None => cycle += 1,
                     Some(livep_vec) => {
                         livep_vec.iter().foreach(|ended_process| {
-                            config.ressources.add_from_inventory(ended_process.destruct());
-                            println!("inventory: {}", config.ressources);
+                            config.ressources.add_from_inventory(ended_process.destruct(verbose));
+                            if verbose {
+                                println!("inventory: {}", config.ressources);
+                            }
                         });
                         if cycle > delay {
-                            println!("Finished at cycle: {}", cycle);
+                            println!("# last {}\n# {}", cycle, config.ressources);
                             done = true;
                         }
                     }

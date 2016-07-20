@@ -64,6 +64,10 @@ impl Inventory {
         }
     }
 
+    pub fn print_final(&self) -> () {
+
+     }
+
     /// The `from_line` multi constructor function returns a list
     /// of Item for a need or result argument from `Process`.
 

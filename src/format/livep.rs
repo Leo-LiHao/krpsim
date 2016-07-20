@@ -41,17 +41,23 @@ impl  PartialOrd for Livep {
 
 
 impl  Livep  {
-    pub fn new(process: Process, cycle: usize) -> Self {
-        println!("process created: {} at cyle: {}",
-                 process.name, cycle);
+    pub fn new(process: Process, cycle: usize, verbose: bool) -> Self {
+        if verbose {
+            println!("process created: {} at cyle: {}",
+                     process.name, cycle);
+        } else {
+           println!("{}:{}", cycle, process.name);
+        }
         Livep {
             process: process.clone(),
             cycle_end: cycle + process.get_cycle()
         }
     }
-    pub fn destruct(&self) -> &Inventory {
-        println!("process finished: {} at cyle: {}",
-                 &self.process.name, &self.cycle_end);
+    pub fn destruct(&self, verbose: bool) -> &Inventory {
+        if verbose {
+            println!("process finished: {} at cyle: {}",
+                     &self.process.name, &self.cycle_end);
+        }
         &self.process.output
     }
 
