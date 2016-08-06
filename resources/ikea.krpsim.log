@@ -1,0 +1,9 @@
+0:do_fond
+0:do_etagere
+0:do_etagere
+0:do_etagere
+0:do_montant
+0:do_montant
+20:do_armoire_ikea
+# no more process doable at time 50
+# (armoire:1;etagere:0;fond:0;montant:0;planche:0)

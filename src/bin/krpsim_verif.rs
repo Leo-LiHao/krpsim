@@ -50,7 +50,9 @@ fn main () {
             config.ressources
           )
         },
-        (Err(why), _) | (_, Err(why)) => panic!(why),
+        (Ok(()), Err(why)) => panic!(format!("cycle: {}", why)),
+        (Err(why), Ok(_)) => panic!(format!("buy: {}", why)),
+        (Err(buy), Err(cycle)) => panic!(format!("both buy and cycle: {}, {}", buy, cycle)),
       }
     },
     Err(why) => panic!(why),
