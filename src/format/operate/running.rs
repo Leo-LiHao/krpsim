@@ -121,9 +121,10 @@ impl Running {
         checks.iter()
               .fold_while(Ok(0usize),
                          |acc, &(ref check_name, check_cycle)| {
+
                 match (self.get(check_name), acc) {
                   (Some(ref process), Ok(cycle)) => {
-                    if check_cycle == cycle {
+                    if check_cycle <= cycle {
                       Continue(Ok(process.get_cycle() + cycle))
                     }
                     else {
