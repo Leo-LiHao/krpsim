@@ -147,7 +147,7 @@ fn bench_krpsim_inception(b: &mut Bencher) {
   });
 }
 
-/*#[bench]
+#[bench]
 fn bench_krpsim_pomme(b: &mut Bencher) {
   b.iter(|| {
     krpsim(
@@ -156,7 +156,7 @@ fn bench_krpsim_pomme(b: &mut Bencher) {
       false,
     )
   });
-}*/
+}
 
 #[bench]
 fn bench_krpsim_recre(b: &mut Bencher) {
