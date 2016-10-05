@@ -33,15 +33,15 @@ impl Trace {
       if let (Ok(mut trace), Ok(line)) = (acc, readed) {
         match &line.splitn(2, ":")
                    .collect::<Vec<&str>>()[..] {
-          [comment, _..] if comment.starts_with('#') => Continue(Ok(trace)),
-          [quantity, product] if quantity.parse::<usize>().is_ok() => {
+          &[comment, _..] if comment.starts_with('#') => Continue(Ok(trace)),
+          &[quantity, product] if quantity.parse::<usize>().is_ok() => {
             trace.push(
               product.to_string(),
               quantity.parse::<usize>().ok().unwrap_or_default()
             );
             Continue(Ok(trace))
           },
-          [why..] => Done(from_error!(ERR_SPLITN, &format!("{:?}", why))),
+          &[ref why..] => Done(from_error!(ERR_SPLITN, &format!("{:?}", why))),
         }
       }
       else {

@@ -78,7 +78,7 @@ impl Inventory {
           .chunks(2)
           .map(|ressource|
             match &ressource[..] {
-              [n, q] => {
+              &[ref n, ref q] => {
                 if let Some(quantity) = q.parse::<usize>().ok() {
                   Ok(Ressource::new(n.to_string(), quantity))
                 }

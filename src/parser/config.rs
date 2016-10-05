@@ -44,11 +44,11 @@ impl Configuration {
       if let (Ok(mut config), Ok(line)) = (acc, readed) {
         match &line.splitn(2, ':')
                    .collect::<Vec<&str>>()[..] {
-          [comment, _..] if comment.starts_with('#') => Continue(Ok(config)),
-          [name, thing] => {
+          &[ref comment, _..] if comment.starts_with('#') => Continue(Ok(config)),
+          &[ref name, ref thing] => {
             match &thing.splitn(2, "):")
                         .collect::<Vec<&str>>()[..] {
-              [quantity] if quantity.parse::<usize>().is_ok() => {
+              &[ref quantity] if quantity.parse::<usize>().is_ok() => {
                 config.ressources.push(name.to_string(),
                   Ressource::new(
                     name.to_string(),
@@ -58,7 +58,7 @@ impl Configuration {
                 );
                 Continue(Ok(config))
               },
-              [optimize] if optimize.starts_with('(') &&
+              &[ref optimize] if optimize.starts_with('(') &&
                             optimize.ends_with(')') => {
                 if config.optimize.is_empty() {
                   config.optimize = Optimize::from_line(optimize.to_string());
@@ -68,7 +68,7 @@ impl Configuration {
                   Done(from_error!(ERR_DOUBLE, &format!("{}", config.optimize)))
                 }
               },
-              [need, result_and_nb_cycle] if need.starts_with('(') => {
+              &[ref need, ref result_and_nb_cycle] if need.starts_with('(') => {
                 match Process::from_line(
                   name.to_string(),
                   need,
@@ -84,7 +84,7 @@ impl Configuration {
               why => Done(from_error!(ERR_SPLITN, &format!("{:?}", why))),
             }
           },
-          [why..] => Done(from_error!(ERR_SPLITN, &format!("{:?}", why))),
+          &[ref why..] => Done(from_error!(ERR_SPLITN, &format!("{:?}", why))),
         }
       }
       else {

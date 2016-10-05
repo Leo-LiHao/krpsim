@@ -98,7 +98,7 @@ impl Process {
         result_and_nb_cycle: &str,
     ) -> std::io::Result<Process> {
         match &result_and_nb_cycle.rsplitn(2, ':').collect::<Vec<&str>>()[..] {
-            [nb_cycle, result] => if nb_cycle.parse::<usize>().is_ok() {
+            &[ref nb_cycle, ref result] => if nb_cycle.parse::<usize>().is_ok() {
                 match (Inventory::from_line(need), Inventory::from_line(result)) {
                     (None, Some(_)) => from_error!(ERR_NEED, need),
                     (Some(_), None   ) => from_error!(ERR_REST, result),
