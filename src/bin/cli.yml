@@ -1,6 +1,6 @@
 # This file describe the command line interface options
 name: Krpsim
-version: 0.1
+version: 0.1.0
 about: Krpsim
 author: francois LE CORRE <lecorre.f@gmail.com>, geam <geam@users.noreply.github.com>, adjivas <adjivas@users.noreply.github.com>
 
