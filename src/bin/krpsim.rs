@@ -73,6 +73,7 @@ fn main() {
 
     let mut done = false;
     let mut process_queue = Queue::new();
+    let mut tmp_inventory = config.ressources.clone();
     get_ressources_from_process(&config.running.get_process(), &mut config.ressources);
     let mut production: Ressource = match get_optimized_product(&config.optimize.stock, &mut config.ressources) {
         Some(a) => a,
@@ -82,27 +83,36 @@ fn main() {
     let final_process: Vec<Process> = Process::get_producing_process(&production,
                                                                      &config.running.get_process(),
                                                                      Vec::new());
-    /*    optimization(&mut config.process_list, &production);*/
     while !done {
         let mut usable_process:Vec<(Vec<Process>, usize)> = Vec::new();
 
         final_process.iter().foreach(|process| {
             match process.needed_process(
-                &config.running.get_process(), &config.ressources,
-                final_process.clone()) {
+                &config.running.get_process(),
+                &tmp_inventory,
+                &config.ressources,
+                final_process.clone(), delay) {
                 Err(_) => {},
                 Ok((None, t)) => usable_process.push((vec!(process.clone()), t)),
-                Ok((Some(a), t)) => usable_process.push((a, t))
+                Ok((Some(a), t)) => {
+                    usable_process.push((a, t))
+                }
             }
         });
         match get_best(&usable_process, &production) {
-            Ok((a, _)) => {
+            Ok((ref a, _)) => {
                 for process in a {
                     config.ressources.sub_from_inventory(&process.input);
+                    tmp_inventory.sub_from_inventory(&process.input);
+                    tmp_inventory.add_from_inventory(&process.output);
                     process_queue.add(Livep::new(process.clone(), cycle, verbose));
                     if verbose {
                         println!("inventory: {}", config.ressources);
                     }
+                }
+                if a.len() == 0 {
+                    println!("# already got the optimized ressource\n# {}", config.ressources);
+                    done = true;
                 }
             },
             Err(_) => {

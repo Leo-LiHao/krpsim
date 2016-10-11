@@ -102,10 +102,9 @@ impl Ressource {
     /// of an euclidian division and set the quantity to the rest
 
     pub fn euclidian_div(&mut self, nbr: usize) -> usize {
-        match self.1.checked_div(nbr) {
+        match nbr.checked_div(self.1) {
             None => 0,
             Some(a) => {
-                self.sub_quantity(a * nbr);
                 a
             }
         }

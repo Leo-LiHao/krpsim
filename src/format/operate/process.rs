@@ -168,6 +168,7 @@ impl Process {
         }
     }
 
+    /*
     fn number_of_process(&self, obj: &Ressource) -> Vec<Process> {
         if let Some(a) = self.output.get_from_ressource(obj) {
             vec![self.clone();
@@ -182,7 +183,7 @@ impl Process {
             vec![]
         }
     }
-
+*/
     pub fn get_producing_process (
         obj: &Ressource,
         process: &Vec<&Process>,
@@ -221,13 +222,21 @@ impl Process {
         &self,
         process: &Vec<&Process>,
         ressources: &Inventory,
+        real_ressources: &Inventory,
         already_used: Vec<Process>,
+        delay : usize,
     ) -> Result<(Option<Vec<Process>>, usize), ()> {
         let mut input = self.input.clone();
-        let time = self.cycle.clone();
+        let mut real_input = self.input.clone();
+        let mut time = self.cycle.clone();
         input.sub_from_inventory(ressources);
+        real_input.sub_from_inventory(real_ressources);
         if input.is_zero() {
-            Ok((None, time))
+            if real_input.is_zero() {
+                Ok((None, time))
+            } else {
+                Err(())
+            }
         } else {
             let mut ret: Vec<Process> = Vec::new();
             for (_, obj) in input.iter() {
@@ -243,13 +252,13 @@ impl Process {
                     match lst.iter().fold(Err(()), |acc:Result<(Vec<Process>, usize), ()>, smt|{
                         temp.push(smt.clone());
                         match smt.needed_process(
-                            process, ressources, temp.clone()) {
+                            process, ressources, real_ressources, temp.clone(), delay) {
                             Err(_) => acc,
                             Ok((None, t)) => {
-                                let vect = smt.number_of_process(&obj);
-                                let total_time = vect.len() * t;
-                                if Process::time_cmp(&acc, (&vect, total_time), obj) {
-                                    Ok((vect, total_time))
+                         //       let vect = smt.number_of_process(&obj);
+                         //       let total_time = vect.len() * t;
+                                if Process::time_cmp(&acc, (&vec![smt.clone()], t), obj) {
+                                    Ok((vec![smt.clone()], t))
                                 } else {acc}
                             },
 
@@ -261,13 +270,16 @@ impl Process {
                         }
                     }) {
                         Err(_) => return Err(()),
-                        Ok((a, _)) => {
+                        Ok((a, t)) => {
+                            time += t;
+                            if time > delay {
+                                return Err(())
+                            }
                             ret.extend(a);
                         }
                     }
                 }
             }
-
             Ok((Some(ret), time))
         }
 
