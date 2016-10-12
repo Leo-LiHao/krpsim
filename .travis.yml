@@ -22,7 +22,7 @@ before_script:
 script:
 - |
   travis-cargo build &&
-  ./resources.bash &&
+  #  ./resources.bash &&
   travis-cargo test &&
   travis-cargo bench &&
   cargo rustdoc -- --no-defaults --passes "collapse-docs" --passes "unindent-comments" &&
