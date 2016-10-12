@@ -89,8 +89,8 @@ fn main() {
         final_process.iter().foreach(|process| {
             match process.needed_process(
                 &config.running.get_process(),
-                &tmp_inventory,
-                &config.ressources,
+                &mut tmp_inventory.clone(),
+                &mut config.ressources.clone(),
                 final_process.clone(), delay) {
                 Err(_) => {},
                 Ok((None, t)) => usable_process.push((vec!(process.clone()), t)),
@@ -107,7 +107,7 @@ fn main() {
                     tmp_inventory.add_from_inventory(&process.output);
                     process_queue.add(Livep::new(process.clone(), cycle, verbose));
                     if verbose {
-                        println!("inventory: {}", config.ressources);
+                        println!("# inventory: {}", config.ressources);
                     }
                 }
                 if a.len() == 0 {
@@ -126,7 +126,7 @@ fn main() {
                         livep_vec.iter().foreach(|ended_process| {
                             config.ressources.add_from_inventory(ended_process.destruct(verbose));
                             if verbose {
-                                println!("inventory: {}", config.ressources);
+                                println!("# inventory: {}", config.ressources);
                             }
                         });
                         if cycle > delay {

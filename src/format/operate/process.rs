@@ -221,16 +221,19 @@ impl Process {
     pub fn needed_process (
         &self,
         process: &Vec<&Process>,
-        ressources: &Inventory,
-        real_ressources: &Inventory,
+        ressources: &mut Inventory,
+        real_ressources: &mut Inventory,
         already_used: Vec<Process>,
         delay : usize,
     ) -> Result<(Option<Vec<Process>>, usize), ()> {
         let mut input = self.input.clone();
         let mut real_input = self.input.clone();
         let mut time = self.cycle.clone();
-        input.sub_from_inventory(ressources);
         real_input.sub_from_inventory(real_ressources);
+        input.sub_from_inventory(ressources);
+        if real_input.is_zero() {
+            return Ok((None, time))
+        }
         if input.is_zero() {
             if real_input.is_zero() {
                 Ok((None, time))
@@ -252,11 +255,9 @@ impl Process {
                     match lst.iter().fold(Err(()), |acc:Result<(Vec<Process>, usize), ()>, smt|{
                         temp.push(smt.clone());
                         match smt.needed_process(
-                            process, ressources, real_ressources, temp.clone(), delay) {
+                            process, &mut ressources.clone(), &mut real_ressources.clone(), temp.clone(), delay) {
                             Err(_) => acc,
                             Ok((None, t)) => {
-                         //       let vect = smt.number_of_process(&obj);
-                         //       let total_time = vect.len() * t;
                                 if Process::time_cmp(&acc, (&vec![smt.clone()], t), obj) {
                                     Ok((vec![smt.clone()], t))
                                 } else {acc}
@@ -271,6 +272,10 @@ impl Process {
                     }) {
                         Err(_) => return Err(()),
                         Ok((a, t)) => {
+                            a.iter().foreach(|newprcs| {
+                                real_ressources.sub_from_inventory(&newprcs.input);
+                                ressources.sub_from_inventory(&newprcs.input);
+                            });
                             time += t;
                             if time > delay {
                                 return Err(())
