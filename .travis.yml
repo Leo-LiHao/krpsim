@@ -17,11 +17,12 @@ branches:
 before_script:
 - |
   pip install 'travis-cargo<0.2' --user &&
-  export PATH=$HOME/.local/bin:$PATH
+  export PATH=$HOME/.local/bin:$PATH &&
+  chmod +x resources.bash
 script:
 - |
-  bash ./resources.bash &&
   travis-cargo build &&
+  ./resources.bash &&
   travis-cargo test &&
   travis-cargo bench &&
   cargo rustdoc -- --no-defaults --passes "collapse-docs" --passes "unindent-comments" &&
