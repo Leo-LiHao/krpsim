@@ -84,8 +84,8 @@ fn krpsim(config: &mut Configuration, delay: usize, verbose: bool) {
         final_process.iter().foreach(|process| {
             match process.needed_process(
                 &config.running.get_process(),
-                &tmp_inventory,
-                &config.ressources,
+                &mut tmp_inventory,
+                &mut config.ressources,
                 final_process.clone(), delay) {
                 Err(_) => {},
                 Ok((None, t)) => usable_process.push((vec!(process.clone()), t)),
