@@ -25,8 +25,7 @@ script:
   ./resources.bash &&
   travis-cargo test &&
   travis-cargo bench &&
-  cargo rustdoc -- --no-defaults --passes "collapse-docs" --passes "unindent-comments" &&
-  cargo bench > /dev/null
+  cargo rustdoc -- --no-defaults --passes "collapse-docs" --passes "unindent-comments"
 after_success:
   - travis-cargo --only nightly doc-upload
   - travis-cargo coveralls --no-sudo
