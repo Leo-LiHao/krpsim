@@ -1,0 +1,10 @@
+(function() {var implementors = {};
+implementors["krpsim"] = ["impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>","impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>","impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>","impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='krpsim/format/operate/running/struct.Running.html' title='krpsim::format::operate::running::Running'>Running</a>","impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='krpsim/format/optimize/struct.Optimize.html' title='krpsim::format::optimize::Optimize'>Optimize</a>","impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='krpsim/parser/config/struct.Configuration.html' title='krpsim::parser::config::Configuration'>Configuration</a>","impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='krpsim/parser/trace/struct.Trace.html' title='krpsim::parser::trace::Trace'>Trace</a>",];
+
+            if (window.register_implementors) {
+                window.register_implementors(implementors);
+            } else {
+                window.pending_implementors = implementors;
+            }
+        
+})()

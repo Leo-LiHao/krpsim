@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ERR_EMPTY",""],["ERR_LESS",""],["ERR_NOT_FOUND",""],["ERR_WRONG_QTE",""]],"struct":[["Inventory",""]]});

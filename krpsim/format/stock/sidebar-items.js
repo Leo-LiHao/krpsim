@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["inventory","The module `Inventory` describes a list of items."],["ressource","The module `Ressource` describes a stock."]]});

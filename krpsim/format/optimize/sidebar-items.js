@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Optimize","The `Optimize` structure is a list of keywords/stock-names who have the priority queue."]]});

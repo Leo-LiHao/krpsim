@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ERR_DOUBLE",""],["ERR_READ",""],["ERR_SPLITN",""]],"struct":[["Configuration","The `Configuration` struct contains the Ressource, Process and Optimize."]]});

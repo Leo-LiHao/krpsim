@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Process` struct in crate `krpsim`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Process">
+
+    <title>krpsim::format::operate::process::Process - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../../../index.html'>krpsim</a>::<wbr><a href='../../index.html'>format</a>::<wbr><a href='../index.html'>operate</a>::<wbr><a href='index.html'>process</a></p><script>window.sidebarCurrent = {name: 'Process', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../../index.html'>krpsim</a>::<wbr><a href='../../index.html'>format</a>::<wbr><a href='../index.html'>operate</a>::<wbr><a href='index.html'>process</a>::<wbr><a class='struct' href=''>Process</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-601' class='srclink' href='../../../../src/krpsim/src/format/operate/process.rs.html#31-38' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Process {
+    pub name: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>,
+    pub cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,
+    pub input: <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>,
+    pub output: <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>,
+    neutral: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../../../krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>&gt;,
+    pub heuristic: <a class='struct' href='https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html' title='std::collections::hash::map::HashMap'>HashMap</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>&gt;,
+}</pre><h2 class='fields'>Fields</h2><span id='structfield.name' class='structfield'>
+                           <span id='name.v' class='invisible'>
+                           <code>name: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.cycle' class='structfield'>
+                           <span id='cycle.v' class='invisible'>
+                           <code>cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.input' class='structfield'>
+                           <span id='input.v' class='invisible'>
+                           <code>input: <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.output' class='structfield'>
+                           <span id='output.v' class='invisible'>
+                           <code>output: <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a></code>
+                           </span></span><span class='stab '></span><span id='structfield.neutral' class='structfield'>
+                           <span id='neutral.v' class='invisible'>
+                           <code>neutral: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../../../krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>&gt;</code>
+                           </span></span><span class='stab '></span><span id='structfield.heuristic' class='structfield'>
+                           <span id='heuristic.v' class='invisible'>
+                           <code>heuristic: <a class='struct' href='https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html' title='std::collections::hash::map::HashMap'>HashMap</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>&gt;</code>
+                           </span></span><span class='stab '></span><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-216' class='srclink' href='../../../../src/krpsim/src/format/operate/process.rs.html#40-301' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(name: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; input: <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output: <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hash: <a class='struct' href='https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html' title='std::collections::hash::map::HashMap'>HashMap</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>&gt;)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; Self</code></span></h4>
+<div class='docblock'><p>The <code>new</code> constructor function returns the Process.</p>
+</div><h4 id='method.from_integer' class='method'><span id='from_integer.v' class='invisible'><code>fn <a href='#method.from_integer' class='fnname'>from_integer</a>(name: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cycle: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; input: <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output: <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; Self</code></span></h4>
+<h4 id='method.from_line' class='method'><span id='from_line.v' class='invisible'><code>fn <a href='#method.from_line' class='fnname'>from_line</a>(name: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; need: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result_and_nb_cycle: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;</code></span></h4>
+<div class='docblock'><p>The <code>from_line</code> constructor function returns a parsed process.</p>
+</div><h4 id='method.get_name' class='method'><span id='get_name.v' class='invisible'><code>fn <a href='#method.get_name' class='fnname'>get_name</a>(&amp;self) -&gt; &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></span></h4>
+<div class='docblock'><p>The <code>get_name</code> accessor function returns the name
+of process.</p>
+</div><h4 id='method.get_cycle' class='method'><span id='get_cycle.v' class='invisible'><code>fn <a href='#method.get_cycle' class='fnname'>get_cycle</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+<div class='docblock'><p>The <code>get_cycle</code> accessor function returns the number
+of cycle required by the process.</p>
+</div><h4 id='method.buy_with' class='method'><span id='buy_with.v' class='invisible'><code>fn <a href='#method.buy_with' class='fnname'>buy_with</a>(&amp;self, with: &amp;mut <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/std/io/error/type.Result.html' title='std::io::error::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+<div class='docblock'><p>The <code>buy_with</code> function substrates <em>with</em> argument with <em>input</em> and
+additions the <em>output</em> to <em>with</em> argument.</p>
+</div><h4 id='method.get_h_value' class='method'><span id='get_h_value.v' class='invisible'><code>fn <a href='#method.get_h_value' class='fnname'>get_h_value</a>(&amp;self, s: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code></span></h4>
+<h4 id='method.get_distance' class='method'><span id='get_distance.v' class='invisible'><code>fn <a href='#method.get_distance' class='fnname'>get_distance</a>(need: &amp;<a class='struct' href='../../../../krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>, owned: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>&gt;) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+<h4 id='method.get_producing_process' class='method'><span id='get_producing_process.v' class='invisible'><code>fn <a href='#method.get_producing_process' class='fnname'>get_producing_process</a>(obj: &amp;<a class='struct' href='../../../../krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; process: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; used_process: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;</code></span></h4>
+<h4 id='method.get_ressource_number' class='method'><span id='get_ressource_number.v' class='invisible'><code>fn <a href='#method.get_ressource_number' class='fnname'>get_ressource_number</a>(vect: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;, obj: &amp;<a class='struct' href='../../../../krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a></code></span></h4>
+<h4 id='method.time_cmp' class='method'><span id='time_cmp.v' class='invisible'><code>fn <a href='#method.time_cmp' class='fnname'>time_cmp</a>(ori: &amp;<a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a>&amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj: &amp;<a class='struct' href='../../../../krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<h4 id='method.needed_process' class='method'><span id='needed_process.v' class='invisible'><code>fn <a href='#method.needed_process' class='fnname'>needed_process</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; process: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ressources: &amp;mut <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; real_ressources: &amp;mut <a class='struct' href='../../../../krpsim/format/stock/inventory/struct.Inventory.html' title='krpsim::format::stock::inventory::Inventory'>Inventory</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; already_used: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; delay: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a>&gt;&gt;, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+<h4 id='method.distance_overall' class='method'><span id='distance_overall.v' class='invisible'><code>fn <a href='#method.distance_overall' class='fnname'>distance_overall</a>(&amp;self, owned: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../../../krpsim/format/stock/ressource/struct.Ressource.html' title='krpsim::format::stock::ressource::Ressource'>Ressource</a>&gt;) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-608' class='srclink' href='../../../../src/krpsim/src/format/operate/process.rs.html#30' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class='method'><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a></code></span></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class='method'><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html' title='core::fmt::Display'>Display</a> for <a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-322' class='srclink' href='../../../../src/krpsim/src/format/operate/process.rs.html#303-313' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+<div class='docblock'><p>The <code>fmt</code> function prints the Process formated like <code>&lt;name&gt; : (&lt;need&gt; :&lt;qty&gt;[ ;&lt;need&gt; :&lt;qty&gt;[...]]) : (&lt;result&gt; :&lt;qty&gt;[ ;&lt;result&gt; :&lt;qty&gt;[...]]) : &lt;nb_cycle&gt;</code>.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-326' class='srclink' href='../../../../src/krpsim/src/format/operate/process.rs.html#315-325' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt-1' class='method'><span id='fmt.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+<div class='docblock'><p>The <code>fmt</code> function prints the Process formated like <code>&lt;name&gt; : (&lt;need&gt; :&lt;qty&gt;[ ;&lt;need&gt; :&lt;qty&gt;[...]]) : (&lt;result&gt; :&lt;qty&gt;[ ;&lt;result&gt; :&lt;qty&gt;[...]]) : &lt;nb_cycle&gt;</code>.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a> for <a class='struct' href='../../../../krpsim/format/operate/process/struct.Process.html' title='krpsim::format::operate::process::Process'>Process</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-330' class='srclink' href='../../../../src/krpsim/src/format/operate/process.rs.html#327-341' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.default' class='method'><span id='default.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default' class='fnname'>default</a>() -&gt; Self</code></span></h4>
+<div class='docblock'><p>The <code>default</code> constructor function returns a empty Proces.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../../";
+        window.currentCrate = "krpsim";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../../../jquery.js"></script>
+    <script src="../../../../main.js"></script>
+    <script src="../../../../extra.js"></script>
+    <script defer src="../../../../search-index.js"></script>
+</body>
+</html>

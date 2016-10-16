@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["process","The module `Process` describes a offer."],["running","The module `Running` describes a shop."]]});
