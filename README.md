@@ -32,8 +32,8 @@ OPTIONS:
 ##### How to use
 Example:
 ```shell
-cargo run --bin krpsim -- --delay 1 --file resources/simple
-cargo run --bin krpsim_verif -- --delay 1 --file resources/simple --result_to_test resources/simple.krpsim.log
+cargo run --bin krpsim -- --delay 100 --file resources/simple
+cargo run --bin krpsim_verif -- --delay 100 --file resources/simple --result_to_test resources/simple.krpsim.log
 ```
 #### UML-Language
 ![Screen Shot](https://raw.githubusercontent.com/adjivas/krpsim/notes/uml.png)
